@@ -1,0 +1,33 @@
+.project
+sysProps.xml
+.cproject
+
+.settings/language.settings.xml
+
+.settings/org.eclipse.cdt.managedbuilder.core.prefs
+
+Debug/
+
+build.xml
+build.properties
+
+#compiled object files
+*.slo
+*.lo
+*.o
+
+#compiled Dynamic libs
+*.so
+*.dylib
+
+#compiled static libraries
+*.lsi
+*.la
+*.a
+
+.metadata
+.metadata/*
+
+# for mac finder assist file
+.DS_store
+
