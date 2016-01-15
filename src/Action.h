@@ -2,10 +2,10 @@
 
 class Action
 {
-  enum ActionType { NO_ACTION };
+  enum ActionType { NO_ACTION }; // TODO: Add more types of actions.
 
   Action(ActionType act);
-  void run();
+  void operator()();
  private:
   ActionType action;
 }

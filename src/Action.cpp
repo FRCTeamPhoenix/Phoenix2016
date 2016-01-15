@@ -5,9 +5,9 @@ Action(ActionType act)
   action = act;
 }
 
-void run()
+void operator()()
 {
-  switch (action)
+  switch (action) // TODO: Add more implementations for actions.
     {
     case NO_ACTION:
       break;
