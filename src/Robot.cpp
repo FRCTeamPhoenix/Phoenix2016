@@ -28,12 +28,13 @@ public:
       while(IsOperatorControl() && IsEnabled())
       {
          float throttle = - m_joystick.GetY();
-         if (abs(throttle) < 0.05f) //This makes a deadzone
+         if (fabs(throttle) < 0.05f) //This makes a deadzone
          {
              throttle = 0;
          }
+
          float twist = m_joystick.GetZ();
-         if (abs(twist) < 0.05f) //This also makes a deadzone
+         if (fabs(twist) < 0.05f) //This also makes a deadzone
          {
             twist = 0;
          }
