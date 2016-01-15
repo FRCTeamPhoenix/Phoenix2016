@@ -8,13 +8,21 @@
 #ifndef SRC_ROBOTCONTROLLER_H_
 #define SRC_ROBOTCONTROLLER_H_
 
+#include "DriveStation.h"
+
 class RobotController {
 
 
 public:
-   RobotController();
+   RobotController(DriveStation * driveStation);
 
    virtual ~RobotController();
+
+   void run();
+
+private:
+   DriveStation * m_driveStation;
+
 };
 
 #endif /* SRC_ROBOTCONTROLLER_H_ */

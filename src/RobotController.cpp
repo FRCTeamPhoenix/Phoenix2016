@@ -7,12 +7,18 @@
 
 #include <RobotController.h>
 
-RobotController::RobotController() {
+RobotController::RobotController(DriveStation * driveStation):
+   m_driveStation(driveStation)
+{
    // TODO Auto-generated constructor stub
 
 }
 
 RobotController::~RobotController() {
-   // TODO Auto-generated destructor stub
+
 }
 
+void RobotController::run()
+{
+
+}

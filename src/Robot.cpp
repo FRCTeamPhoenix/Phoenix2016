@@ -1,21 +1,20 @@
 #include "WPILib.h"
 #include "constants.h"
+#include "RobotController.h"
+#include "DriveStation.h"
 
 class Robot: public SampleRobot
 {
    Talon m_flywheels;
-   Joystick m_joystick;
-   Joystick m_gamepad;
 
-   RobotDrive driveTrain;
-
+   DriveStation m_DriveStation;
+   RobotDrive m_driveTrain;
+   RobotController m_robotController;
 public:
    Robot() :
       m_flywheels(Port::flywheels),
-      m_joystick(Port::joystick),
-      m_gamepad(Port::gamepad),
 
-      driveTrain(Port::frontLeftWheelMotor,
+      m_driveTrain(Port::frontLeftWheelMotor,
             Port::rearLeftWheelMotor,
             Port::frontRightWheelMotor,
             Port::rearRightWheelMotor)
@@ -43,7 +42,7 @@ public:
          float leftPower = (throttle * throttleRatio) + (twist * twistRatio);
          float rightPower = (throttle * throttleRatio) - (twist * twistRatio);
 
-         driveTrain.TankDrive(leftPower, rightPower);
+         m_driveTrain.TankDrive(leftPower, rightPower);
 
          if(m_gamepad.GetRawButton(1))
          {
