@@ -7,12 +7,16 @@
 
 #include <ManualController.h>
 
-ManualController::ManualController() {
-	// TODO Auto-generated constructor stub
-
+ManualController::ManualController(DriveTrainController * driveTrain, ShooterController * shooter, LoaderController * loader) {
+	m_driveTrain = driveTrain;
+	m_shooter = shooter;
+	m_loader = loader;
 }
 
 ManualController::~ManualController() {
 	// TODO Auto-generated destructor stub
 }
 
+void ManualController::run() {
+
+}
