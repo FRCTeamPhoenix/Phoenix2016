@@ -12,6 +12,7 @@ class DriveTrainController {
 public:
 	DriveTrainController();
 	virtual ~DriveTrainController();
+	void run();
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */

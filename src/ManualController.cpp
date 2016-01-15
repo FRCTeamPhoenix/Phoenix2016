@@ -18,5 +18,7 @@ ManualController::~ManualController() {
 }
 
 void ManualController::run() {
-
+   m_driveTrain->run();
+   m_shooter->run();
+   m_loader->run();
 }

@@ -16,3 +16,6 @@ DriveTrainController::~DriveTrainController() {
 	// TODO Auto-generated destructor stub
 }
 
+void DriveTrainController::run() {
+
+}

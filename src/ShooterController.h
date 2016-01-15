@@ -12,6 +12,7 @@ class ShooterController {
 public:
 	ShooterController();
 	virtual ~ShooterController();
+	void run();
 };
 
 #endif /* SRC_SHOOTERCONTROLLER_H_ */

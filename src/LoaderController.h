@@ -12,6 +12,7 @@ class LoaderController {
 public:
 	LoaderController();
 	virtual ~LoaderController();
+	void run();
 };
 
 #endif /* SRC_LOADERCONTROLLER_H_ */

@@ -16,3 +16,6 @@ LoaderController::~LoaderController() {
 	// TODO Auto-generated destructor stub
 }
 
+void LoaderController::run(){
+
+}
