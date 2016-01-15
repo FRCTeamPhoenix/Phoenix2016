@@ -8,10 +8,14 @@
 #ifndef SRC_AUTOCONTROLLER_H_
 #define SRC_AUTOCONTROLLER_H_
 
+class Action;
+
 class AutoController {
 public:
-   AutoController();
-   virtual ~AutoController();
+  AutoController();
+  ~AutoController();
+private:
+  std::vector<Action> queue;
 };
 
 #endif /* SRC_AUTOCONTROLLER_H_ */
