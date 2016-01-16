@@ -21,6 +21,7 @@ public:
   void performAction(void);
 private:
   std::vector<Action> m_queue;
+  RobotController* m_parent;
 };
 
 #endif /* SRC_AUTOCONTROLLER_H_ */

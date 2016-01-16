@@ -4,8 +4,9 @@ enum ActionType { NO_ACTION }; // TODO: Add more types of actions.
 
 class Action
 {
+public:
   Action(ActionType act);
   void operator()();
- private:
+private:
   ActionType action;
 };

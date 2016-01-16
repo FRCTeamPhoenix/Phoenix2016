@@ -6,6 +6,7 @@
  */
 
 #include <AutoController.h>
+#include <vector>
 
 AutoController::AutoController(RobotController* parent)
    : m_parent(parent)
@@ -15,7 +16,7 @@ AutoController::~AutoController() {}
 
 void AutoController::addAction(ActionType action)
 {
-   m_queue.push_front(action);
+   m_queue.insert(m_queue.begin(), action);
 }
 
 void AutoController::performAction(void)
