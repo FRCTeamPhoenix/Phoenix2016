@@ -1,11 +1,11 @@
 #include "Action.h"
 
-Action(ActionType act)
+Action::Action(ActionType act)
 {
   action = act;
 }
 
-void operator()()
+void Action::operator()()
 {
   switch (action) // TODO: Add more implementations for actions.
     {

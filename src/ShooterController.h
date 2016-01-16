@@ -16,8 +16,8 @@ public:
 	   FIRING
 	};
    ShooterController();
-	void run();
-	virtual ShooterController();
+   void run();
+   virtual ~ShooterController();
 };
 
 #endif /* SRC_SHOOTERCONTROLLER_H_ */

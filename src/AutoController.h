@@ -8,7 +8,8 @@
 #ifndef SRC_AUTOCONTROLLER_H_
 #define SRC_AUTOCONTROLLER_H_
 
-class Action;
+#include <vector>
+#include "Action.h"
 
 class AutoController {
 public:

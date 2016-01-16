@@ -5,14 +5,17 @@
  *      Author: Will
  */
 
-#include <RobotController.h>
+#include "RobotController.h"
 
 RobotController::RobotController() {
    // TODO Auto-generated constructor stub
 
 }
 
+void RobotController::run()
+{
+}
+
 RobotController::~RobotController() {
    // TODO Auto-generated destructor stub
 }
-
