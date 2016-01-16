@@ -52,7 +52,7 @@ else if(getCurrentState()== STATE::DRIVETRAIN_TEST){
       {
          twist = 0;
       }
-      float throttleRatio = (m_driveStation->getJoystickThrottle() + 1) / 2;// .8 is too high :(
+      float throttleRatio = (-m_driveStation->getJoystickThrottle() + 1) / 2;// .8 is too high :(
       float twistRatio = 1 - throttleRatio;
       float leftPower = (throttle * throttleRatio) + (twist * twistRatio);
       float rightPower = (throttle * throttleRatio) - (twist * twistRatio);
