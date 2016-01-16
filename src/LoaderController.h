@@ -10,14 +10,13 @@
 
 #include "BaseController.h"
 
-enum LoaderStates {
-	LOADER_EMPTY,
-	LOADER_LOADING,
-	LOADER_LOADED
-};
-
 class LoaderController : public BaseController{
 public:
+	enum STATE {
+		LOADER_EMPTY,
+		LOADER_LOADING,
+		LOADER_LOADED
+	};
    LoaderController();
 	void run();
 	virtual ~LoaderController();
