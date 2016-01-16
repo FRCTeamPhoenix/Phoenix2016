@@ -13,7 +13,7 @@
 class LoaderController : public BaseController{
 public:
 	enum STATE {
-		LOADER_EMPTY,
+		LOADER_EMPTY ,
 		LOADER_LOADING,
 		LOADER_LOADED
 	};

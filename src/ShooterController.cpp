@@ -5,7 +5,7 @@
  *      Author: Ian
  */
 
-#include <ShooterController.h>
+#include "ShooterController.h"
 
 ShooterController::ShooterController(Talon * flywheels) {
    m_flywheels = flywheels;

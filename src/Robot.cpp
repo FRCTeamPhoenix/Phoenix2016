@@ -15,6 +15,7 @@ class Robot: public SampleRobot
    RobotController m_robotController;
 
    DriveTrainController m_driveTrainController;
+
 public:
    Robot() :
       m_flywheels(PortAssign::flywheels),
@@ -29,7 +30,7 @@ public:
 
       m_driveTrainController(&m_joystick, &m_driveTrain)
    {
-
+      SmartDashboard::init();
    }
 
    void OperatorControl()
@@ -67,6 +68,18 @@ public:
       }
    }
 
+
+   void Test(){
+
+      SmartDashboard::PutString("DB/String 0", " ");
+
+      while(IsTest() && IsEnabled()){
+         
+      }
+
+      SmartDashboard::PutString("DB/String 0", " ");
+
+   }
 };
 
 START_ROBOT_CLASS(Robot);
