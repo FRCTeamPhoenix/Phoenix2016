@@ -10,12 +10,11 @@
 
 #include "BaseController.h"
 
-enum ManualStates{
-   NO_STATES
-};
-
 class ManualController : public BaseController{
 public:
+	enum STATE{
+	   NO_STATES
+	};
    ManualController();
 	void run();
 	virtual ~ManualController();

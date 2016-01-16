@@ -10,12 +10,11 @@
 
 #include "BaseController.h"
 
-enum DriveTrainStates{
-   DRIVING
-};
-
 class DriveTrainController : public BaseController{
 public:
+	enum STATE{
+	   DRIVING
+	};
    DriveTrainController();
 	void run();
    virtual ~DriveTrainController();

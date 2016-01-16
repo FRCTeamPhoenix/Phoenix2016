@@ -10,12 +10,11 @@
 
 #include "BaseController.h"
 
-enum ShooterStates{
-   FIRING
-};
-
 class ShooterController : public BaseController{
 public:
+	enum STATE{
+	   FIRING
+	};
    ShooterController();
 	void run();
 	virtual ShooterController();
