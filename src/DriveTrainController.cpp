@@ -11,7 +11,7 @@ DriveTrainController::DriveTrainController(RobotDrive* robotDrive, DriveStation*
    m_driveTrain(robotDrive),
    m_driveStation(driveStation)
 {
-
+   m_currentState = DriveTrainController::DRIVETRAIN_NORMAL;
 }
 
 DriveTrainController::~DriveTrainController() {
@@ -21,6 +21,7 @@ DriveTrainController::~DriveTrainController() {
 void DriveTrainController::run() {
 if(getCurrentState()== STATE::DRIVETRAIN_NORMAL){
    float throttle = - m_driveStation->getJoystickY();
+
    if (fabs(throttle) < 0.05f) //This makes a deadzone
    {
        throttle = 0;
@@ -40,6 +41,7 @@ if(getCurrentState()== STATE::DRIVETRAIN_NORMAL){
 }
 else if(getCurrentState()== STATE::DRIVETRAIN_TEST){
    float throttle = - m_driveStation->getJoystickY();
+
       if (fabs(throttle) < 0.05f) //This makes a deadzone
       {
           throttle = 0;
@@ -60,5 +62,11 @@ else if(getCurrentState()== STATE::DRIVETRAIN_TEST){
 }
 
 DriveTrainController::STATE DriveTrainController::getCurrentState() {
-   return STATE::DRIVETRAIN_TEST;
+   return m_currentState;
 }
+
+void DriveTrainController::setCurrentState(DriveTrainController::STATE state){
+   m_currentState = state;
+
+}
+

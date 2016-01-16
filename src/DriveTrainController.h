@@ -28,9 +28,11 @@ public:
    void run();
 
    STATE getCurrentState();
+   void setCurrentState(STATE);
 private:
    RobotDrive* m_driveTrain;
    DriveStation * m_driveStation;
+   STATE m_currentState;
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */
