@@ -1,5 +1,12 @@
+//#include <iostream>
+#include <thread>
 #include "WPILib.h"
 #include "constants.h"
+#include "Client.h"
+
+class Robot;
+
+void runClient(Client* client);
 
 class Robot: public SampleRobot
 {
@@ -8,6 +15,8 @@ class Robot: public SampleRobot
    Joystick m_gamepad;
 
    RobotDrive driveTrain;
+
+   Client client;
 
 public:
    Robot() :
@@ -20,6 +29,8 @@ public:
             Port::frontRightWheelMotor,
             Port::rearRightWheelMotor)
    {
+      //std::thread receiveThread(runClient, client);
+      //receiveThread.join();
 
    }
 
@@ -56,5 +67,10 @@ public:
    }
 
 };
+
+void runClient(Client* client)
+   {
+      client->receivePacket();
+   }
 
 START_ROBOT_CLASS(Robot);
