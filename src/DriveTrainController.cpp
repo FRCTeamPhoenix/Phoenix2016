@@ -32,6 +32,8 @@ if(getCurrentState()== STATE::DRIVETRAIN_NORMAL){
    float twistRatio = 1 - throttleRatio;
    float leftPower = (throttle * throttleRatio) + (twist * twistRatio);
    float rightPower = (throttle * throttleRatio) - (twist * twistRatio);
+
+   m_driveTrain.TankDrive(leftPower, rightPower);
 }
 }
 

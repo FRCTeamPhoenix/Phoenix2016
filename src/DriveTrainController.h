@@ -27,7 +27,7 @@ public:
    STATE getCurrentState();
 private:
    Joystick m_joystick;
-
+   RobotDrive m_driveTrain;
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */
