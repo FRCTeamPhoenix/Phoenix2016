@@ -5,8 +5,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <unistd.h>
-//#include <pthread.h>
-#include <thread>
 #include <string.h>
 #define NPACK 1
 #define PORT 31415

@@ -6,7 +6,7 @@
 
 class Robot;
 
-void runClient(Client* client);
+void runClient(Robot* robot, Client* client);
 
 class Robot: public SampleRobot
 {
@@ -29,8 +29,8 @@ public:
             Port::frontRightWheelMotor,
             Port::rearRightWheelMotor)
    {
-      //std::thread receiveThread(runClient, client);
-      //receiveThread.join();
+      std::thread receiveThread(runClient, this, &client);
+      receiveThread.join();
 
    }
 
@@ -68,7 +68,7 @@ public:
 
 };
 
-void runClient(Client* client)
+void runClient(Robot* robot,Client* client)
    {
       client->receivePacket();
    }
