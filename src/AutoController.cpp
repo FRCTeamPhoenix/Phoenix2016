@@ -22,8 +22,8 @@ void AutoController::performAction(void)
 {
    if (m_queue.size() == 0)
       {
-	 // TODO: Change parent (RobotController) state to MANUAL.
-	 return;
+    // TODO: Change parent (RobotController) state to MANUAL.
+    return;
       }
    Action current_action = m_queue.back();
    m_queue.pop_back();

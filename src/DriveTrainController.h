@@ -12,11 +12,11 @@
 
 class DriveTrainController : public BaseController{
 public:
-	enum STATE{
-	   DRIVING
-	};
+   enum STATE{
+      DRIVING
+   };
    DriveTrainController();
-	void run();
+   void run();
    virtual ~DriveTrainController();
 };
 

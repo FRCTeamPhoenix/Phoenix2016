@@ -12,9 +12,9 @@
 
 class ShooterController : public BaseController{
 public:
-	enum STATE{
-	   FIRING
-	};
+   enum STATE{
+      FIRING
+   };
    ShooterController();
    void run();
    virtual ~ShooterController();

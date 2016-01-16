@@ -12,10 +12,10 @@
 
 class RobotController : public BaseController{
 public:
-	enum STATE{
-	   AUTO,
-	   MANUAL
-	};
+   enum STATE{
+      AUTO,
+      MANUAL
+   };
    RobotController();
    void run();
    virtual ~RobotController();

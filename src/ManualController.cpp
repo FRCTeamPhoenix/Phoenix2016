@@ -11,7 +11,7 @@ ManualController::ManualController() {}
 
 
 ManualController::~ManualController() {
-	// TODO Auto-generated destructor stub
+   // TODO Auto-generated destructor stub
 }
 
 void ManualController::run() {

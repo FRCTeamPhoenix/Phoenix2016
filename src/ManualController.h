@@ -12,12 +12,12 @@
 
 class ManualController : public BaseController{
 public:
-	enum STATE{
-	   NO_STATES
-	};
+   enum STATE{
+      NO_STATES
+   };
    ManualController();
-	void run();
-	virtual ~ManualController();
+   void run();
+   virtual ~ManualController();
 };
 
 #endif /* SRC_MANUALCONTROLLER_H_ */
