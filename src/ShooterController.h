@@ -13,7 +13,11 @@
 class ShooterController : public BaseController{
 public:
 	enum STATE{
-	   FIRING
+	   SHOOTER_OFF,
+	   SHOOTER_STARTING,
+	   SHOOTER_ON,
+	   SHOOTER_STOPPING,
+	   SHOOTER_SHOOTING
 	};
    ShooterController();
    void run();

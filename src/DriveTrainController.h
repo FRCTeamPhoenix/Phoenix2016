@@ -13,11 +13,17 @@
 class DriveTrainController : public BaseController{
 public:
 	enum STATE{
-	   DRIVING
+	   DRIVETRAIN_IDLE,
+	   DRIVETRAIN_NORMAL,
+	   DRIVETRAIN_AIMING_TARGET,
+	   DRIVETRAIN_AIMING_OBSTACLE,
+	   DRIVETRAIN_OBSTACLE
 	};
    DriveTrainController();
 	void run();
    virtual ~DriveTrainController();
+
+   STATE getCurrentState();
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */

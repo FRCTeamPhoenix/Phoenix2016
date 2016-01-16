@@ -19,3 +19,7 @@ DriveTrainController::~DriveTrainController() {
 void DriveTrainController::run() {
 
 }
+
+DriveTrainController::STATE DriveTrainController::getCurrentState() {
+   return STATE::DRIVETRAIN_IDLE;
+}

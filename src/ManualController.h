@@ -9,6 +9,9 @@
 #define SRC_MANUALCONTROLLER_H_
 
 #include "BaseController.h"
+#include "DriveTrainController.h"
+#include "ShooterController.h"
+#include "LoaderController.h"
 
 class ManualController : public BaseController{
 public:
