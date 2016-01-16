@@ -45,5 +45,5 @@ if(getCurrentState()== STATE::DRIVETRAIN_NORMAL){
 }
 
 DriveTrainController::STATE DriveTrainController::getCurrentState() {
-   return STATE::DRIVETRAIN_IDLE;
+   return STATE::DRIVETRAIN_NORMAL;
 }

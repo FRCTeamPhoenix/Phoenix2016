@@ -12,6 +12,8 @@ class Robot: public SampleRobot
    DriveStation m_DriveStation;
    RobotDrive m_driveTrain;
    RobotController m_robotController;
+
+   DriveTrainController m_driveTrainController;
 public:
    Robot() :
       m_flywheels(Port::flywheels),
@@ -49,14 +51,16 @@ public:
 
          m_driveTrain.TankDrive(leftPower, rightPower); */
 
-         if(m_gamepad.GetRawButton(1))
+         /*if(m_gamepad.GetRawButton(1))
          {
             m_flywheels.Set(1);
          }
          if(m_gamepad.GetRawButton(2))
          {
             m_flywheels.Set(0);
-         }
+         }*/
+
+         m_driveTrainController.run();
       }
    }
 

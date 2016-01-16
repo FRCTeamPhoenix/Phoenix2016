@@ -10,12 +10,12 @@
 RobotController::RobotController(DriveStation * driveStation) :
    m_driveStation(driveStation)
 {
-   // TODO Auto-generated constructor stub
 
 }
 
 void RobotController::run()
 {
+
 }
 
 RobotController::~RobotController() {
