@@ -15,9 +15,13 @@ public:
 	enum STATE{
 	   NO_STATES
 	};
-   ManualController();
+   ManualController(DriveTrainController * driveTrain, ShooterController * shooter, LoaderController * loader);
 	void run();
 	virtual ~ManualController();
+private:
+	DriveTrainController * m_driveTrain;
+	ShooterController * m_shooter;
+	LoaderController * m_loader;
 };
 
 #endif /* SRC_MANUALCONTROLLER_H_ */
