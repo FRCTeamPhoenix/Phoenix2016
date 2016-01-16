@@ -17,6 +17,8 @@ public:
    float getJoystickY();
    float getJoystickZ();
    float getJoystickThrottle();
+   float getThrottle();
+   float getTwist();
 
 private:
    Joystick * m_joystick;

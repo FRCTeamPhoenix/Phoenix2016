@@ -26,6 +26,7 @@ public:
    DriveTrainController(RobotDrive*, DriveStation*);
    virtual ~DriveTrainController();
    void run();
+   void manualDrive(float throttleRatio);
 
    STATE getCurrentState();
 private:

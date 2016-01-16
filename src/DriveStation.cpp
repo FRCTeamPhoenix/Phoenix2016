@@ -23,6 +23,22 @@ float DriveStation::getJoystickZ(){
 float DriveStation::getJoystickThrottle(){
    return m_joystick->GetThrottle();
 }
+float DriveStation::getThrottle() {
+   float throttle = - getJoystickY();
+   if (fabs(throttle) < 0.05f) //This makes a deadzone
+   {
+      throttle = 0;
+   }
+   return throttle;
+}
+float DriveStation::getTwist(){
+   float twist = getJoystickZ();
+   if (fabs(twist) < 0.05f) //This also makes a deadzone
+   {
+      twist = 0;
+   }
+   return twist;
+}
 DriveStation::~DriveStation()
 {
 }

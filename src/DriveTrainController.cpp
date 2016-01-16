@@ -17,46 +17,27 @@ DriveTrainController::DriveTrainController(RobotDrive* robotDrive, DriveStation*
 DriveTrainController::~DriveTrainController() {
 
 }
-
-void DriveTrainController::run() {
-if(getCurrentState()== STATE::DRIVETRAIN_NORMAL){
-   float throttle = - m_driveStation->getJoystickY();
-   if (fabs(throttle) < 0.05f) //This makes a deadzone
-   {
-       throttle = 0;
-   }
-
-   float twist = m_driveStation->getJoystickZ();
-   if (fabs(twist) < 0.05f) //This also makes a deadzone
-   {
-      twist = 0;
-   }
-   float throttleRatio = 0.6f;// .8 is too high :(
+// ThrottleRatio .8 is too high :(
+void DriveTrainController::manualDrive(float throttleRatio){
+   float throttle = m_driveStation->getThrottle();
+   float twist = m_driveStation->getTwist();
    float twistRatio = 1 - throttleRatio;
+
    float leftPower = (throttle * throttleRatio) + (twist * twistRatio);
    float rightPower = (throttle * throttleRatio) - (twist * twistRatio);
 
    m_driveTrain->TankDrive(leftPower, rightPower);
 }
-else if(getCurrentState()== STATE::DRIVETRAIN_TEST){
-   float throttle = - m_driveStation->getJoystickY();
-      if (fabs(throttle) < 0.05f) //This makes a deadzone
-      {
-          throttle = 0;
-      }
 
-      float twist = m_driveStation->getJoystickZ();
-      if (fabs(twist) < 0.05f) //This also makes a deadzone
-      {
-         twist = 0;
-      }
+void DriveTrainController::run() {
+
+   if(getCurrentState()== STATE::DRIVETRAIN_NORMAL){
+      manualDrive(0.6f);
+   }
+   else if(getCurrentState()== STATE::DRIVETRAIN_TEST){
       float throttleRatio = (m_driveStation->getJoystickThrottle() + 1) / 2;// .8 is too high :(
-      float twistRatio = 1 - throttleRatio;
-      float leftPower = (throttle * throttleRatio) + (twist * twistRatio);
-      float rightPower = (throttle * throttleRatio) - (twist * twistRatio);
-
-      m_driveTrain->TankDrive(leftPower, rightPower);
-}
+      manualDrive(throttleRatio);
+   }
 }
 
 DriveTrainController::STATE DriveTrainController::getCurrentState() {
