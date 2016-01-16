@@ -10,13 +10,17 @@
 
 #include <vector>
 #include "Action.h"
+#include "RobotController.h"
 
 class AutoController {
 public:
-  AutoController();
+  AutoController(RobotController* parent);
   ~AutoController();
+
+  void addAction(ActionType);
+  void performAction(void);
 private:
-  std::vector<Action> queue;
+  std::vector<Action> m_queue;
 };
 
 #endif /* SRC_AUTOCONTROLLER_H_ */
