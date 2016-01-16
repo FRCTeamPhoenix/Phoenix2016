@@ -32,3 +32,5 @@ CMakeLists.txt
 # for mac finder assist file
 .DS_store
 
+# For emacs auto-save files
+*~
