@@ -5,11 +5,12 @@
  *      Author: Rose
  */
 
-#include <DriveStation.h>
+#include "DriveStation.h"
 #include "constants.h"
+
 DriveStation::DriveStation() :
    m_joystick(PortAssign::joystick),
-      m_gamepad(PortAssign::gamepad)
+   m_gamepad(PortAssign::gamepad)
 {
 
 }

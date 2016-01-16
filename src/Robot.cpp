@@ -2,7 +2,7 @@
 #include "constants.h"
 #include "RobotController.h"
 #include "DriveStation.h"
-#include <DriveTrainController.h>
+#include "DriveTrainController.h"
 
 class Robot: public SampleRobot
 {
@@ -25,7 +25,9 @@ public:
             PortAssign::rearLeftWheelMotor,
             PortAssign::frontRightWheelMotor,
             PortAssign::rearRightWheelMotor),
-      m_robotController(&m_DriveStation)
+      m_robotController(&m_DriveStation),
+
+      m_driveTrainController(&m_joystick, &m_driveTrain)
    {
 
    }

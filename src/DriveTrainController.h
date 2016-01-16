@@ -21,14 +21,14 @@ public:
 	   DRIVETRAIN_AIMING_OBSTACLE,
 	   DRIVETRAIN_OBSTACLE
 	};
-   DriveTrainController();
+   DriveTrainController(Joystick* , RobotDrive*);
    virtual ~DriveTrainController();
    void run();
 
    STATE getCurrentState();
 private:
-   Joystick m_joystick;
-   RobotDrive m_driveTrain;
+   Joystick* m_joystick;
+   RobotDrive* m_driveTrain;
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */

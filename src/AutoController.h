@@ -14,6 +14,7 @@
 class AutoController {
 public:
   AutoController();
+
   ~AutoController();
 private:
   std::vector<Action> queue;
