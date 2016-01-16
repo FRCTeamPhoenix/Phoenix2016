@@ -12,11 +12,15 @@
 
 class DriveStation {
 public:
-   DriveStation();
+   DriveStation(Joystick*, Joystick*);
    virtual ~DriveStation();
+   float getJoystickY();
+   float getJoystickZ();
+   float getJoystickThrottle();
+
 private:
-   Joystick m_joystick;
-   Joystick m_gamepad;
+   Joystick * m_joystick;
+   Joystick * m_gamepad;
 
 };
 

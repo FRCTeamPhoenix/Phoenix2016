@@ -20,14 +20,14 @@ public:
       m_flywheels(PortAssign::flywheels),
       m_joystick(PortAssign::joystick),
       m_gamepad(PortAssign::gamepad),
-
+      m_DriveStation(&m_joystick, &m_gamepad),
       m_driveTrain(PortAssign::frontLeftWheelMotor,
             PortAssign::rearLeftWheelMotor,
             PortAssign::frontRightWheelMotor,
             PortAssign::rearRightWheelMotor),
       m_robotController(&m_DriveStation),
 
-      m_driveTrainController(&m_joystick, &m_driveTrain)
+      m_driveTrainController(&m_driveTrain, &m_DriveStation)
    {
 
    }

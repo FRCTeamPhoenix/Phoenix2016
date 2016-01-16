@@ -11,6 +11,7 @@
 #include "BaseController.h"
 #include "WPILib.h"
 #include "constants.h"
+#include "DriveStation.h"
 
 class DriveTrainController : public BaseController{
 public:
@@ -22,14 +23,14 @@ public:
 	   DRIVETRAIN_OBSTACLE,
 	   DRIVETRAIN_TEST
 	};
-   DriveTrainController(Joystick* , RobotDrive*);
+   DriveTrainController(RobotDrive*, DriveStation*);
    virtual ~DriveTrainController();
    void run();
 
    STATE getCurrentState();
 private:
-   Joystick* m_joystick;
    RobotDrive* m_driveTrain;
+   DriveStation * m_driveStation;
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */
