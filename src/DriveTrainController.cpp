@@ -9,11 +9,11 @@
 
 DriveTrainController::DriveTrainController() :
 
-m_joystick(Port::joystick),
-m_driveTrain(Port::frontLeftWheelMotor,
-        Port::rearLeftWheelMotor,
-        Port::frontRightWheelMotor,
-        Port::rearRightWheelMotor)
+m_joystick(PortAssign::joystick),
+m_driveTrain(PortAssign::frontLeftWheelMotor,
+      PortAssign::rearLeftWheelMotor,
+      PortAssign::frontRightWheelMotor,
+      PortAssign::rearRightWheelMotor)
 {
 
 }

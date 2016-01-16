@@ -6,10 +6,10 @@
  */
 
 #include <DriveStation.h>
-
+#include "constants.h"
 DriveStation::DriveStation() :
-   m_joystick(Port::joystick),
-      m_gamepad(Port::gamepad)
+   m_joystick(PortAssign::joystick),
+      m_gamepad(PortAssign::gamepad)
 {
 
 }

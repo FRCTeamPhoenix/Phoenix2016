@@ -2,7 +2,7 @@
 #define SRC_CONSTANTS_H_
 #include "WPILib.h"
 
-struct Port{
+struct PortAssign{
 // Channels for wheels
    const static uint32_t frontLeftWheelMotor   = 1;
    const static uint32_t rearLeftWheelMotor    = 0;

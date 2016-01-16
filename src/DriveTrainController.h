@@ -22,8 +22,8 @@ public:
 	   DRIVETRAIN_OBSTACLE
 	};
    DriveTrainController();
-	void run();
    virtual ~DriveTrainController();
+   void run();
 
    STATE getCurrentState();
 private:

@@ -2,6 +2,7 @@
 #include "constants.h"
 #include "RobotController.h"
 #include "DriveStation.h"
+#include <DriveTrainController.h>
 
 class Robot: public SampleRobot
 {
@@ -16,14 +17,14 @@ class Robot: public SampleRobot
    DriveTrainController m_driveTrainController;
 public:
    Robot() :
-      m_flywheels(Port::flywheels),
-      m_joystick(Port::joystick),
-      m_gamepad(Port::gamepad),
+      m_flywheels(PortAssign::flywheels),
+      m_joystick(PortAssign::joystick),
+      m_gamepad(PortAssign::gamepad),
 
-      m_driveTrain(Port::frontLeftWheelMotor,
-            Port::rearLeftWheelMotor,
-            Port::frontRightWheelMotor,
-            Port::rearRightWheelMotor),
+      m_driveTrain(PortAssign::frontLeftWheelMotor,
+            PortAssign::rearLeftWheelMotor,
+            PortAssign::frontRightWheelMotor,
+            PortAssign::rearRightWheelMotor),
       m_robotController(&m_DriveStation)
    {
 
