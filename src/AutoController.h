@@ -8,6 +8,8 @@
 #ifndef SRC_AUTOCONTROLLER_H_
 #define SRC_AUTOCONTROLLER_H_
 
+#include <vector>
+
 class Action;
 
 class AutoController {
