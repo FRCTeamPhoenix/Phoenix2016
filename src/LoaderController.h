@@ -8,11 +8,19 @@
 #ifndef SRC_LOADERCONTROLLER_H_
 #define SRC_LOADERCONTROLLER_H_
 
-class LoaderController {
+#include "BaseController.h"
+
+enum LoaderStates {
+	LOADER_EMPTY,
+	LOADER_LOADING,
+	LOADER_LOADED
+};
+
+class LoaderController : public BaseController{
 public:
-	LoaderController();
-	virtual ~LoaderController();
+   LoaderController();
 	void run();
+	virtual ~LoaderController();
 };
 
 #endif /* SRC_LOADERCONTROLLER_H_ */
