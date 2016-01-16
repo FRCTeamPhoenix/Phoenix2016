@@ -7,10 +7,7 @@
 
 #include <DriveStation.h>
 
-DriveStation::DriveStation() :
-   m_joystick(Port::joystick),
-   m_gamepad(Port::gamepad)
-
+DriveStation::DriveStation()
 {
 
 }

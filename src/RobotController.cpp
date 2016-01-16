@@ -7,7 +7,7 @@
 
 #include "RobotController.h"
 
-RobotController::RobotController(DriveStation * driveStation):
+RobotController::RobotController(DriveStation * driveStation) :
    m_driveStation(driveStation)
 {
    // TODO Auto-generated constructor stub

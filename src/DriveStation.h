@@ -8,6 +8,7 @@
 #ifndef SRC_DRIVESTATION_H_
 #define SRC_DRIVESTATION_H_
 #include "WPILib.h"
+#include "constants.h"
 
 class DriveStation {
 public:

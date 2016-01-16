@@ -9,6 +9,7 @@
 #define SRC_DRIVETRAINCONTROLLER_H_
 
 #include "BaseController.h"
+#include "WPILib.h"
 
 class DriveTrainController : public BaseController{
 public:
@@ -24,6 +25,9 @@ public:
    virtual ~DriveTrainController();
 
    STATE getCurrentState();
+private:
+   Joystick m_joystick;
+
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */
