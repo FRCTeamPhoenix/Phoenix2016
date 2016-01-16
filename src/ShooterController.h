@@ -8,11 +8,17 @@
 #ifndef SRC_SHOOTERCONTROLLER_H_
 #define SRC_SHOOTERCONTROLLER_H_
 
-class ShooterController {
+#include "BaseController.h"
+
+enum ShooterStates{
+   FIRING
+};
+
+class ShooterController : public BaseController{
 public:
-	ShooterController();
-	virtual ~ShooterController();
+   ShooterController();
 	void run();
+	virtual ShooterController();
 };
 
 #endif /* SRC_SHOOTERCONTROLLER_H_ */
