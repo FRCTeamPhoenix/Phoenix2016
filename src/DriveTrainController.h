@@ -10,6 +10,7 @@
 
 #include "BaseController.h"
 #include "WPILib.h"
+#include "constants.h"
 
 class DriveTrainController : public BaseController{
 public:

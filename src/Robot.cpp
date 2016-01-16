@@ -21,7 +21,8 @@ public:
       m_driveTrain(Port::frontLeftWheelMotor,
             Port::rearLeftWheelMotor,
             Port::frontRightWheelMotor,
-            Port::rearRightWheelMotor)
+            Port::rearRightWheelMotor),
+      m_robotController(&m_DriveStation)
    {
 
    }

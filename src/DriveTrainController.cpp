@@ -7,7 +7,14 @@
 
 #include <DriveTrainController.h>
 
-DriveTrainController::DriveTrainController() {
+DriveTrainController::DriveTrainController() :
+
+m_joystick(Port::joystick),
+m_driveTrain(Port::frontLeftWheelMotor,
+        Port::rearLeftWheelMotor,
+        Port::frontRightWheelMotor,
+        Port::rearRightWheelMotor)
+{
 
 }
 
