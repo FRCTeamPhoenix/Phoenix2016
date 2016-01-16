@@ -38,8 +38,27 @@ if(getCurrentState()== STATE::DRIVETRAIN_NORMAL){
 
    m_driveTrain->TankDrive(leftPower, rightPower);
 }
+else if(getCurrentState()== STATE::DRIVETRAIN_TEST){
+   float throttle = - m_joystick->GetY();
+      if (fabs(throttle) < 0.05f) //This makes a deadzone
+      {
+          throttle = 0;
+      }
+
+      float twist = m_joystick->GetZ();
+      if (fabs(twist) < 0.05f) //This also makes a deadzone
+      {
+         twist = 0;
+      }
+      float throttleRatio = m_joystick->GetThrottle();// .8 is too high :(
+      float twistRatio = 1 - throttleRatio;
+      float leftPower = (throttle * throttleRatio) + (twist * twistRatio);
+      float rightPower = (throttle * throttleRatio) - (twist * twistRatio);
+
+      m_driveTrain->TankDrive(leftPower, rightPower);
+}
 }
 
 DriveTrainController::STATE DriveTrainController::getCurrentState() {
-   return STATE::DRIVETRAIN_NORMAL;
+   return STATE::DRIVETRAIN_TEST;
 }

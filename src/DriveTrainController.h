@@ -19,7 +19,8 @@ public:
 	   DRIVETRAIN_NORMAL,
 	   DRIVETRAIN_AIMING_TARGET,
 	   DRIVETRAIN_AIMING_OBSTACLE,
-	   DRIVETRAIN_OBSTACLE
+	   DRIVETRAIN_OBSTACLE,
+	   DRIVETRAIN_TEST
 	};
    DriveTrainController(Joystick* , RobotDrive*);
    virtual ~DriveTrainController();
