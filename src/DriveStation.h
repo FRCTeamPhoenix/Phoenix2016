@@ -13,14 +13,20 @@
 
 class DriveStation {
 public:
-   DriveStation();
+   DriveStation(Joystick*, Joystick*);
    virtual ~DriveStation();
+
 
    void printString(int outputSpot, std::string outputString);
 
+   float getJoystickY();
+   float getJoystickZ();
+   float getJoystickThrottle();
+
+
 private:
-   Joystick m_joystick;
-   Joystick m_gamepad;
+   Joystick * m_joystick;
+   Joystick * m_gamepad;
 
 };
 
