@@ -8,16 +8,16 @@
 #ifndef SRC_MANUALCONTROLLER_H_
 #define SRC_MANUALCONTROLLER_H_
 
-class ManualController {
-private:
-	DriveTrainController * m_driveTrain;
-	ShooterController * m_shooter;
-	LoaderController * m_loader;
-public:
-	ManualController(DriveTrainController * driveTrain, ShooterController * shooter, LoaderController * loader);
-	virtual ~ManualController();
+#include "BaseController.h"
 
+class ManualController : public BaseController{
+public:
+	enum STATE{
+	   NO_STATES
+	};
+   ManualController();
 	void run();
+	virtual ~ManualController();
 };
 
 #endif /* SRC_MANUALCONTROLLER_H_ */

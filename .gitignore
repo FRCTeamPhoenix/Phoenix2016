@@ -10,6 +10,7 @@ Debug/
 
 build.xml
 build.properties
+CMakeLists.txt
 
 #compiled object files
 *.slo

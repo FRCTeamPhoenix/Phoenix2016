@@ -5,7 +5,7 @@
  *      Author: Will
  */
 
-#include <RobotController.h>
+#include "RobotController.h"
 
 RobotController::RobotController(DriveStation * driveStation):
    m_driveStation(driveStation)
@@ -14,11 +14,10 @@ RobotController::RobotController(DriveStation * driveStation):
 
 }
 
-RobotController::~RobotController() {
-
-}
-
 void RobotController::run()
 {
+}
+
+RobotController::~RobotController() {
 
 }

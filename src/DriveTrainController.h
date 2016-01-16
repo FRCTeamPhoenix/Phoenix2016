@@ -8,11 +8,16 @@
 #ifndef SRC_DRIVETRAINCONTROLLER_H_
 #define SRC_DRIVETRAINCONTROLLER_H_
 
-class DriveTrainController {
+#include "BaseController.h"
+
+class DriveTrainController : public BaseController{
 public:
-	DriveTrainController();
-	virtual ~DriveTrainController();
+	enum STATE{
+	   DRIVING
+	};
+   DriveTrainController();
 	void run();
+   virtual ~DriveTrainController();
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */
