@@ -21,10 +21,11 @@ void Tachometer::reset() {
 }
 
 void Tachometer::update() {
-   float newTime = m_timer->Get();
-   float deltat = newTime - m_lastTime;
-   m_lastTime = newTime;
+   float newTime = m_timer->Get(); //get the current time
+   float deltat = newTime - m_lastTime; //the time difference between updates, measured in seconds
+   m_lastTime = newTime; //update time for next tick
 
+   //multiply the time increment by current velocity and add it to total distance
    m_distance += deltat * (m_analogInput->GetVoltage() * TachometerConstants::voltageToInchesPerSecond);
 }
 

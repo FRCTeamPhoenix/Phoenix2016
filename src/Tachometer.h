@@ -14,12 +14,12 @@
 
 class Tachometer {
 public:
-   Tachometer(AnalogInput * analogInput);
+   Tachometer(AnalogInput * analogInput); //the analog input going into here should be your tachometer
    virtual ~Tachometer();
 
-   void update();
-   float getDistance();
-   void reset();
+   void update(); //add a distance increment to the total
+   float getDistance(); //get the current total distance
+   void reset(); //set the current total distance to zero
 
 private:
    AnalogInput * m_analogInput;
