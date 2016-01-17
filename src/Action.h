@@ -10,6 +10,7 @@ public:
    Action(DriveStation* ds, ActionType act);
    bool operator()();
    bool waitUntil(int buttonCode);
+   ActionType getAction(void);
 private:
    ActionType action;
    DriveStation* controllers;

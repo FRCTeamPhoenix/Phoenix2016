@@ -35,3 +35,8 @@ bool Action::waitUntil(int buttonCode)
 {
    return controllers->getGamepadButton(buttonCode);
 }
+
+ActionType Action::getAction()
+{
+   return action;
+}
