@@ -8,8 +8,8 @@
 #include "RobotController.h"
 #include "AutoController.h"
 
-RobotController::RobotController(DriveStation* driveStation) :
-   m_driveStation(driveStation), m_auto(new AutoController(this))
+RobotController::RobotController(DriveStation* driveStation, AutoController* autoC) :
+   m_driveStation(driveStation), m_auto(autoC)
 {}
 
 void RobotController::run()

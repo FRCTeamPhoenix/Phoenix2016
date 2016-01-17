@@ -20,7 +20,7 @@ public:
       MANUAL
    };
 
-   RobotController(DriveStation*);
+   RobotController(DriveStation*, AutoController*);
    virtual ~RobotController();
    void run();
    DriveStation* getDriveStation(void);

@@ -1,6 +1,7 @@
 #include "WPILib.h"
 #include "constants.h"
 #include "RobotController.h"
+#include "AutoController.h"
 #include "DriveStation.h"
 #include "DriveTrainController.h"
 
@@ -10,8 +11,9 @@ class Robot: public SampleRobot
    Joystick m_joystick;
    Joystick m_gamepad;
 
-   DriveStation m_DriveStation;
+   DriveStation m_driveStation;
    RobotDrive m_driveTrain;
+   AutoController m_autoC;
    RobotController m_robotController;
 
    DriveTrainController m_driveTrainController;
@@ -20,14 +22,15 @@ public:
       m_flywheels(PortAssign::flywheels),
       m_joystick(PortAssign::joystick),
       m_gamepad(PortAssign::gamepad),
-      m_DriveStation(&m_joystick, &m_gamepad),
+      m_driveStation(&m_joystick, &m_gamepad),
       m_driveTrain(PortAssign::frontLeftWheelMotor,
             PortAssign::rearLeftWheelMotor,
             PortAssign::frontRightWheelMotor,
             PortAssign::rearRightWheelMotor),
-      m_robotController(&m_DriveStation),
+      m_autoC(&m_driveStation),
+      m_robotController(&m_driveStation, &m_autoC),
 
-      m_driveTrainController(&m_driveTrain, &m_DriveStation)
+      m_driveTrainController(&m_driveTrain, &m_driveStation)
    {
 
    }

@@ -10,17 +10,17 @@
 #include <vector>
 #include <cstdio>
 
-AutoController::AutoController(RobotController* parent)
-   : m_parent(parent), m_dstation(parent->getDriveStation())
+AutoController::AutoController(DriveStation* ds)
+   : m_dstation(ds)
 {
-  addAction(ACTION_A);
-  addAction(ACTION_B);
-  addAction(ACTION_X);
-  addAction(ACTION_B);
-  addAction(ACTION_X);
-  addAction(ACTION_A);
-  addAction(ACTION_A);
-  addAction(ACTION_X);
+   addAction(ACTION_A);
+   addAction(ACTION_B);
+   addAction(ACTION_X);
+   addAction(ACTION_B);
+   addAction(ACTION_X);
+   addAction(ACTION_A);
+   addAction(ACTION_A);
+   addAction(ACTION_X);
 }
 
 AutoController::~AutoController() {}
@@ -40,7 +40,6 @@ void AutoController::performAction(void)
 {
    if (m_queue.size() == 0)
       {
-	 // TODO: Change parent (RobotController) state to MANUAL.
 	 return;
       }
    Action current_action = m_queue.back();

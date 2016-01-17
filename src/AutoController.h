@@ -16,7 +16,7 @@ class RobotController;
 
 class AutoController {
 public:
-  AutoController(RobotController* parent);
+  AutoController(DriveStation*);
   ~AutoController();
 
   void run(void);
@@ -24,7 +24,6 @@ public:
   void performAction(void);
 private:
   std::vector<Action> m_queue;
-  RobotController* m_parent;
   DriveStation* m_dstation;
 };
 
