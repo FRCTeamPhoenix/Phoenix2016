@@ -12,7 +12,16 @@
 
 AutoController::AutoController(RobotController* parent)
    : m_parent(parent), m_dstation(parent->getDriveStation())
-{}
+{
+  addAction(ACTION_A);
+  addAction(ACTION_B);
+  addAction(ACTION_X);
+  addAction(ACTION_B);
+  addAction(ACTION_X);
+  addAction(ACTION_A);
+  addAction(ACTION_A);
+  addAction(ACTION_X);
+}
 
 AutoController::~AutoController() {}
 
