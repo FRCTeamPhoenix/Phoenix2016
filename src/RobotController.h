@@ -10,7 +10,8 @@
 
 #include "DriveStation.h"
 #include "BaseController.h"
-#include "AutoController.h"
+
+class AutoController;
 
 class RobotController : public BaseController{
 public:

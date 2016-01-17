@@ -10,14 +10,16 @@
 
 #include <vector>
 #include "Action.h"
-#include "RobotController.h"
 #include "DriveStation.h"
+
+class RobotController;
 
 class AutoController {
 public:
   AutoController(RobotController* parent);
   ~AutoController();
 
+  void run(void);
   void addAction(ActionType);
   void performAction(void);
 private:

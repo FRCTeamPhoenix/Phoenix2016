@@ -5,14 +5,21 @@
  *      Author: Rose
  */
 
-#include <AutoController.h>
+#include "AutoController.h"
+#include "RobotController.h"
 #include <vector>
+#include <cstdio>
 
 AutoController::AutoController(RobotController* parent)
    : m_parent(parent), m_dstation(parent->getDriveStation())
 {}
 
 AutoController::~AutoController() {}
+
+void AutoController::run(void)
+{
+   performAction();
+}
 
 void AutoController::addAction(ActionType action)
 {
@@ -29,5 +36,8 @@ void AutoController::performAction(void)
       }
    Action current_action = m_queue.back();
    if (current_action())
-      m_queue.pop_back();
+      {
+	 printf("Completed action.");
+	 m_queue.pop_back();
+      }
 }
