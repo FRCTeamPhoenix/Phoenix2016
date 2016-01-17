@@ -19,6 +19,8 @@ public:
    float getJoystickThrottle();
    float getThrottle();
    float getTwist();
+   bool getGamepadButton(int);
+   bool getJoystickButton(int);
 
 private:
    Joystick * m_joystick;

@@ -11,18 +11,20 @@
 DriveStation::DriveStation(Joystick* joystick, Joystick* gamepad) :
    m_joystick(joystick),
    m_gamepad(gamepad)
-{
+{}
 
-}
 float DriveStation::getJoystickY(){
    return m_joystick->GetY();
 }
+
 float DriveStation::getJoystickZ(){
    return m_joystick->GetZ();
 }
+
 float DriveStation::getJoystickThrottle(){
    return m_joystick->GetThrottle();
 }
+
 float DriveStation::getThrottle() {
    float throttle = - getJoystickY();
    if (fabs(throttle) < 0.05f) //This makes a deadzone
@@ -31,6 +33,7 @@ float DriveStation::getThrottle() {
    }
    return throttle;
 }
+
 float DriveStation::getTwist(){
    float twist = getJoystickZ();
    if (fabs(twist) < 0.05f) //This also makes a deadzone
@@ -39,7 +42,17 @@ float DriveStation::getTwist(){
    }
    return twist;
 }
+
+bool DriveStation::getGamepadButton(int buttonCode)
+{
+   return m_gamepad->GetRawButton(buttonCode);
+}
+
+bool DriveStation::getJoystickButton(int buttonCode)
+{
+   return m_joystick->GetRawButton(buttonCode);
+}
+
 DriveStation::~DriveStation()
 {
 }
-
