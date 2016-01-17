@@ -25,7 +25,7 @@ void Tachometer::update() {
    float deltat = newTime - m_lastTime;
    m_lastTime = newTime;
 
-   m_distance += deltat * (m_analogInput->GetVoltage() * TachometerConstants::voltageToSpeed);
+   m_distance += deltat * (m_analogInput->GetVoltage() * TachometerConstants::voltageToInchesPerSecond);
 }
 
 Tachometer::~Tachometer() {

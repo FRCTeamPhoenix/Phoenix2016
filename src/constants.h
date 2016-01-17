@@ -15,13 +15,10 @@ struct Port{
 // Controllers
    const static uint32_t joystick = 0;
    const static uint32_t gamepad = 1;
-
-
-
 };
 
 struct TachometerConstants {
-   const static float voltageToSpeed = 1;
+   const static float voltageToInchesPerSecond = 1;
 };
 
 
