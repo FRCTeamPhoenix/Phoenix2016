@@ -2,7 +2,7 @@
 #define SRC_CONSTANTS_H_
 #include "WPILib.h"
 
-struct Port{
+struct PortAssign{
 // Channels for wheels
    const static uint32_t frontLeftWheelMotor   = 1;
    const static uint32_t rearLeftWheelMotor    = 0;
@@ -16,9 +16,24 @@ struct Port{
    const static uint32_t joystick = 0;
    const static uint32_t gamepad = 1;
 
-
-
 };
 
+struct DriveStationConstants{
+   enum buttonNames {
+          buttonX = 1,
+          buttonA = 2,
+          buttonB = 3,
+          buttonY = 4,
+          buttonLB = 5,
+          buttonRB = 6,
+          triggerLT = 7,
+          triggerRT = 8,
+          buttonBack = 9,
+          buttonStart = 10,
+          joystickLeftButton = 11,
+          joystickRightButton = 12
+      };
+   const static uint32_t gamepadButtons = 12;
+};
 
 #endif /* SRC_CONSTANTS_H_ */
