@@ -14,6 +14,7 @@ class DriveStation {
 public:
    DriveStation(Joystick*, Joystick*);
    virtual ~DriveStation();
+
    float getJoystickY();
    float getJoystickZ();
    float getJoystickThrottle();
@@ -21,11 +22,14 @@ public:
    float getTwist();
    bool getGamepadButton(int);
    bool getJoystickButton(int);
+   void getButtons();
 
 private:
    Joystick * m_joystick;
    Joystick * m_gamepad;
 
+   bool m_buttons[DriveStationConstants::gamepadButtons];
 };
+
 
 #endif /* SRC_DRIVESTATION_H_ */
