@@ -14,14 +14,17 @@
 
 class RobotController : public BaseController{
 public:
+
    RobotController(DriveStation * driveStation);
 
    enum STATE{
-     AUTO,
-     MANUAL
+      AUTO,
+      MANUAL
    };
-   virtual ~RobotController();
+   RobotController();
    void run();
+
+   virtual ~RobotController();
 
 private:
    DriveStation * m_driveStation;

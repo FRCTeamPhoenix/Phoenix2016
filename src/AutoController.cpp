@@ -6,13 +6,27 @@
  */
 
 #include <AutoController.h>
+#include <vector>
 
-AutoController::AutoController() {
-   // TODO Auto-generated constructor stub
+AutoController::AutoController(RobotController* parent)
+   : m_parent(parent)
+{}
 
+AutoController::~AutoController() {}
+
+void AutoController::addAction(ActionType action)
+{
+   m_queue.insert(m_queue.begin(), action);
 }
 
-AutoController::~AutoController() {
-   // TODO Auto-generated destructor stub
+void AutoController::performAction(void)
+{
+   if (m_queue.size() == 0)
+      {
+    // TODO: Change parent (RobotController) state to MANUAL.
+    return;
+      }
+   Action current_action = m_queue.back();
+   m_queue.pop_back();
+   current_action();
 }
-
