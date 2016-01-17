@@ -20,5 +20,9 @@ struct Port{
 
 };
 
+struct TachometerConstants {
+   const static float voltageToSpeed = 1;
+};
+
 
 #endif /* SRC_CONSTANTS_H_ */
