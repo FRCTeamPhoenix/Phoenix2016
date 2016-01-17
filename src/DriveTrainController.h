@@ -9,15 +9,29 @@
 #define SRC_DRIVETRAINCONTROLLER_H_
 
 #include "BaseController.h"
+#include "WPILib.h"
+#include "constants.h"
+#include "DriveStation.h"
 
 class DriveTrainController : public BaseController{
 public:
    enum STATE{
-      DRIVING
+      DRIVETRAIN_IDLE,
+      DRIVETRAIN_NORMAL,
+      DRIVETRAIN_AIMING_TARGET,
+      DRIVETRAIN_AIMING_OBSTACLE,
+      DRIVETRAIN_OBSTACLE,
+      DRIVETRAIN_TEST
    };
-   DriveTrainController();
-   void run();
+   DriveTrainController(RobotDrive*, DriveStation*);
    virtual ~DriveTrainController();
+   void run();
+   void manualDrive(float throttleRatio);
+
+   STATE getCurrentState();
+private:
+   RobotDrive* m_driveTrain;
+   DriveStation * m_driveStation;
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */

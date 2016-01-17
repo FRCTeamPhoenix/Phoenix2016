@@ -1,5 +1,8 @@
 #include "WPILib.h"
 #include "constants.h"
+#include "RobotController.h"
+#include "DriveStation.h"
+#include "DriveTrainController.h"
 
 class Robot: public SampleRobot
 {
@@ -7,18 +10,24 @@ class Robot: public SampleRobot
    Joystick m_joystick;
    Joystick m_gamepad;
 
-   RobotDrive driveTrain;
+   DriveStation m_DriveStation;
+   RobotDrive m_driveTrain;
+   RobotController m_robotController;
 
+   DriveTrainController m_driveTrainController;
 public:
    Robot() :
-      m_flywheels(Port::flywheels),
-      m_joystick(Port::joystick),
-      m_gamepad(Port::gamepad),
+      m_flywheels(PortAssign::flywheels),
+      m_joystick(PortAssign::joystick),
+      m_gamepad(PortAssign::gamepad),
+      m_DriveStation(&m_joystick, &m_gamepad),
+      m_driveTrain(PortAssign::frontLeftWheelMotor,
+            PortAssign::rearLeftWheelMotor,
+            PortAssign::frontRightWheelMotor,
+            PortAssign::rearRightWheelMotor),
+      m_robotController(&m_DriveStation),
 
-      driveTrain(Port::frontLeftWheelMotor,
-            Port::rearLeftWheelMotor,
-            Port::frontRightWheelMotor,
-            Port::rearRightWheelMotor)
+      m_driveTrainController(&m_driveTrain, &m_DriveStation)
    {
 
    }
@@ -27,7 +36,7 @@ public:
    {
       while(IsOperatorControl() && IsEnabled())
       {
-         float throttle = - m_joystick.GetY();
+       /*  float throttle = - m_joystick.GetY();
          if (fabs(throttle) < 0.05f) //This makes a deadzone
          {
              throttle = 0;
@@ -43,16 +52,18 @@ public:
          float leftPower = (throttle * throttleRatio) + (twist * twistRatio);
          float rightPower = (throttle * throttleRatio) - (twist * twistRatio);
 
-         driveTrain.TankDrive(leftPower, rightPower);
+         m_driveTrain.TankDrive(leftPower, rightPower); */
 
-         if(m_gamepad.GetRawButton(1))
+         /*if(m_gamepad.GetRawButton(1))
          {
             m_flywheels.Set(1);
          }
          if(m_gamepad.GetRawButton(2))
          {
             m_flywheels.Set(0);
-         }
+         }*/
+
+         m_driveTrainController.run();
       }
    }
 

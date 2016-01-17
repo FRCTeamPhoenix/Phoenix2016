@@ -7,9 +7,8 @@
 
 #include <ShooterController.h>
 
-ShooterController::ShooterController() {
-   // TODO Auto-generated constructor stub
-
+ShooterController::ShooterController(Talon * flywheels) {
+   m_flywheels = flywheels;
 }
 
 ShooterController::~ShooterController() {
@@ -18,4 +17,8 @@ ShooterController::~ShooterController() {
 
 void ShooterController::run(){
 
+}
+
+void ShooterController::toggleFlywheels() {
+   m_flywheels->Set(1);
 }
