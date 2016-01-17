@@ -9,14 +9,15 @@
 #include <vector>
 
 AutoController::AutoController(RobotController* parent)
-   : m_parent(parent)
+   : m_parent(parent), m_dstation(parent->getDriveStation())
 {}
 
 AutoController::~AutoController() {}
 
 void AutoController::addAction(ActionType action)
 {
-   m_queue.insert(m_queue.begin(), action);
+   Action act(m_dstation, action);
+   m_queue.insert(m_queue.begin(), act);
 }
 
 void AutoController::performAction(void)

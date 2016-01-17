@@ -11,6 +11,7 @@
 #include <vector>
 #include "Action.h"
 #include "RobotController.h"
+#include "DriveStation.h"
 
 class AutoController {
 public:
@@ -22,6 +23,7 @@ public:
 private:
   std::vector<Action> m_queue;
   RobotController* m_parent;
+  DriveStation* m_dstation;
 };
 
 #endif /* SRC_AUTOCONTROLLER_H_ */

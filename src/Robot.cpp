@@ -63,7 +63,7 @@ public:
             m_flywheels.Set(0);
          }*/
 
-         m_driveTrainController.run();
+         m_robotController.run();
       }
    }
 
