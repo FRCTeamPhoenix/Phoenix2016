@@ -33,6 +33,7 @@ struct DriveStationConstants{
           joystickLeftButton = 11,
           joystickRightButton = 12
       };
+   const static uint32_t gamepadButtons = 12;
 };
 
 #endif /* SRC_CONSTANTS_H_ */
