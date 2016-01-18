@@ -45,7 +45,7 @@ float DriveStation::getTwist(){
 
 bool DriveStation::getGamepadButton(int buttonCode)
 {
-   return m_gamepad->GetRawButton(buttonCode);
+   return m_buttons[buttonCode];
 }
 
 bool DriveStation::getJoystickButton(int buttonCode)
@@ -53,6 +53,10 @@ bool DriveStation::getJoystickButton(int buttonCode)
    return m_joystick->GetRawButton(buttonCode);
 }
 
+void DriveStation::getButtons(){
+   for(int i=0; i<12; i++){
+   m_buttons[i]=m_gamepad->GetRawButton(i+1);}
+}
 DriveStation::~DriveStation()
 {
 }

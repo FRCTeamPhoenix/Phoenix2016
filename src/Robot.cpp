@@ -4,6 +4,12 @@
 #include "AutoController.h"
 #include "DriveStation.h"
 #include "DriveTrainController.h"
+#include <thread>
+#include "Client.h"
+
+class Robot;
+
+void runClient(Robot* robot, Client* client);
 
 class Robot: public SampleRobot
 {
@@ -17,6 +23,7 @@ class Robot: public SampleRobot
    RobotController m_robotController;
 
    DriveTrainController m_driveTrainController;
+   Client client;
 public:
    Robot() :
       m_flywheels(PortAssign::flywheels),
@@ -29,10 +36,10 @@ public:
             PortAssign::rearRightWheelMotor),
       m_autoC(&m_driveStation),
       m_robotController(&m_driveStation, &m_autoC),
-
       m_driveTrainController(&m_driveTrain, &m_driveStation)
    {
-
+      std::thread receiveThread(runClient, this, &client);
+      receiveThread.join();
    }
 
    void OperatorControl()
@@ -71,5 +78,10 @@ public:
    }
 
 };
+
+void runClient(Robot* robot,Client* client)
+   {
+      client->receivePacket();
+   }
 
 START_ROBOT_CLASS(Robot);

@@ -12,7 +12,6 @@ ShooterController::ShooterController(Talon * flywheels) {
 }
 
 ShooterController::~ShooterController() {
-   // TODO Auto-generated destructor stub
 }
 
 void ShooterController::run(){
