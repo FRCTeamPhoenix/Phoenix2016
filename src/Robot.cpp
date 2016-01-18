@@ -72,7 +72,7 @@ public:
          {
             m_flywheels.Set(0);
          }*/
-
+         m_driveStation.snapShot();
          m_robotController.run();
       }
    }
