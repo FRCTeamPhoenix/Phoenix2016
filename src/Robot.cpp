@@ -38,8 +38,11 @@ public:
       m_robotController(&m_driveStation, &m_autoC),
       m_driveTrainController(&m_driveTrain, &m_driveStation)
    {
-      std::thread receiveThread(runClient, this, &client);
-      receiveThread.join();
+       client.initilizeSocket();
+       if (client.m_initGood){
+          std::thread receiveThread(runClient, this, &client);
+       }
+
    }
 
    void OperatorControl()
