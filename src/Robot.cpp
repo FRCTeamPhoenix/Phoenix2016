@@ -38,34 +38,7 @@ public:
    {
       while(IsOperatorControl() && IsEnabled())
       {
-       /*  float throttle = - m_joystick.GetY();
-         if (fabs(throttle) < 0.05f) //This makes a deadzone
-         {
-             throttle = 0;
-         }
 
-         float twist = m_joystick.GetZ();
-         if (fabs(twist) < 0.05f) //This also makes a deadzone
-         {
-            twist = 0;
-         }
-         float throttleRatio = 0.7f;// .8 is too high :(
-         float twistRatio = 1 - throttleRatio;
-         float leftPower = (throttle * throttleRatio) + (twist * twistRatio);
-         float rightPower = (throttle * throttleRatio) - (twist * twistRatio);
-
-         m_driveTrain.TankDrive(leftPower, rightPower); */
-
-         /*if(m_gamepad.GetRawButton(1))
-         {
-            m_flywheels.Set(1);
-         }
-         if(m_gamepad.GetRawButton(2))
-         {
-            m_flywheels.Set(0);
-         }*/
-
-         m_driveTrainController.run();
       }
    }
 
