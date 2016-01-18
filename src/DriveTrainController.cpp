@@ -19,7 +19,7 @@ DriveTrainController::~DriveTrainController() {
 }
 // ThrottleRatio .8 is too high :(
 void DriveTrainController::manualDrive(float throttleRatio){
-   float throttle = m_driveStation->getThrottle();
+   float throttle = m_driveStation->getYWithDeadzone();
    float twist = m_driveStation->getTwist();
    float twistRatio = 1 - throttleRatio;
 

@@ -18,17 +18,22 @@ public:
    float getJoystickY();
    float getJoystickZ();
    float getJoystickThrottle();
-   float getThrottle();
+   float getYWithDeadzone();
    float getTwist();
    bool getGamepadButton(int);
    bool getJoystickButton(int);
-   void getButtons();
+
+   void snapShot();
+
 
 private:
    Joystick * m_joystick;
    Joystick * m_gamepad;
 
    bool m_buttons[DriveStationConstants::gamepadButtons];
+   float m_joystickY;
+   float m_joystickZ;
+   float m_joystickThrottle;
 };
 
 
