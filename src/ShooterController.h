@@ -12,18 +12,18 @@
 #include "BaseController.h"
 
 class ShooterController : public BaseController{
-public:
-	enum STATE{
-	   SHOOTER_OFF,
-	   SHOOTER_STARTING,
-	   SHOOTER_ON,
-	   SHOOTER_STOPPING,
-	   SHOOTER_SHOOTING
-	};
+ public:
+   enum STATE{
+      SHOOTER_OFF,
+      SHOOTER_STARTING,
+      SHOOTER_ON,
+      SHOOTER_STOPPING,
+      SHOOTER_SHOOTING
+   };
    ShooterController(Talon * flywheels);
    void run();
    virtual ~ShooterController();
-private:
+ private:
    bool flywheelsOn;
    Talon * m_flywheels;
 
