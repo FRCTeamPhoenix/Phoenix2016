@@ -9,13 +9,13 @@ To keep line endings consistent between WIndows and Unix development systems see
 
 The `.gitattributes` file has been created.
 
-Please run the following on Windows:
+Please run the following on OS X and Linux:
 
 ```bash
 git config --global core.autocrlf input
 # Configure Git on OS X or Linux to properly handle line endings
 ```
-Or run the following on OS X and Linux
+Or run the following on Windows
 
 ```bash
 git config --global core.autocrlf true
