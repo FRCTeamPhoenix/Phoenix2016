@@ -10,24 +10,38 @@
 
 #include "WPILib.h"
 #include "BaseController.h"
+#include "constants.h"
+#include "LoaderController.h"
+//will be have to be changed and put in constants later
+static const float leftFlywheelMotorSpeed = 1.0;
+static const float rightFlywheelMotorSpeed = 1.0;
 
 class ShooterController : public BaseController{
+
+   Talon * m_leftFlywheelMotor;
+   Talon * m_rightFlywheelMotor;
+   LoaderController * m_loaderController;
+
 public:
 	enum STATE{
-	   SHOOTER_OFF,
-	   SHOOTER_STARTING,
-	   SHOOTER_ON,
-	   SHOOTER_STOPPING,
-	   SHOOTER_SHOOTING
+	   OFF,
+	   ARMING,
+	   ARMED,
+	   STOPPING,
+	   SHOOTING
 	};
-   ShooterController(Talon * flywheels);
+
+   ShooterController(Talon * leftFlywheelMotor, Talon * rightFlywheelMotor, LoaderController * loader);
    void run();
+
+   STATE getCurrentState();
+   STATE getGoalState();
+
    virtual ~ShooterController();
 private:
-   bool flywheelsOn;
-   Talon * m_flywheels;
 
-   void toggleFlywheels();
+   STATE m_goalState;
+   void firing(); //Not Implemented
 };
 
 #endif /* SRC_SHOOTERCONTROLLER_H_ */

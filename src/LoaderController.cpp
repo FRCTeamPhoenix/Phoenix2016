@@ -91,6 +91,7 @@ void LoaderController::run(){
       }
       break;
    default:
+      break;
    }
    moveArm();
 }
