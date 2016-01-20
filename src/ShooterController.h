@@ -28,6 +28,7 @@ public:
 	   ARMING,
 	   ARMED,
 	   STOPPING,
+	   PREPARINGTOSHOOT,
 	   SHOOTING
 	};
 

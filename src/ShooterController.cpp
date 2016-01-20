@@ -25,19 +25,19 @@ LoaderController::STATE loaderState = m_loaderController->getCurrentState();
 
 switch(getGoalState()){
    case OFF:
-      if(current == STARTING ||current == SHOOTING){
+      if(current == ARMING ||current == SHOOTING){
          m_leftFlywheelMotor->Set(0.0f);
          m_rightFlywheelMotor->Set(0.0f);
       }
       break;
    case ARMED:
-      if(current == STARTING ||current == SHOOTING){
+      if(current == ARMING ||current == SHOOTING){
          m_leftFlywheelMotor->Set(leftFlywheelMotorSpeed);
          m_rightFlywheelMotor->Set(rightFlywheelMotorSpeed);
       }
       break;
    case SHOOTING:
-      if((current == ON ||current == STARTING) && loaderState == LoaderController::LOADED){
+      if((current == ARMED ||current == ARMING) && loaderState == LoaderController::LOADED){
          m_leftFlywheelMotor->Set(leftFlywheelMotorSpeed);
          m_rightFlywheelMotor->Set(rightFlywheelMotorSpeed);
       }
@@ -52,18 +52,29 @@ ShooterController::STATE ShooterController::getCurrentState(){
    float rightFlywheel = m_rightFlywheelMotor->Get();
    switch(currentGoal){
    case ARMED:
-   if(leftFlywheel != 0 && rightFlywheel != 0 && m_loaderController->getCurrentState() == LoaderController::LOADED){
-      return ARMED;
-   }
-   else {
-      return ARMING;
-   }
+      if(leftFlywheel != 0 && rightFlywheel != 0 && m_loaderController->getCurrentState() == LoaderController::LOADED){
+         return ARMED;
+      }
+      else {
+         return ARMING;
+      }
       break;
    case SHOOTING:
-   if(){
+      if(leftFlywheel !=0 && rightFlywheel !=0){
+         return SHOOTING;
+      }
+      else{
+         return PREPARINGTOSHOOT;
+      }
       break;
-   }
-   return OFF;
+   case OFF:
+      if(leftFlywheel == 0 && rightFlywheel == 0){
+         return OFF;
+      }
+      else{
+         return STOPPING;
+      }
+      break;
    }
 
 }
