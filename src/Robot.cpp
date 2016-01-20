@@ -34,9 +34,9 @@ public:
             PortAssign::rearLeftWheelMotor,
             PortAssign::frontRightWheelMotor,
             PortAssign::rearRightWheelMotor),
-      m_autoC(&m_driveStation),
-      m_robotController(&m_driveStation, &m_autoC),
-      m_driveTrainController(&m_driveTrain, &m_driveStation)
+      m_driveTrainController(&m_driveTrain, &m_driveStation),
+      m_autoC(&m_driveStation, &m_driveTrainController),
+      m_robotController(&m_driveStation, &m_autoC)
    {
        client.initilizeSocket();
        if (client.m_initGood){

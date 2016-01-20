@@ -1,17 +1,20 @@
 #include "Action.h"
 #include "DriveStation.h"
+#include "DriveTrainController.h"
 
-Action::Action(DriveStation* ds, ActionType act)
+#include <ctime>
+
+Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, float pow, int ms, float turn)
+   : controllers(ds), drive_t(dt), action(act), power(pow), time(ms), twist(turn)
 {
-   action = act;
-   controllers = ds;
+   firstTime = true;
 }
 
 /*
  * Upon function call operator, perform action for one frame.
  * Returns true if action is done, false otherwise.
  */
-bool Action::operator()()
+bool Action::operator()(void)
 {
    switch (action)
       {
@@ -21,9 +24,30 @@ bool Action::operator()()
          return waitUntil(3);
       case ACTION_X:
          return waitUntil(1);
+      case ACTION_DRIVE:
+	 return drive();
+      case ACTION_BRAKE:
+	 drive_t->setCurrentState(DriveTrainController::IDLE);
+	 return true;
       case NO_ACTION:
          return true;
       }
+}
+
+/*
+ * Drives with specified power and time in milliseconds.
+ */
+bool Action::drive(void)
+{
+   if (firstTime)
+      {
+	 startTime = clock() * 1000 / CLOCKS_PER_SEC;
+	 drive_t->setDriveConstants(power, twist);
+	 firstTime = false;
+      }
+   if (clock() * 1000 / CLOCKS_PER_SEC - startTime >= time)
+      return true;
+   return false;
 }
 
 /*
@@ -36,6 +60,9 @@ bool Action::waitUntil(int buttonCode)
    return controllers->getGamepadButton(buttonCode);
 }
 
+/*
+ * Simply gets the action type of this action.
+ */
 ActionType Action::getAction()
 {
    return action;
