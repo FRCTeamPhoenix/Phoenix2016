@@ -11,7 +11,7 @@
 #include "BaseController.h"
 #include "WPILib.h"
 #include "constants.h"
-#include "ShooterController.h"
+
 
 //Values for the motor speeds might need to be changed
 static const float verticalMotorSpeed = 1.0;
