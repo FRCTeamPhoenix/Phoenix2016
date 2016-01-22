@@ -9,49 +9,48 @@
 
 Flywheel::Flywheel(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor) :
 m_leftFlywheelMotor(leftFlywheelMotor),
-m_rightFlywheelMotor(rightFlywheelMotor)
+m_rightFlywheelMotor(rightFlywheelMotor),
+m_power(0),
+m_running(false)
 {
-
-   // TODO Auto-generated constructor stub
 
 }
 
 Flywheel::~Flywheel() {
-   // TODO Auto-generated destructor stub
 }
 
-bool Flywheel::getFlywheelMotorRunning(Talon * motor){
-   float motorPower = motor->Get();
-   return ((motorPower < -0.01f) || (motorPower > 0.01) );
+void Flywheel::run(){
+   if(m_running){
+      m_leftFlywheelMotor->Set(m_power);
+      m_rightFlywheelMotor->Set(m_power);
+   }
+   else{
+      m_leftFlywheelMotor->Set(0);
+      m_rightFlywheelMotor->Set(0);
+   }
 }
-
 Flywheel::STATE Flywheel::getCurrentState(){
-   STATE currentGoal = getGoalState();
-   float leftFlywheel = m_leftFlywheelMotor->Get();
-   float rightFlywheel = m_rightFlywheelMotor->Get();
-   switch(currentGoal){
-   case OFF:
-      if(!getFlywheelMotorRunning(m_leftFlywheelMotor) && !getFlywheelMotorRunning(m_rightFlywheelMotor)){
-         return OFF;
-      }
-      else{
+   if(m_running){
+
+      if(m_timer.HasPeriodPassed(3.0)){
+         m_timer.Stop();
          return ON;
       }
-      break;
-   case ON:
-      if(getFlywheelMotorRunning(m_leftFlywheelMotor) &&
-         getFlywheelMotorRunning(m_rightFlywheelMotor)
-         m_timer.HasPeriodPassed(3.0f)){
-         m_timer.Start();
+      else{
          return STARTING;
       }
-      else (leftFlywheel !=0 && rightFlywheel !=0 && ){
-
-        return ON;
-     }
-
-     break;
-   default:
-     break;
    }
+   else{
+      return OFF;
+   }
+}
+void Flywheel::startMotors(float power){
+   m_power = power;
+   m_running = true;
+   m_timer.Reset();
+   m_timer.Start();
+}
+void Flywheel::stopMotors(){
+   m_power = 0;
+   m_running = false;
 }

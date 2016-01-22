@@ -8,27 +8,29 @@
 #ifndef SRC_FLYWHEEL_H_
 #define SRC_FLYWHEEL_H_
 #include "WPILib.h"
+#include "BaseController.h"
 
 class Flywheel : BaseController {
+private:
    Talon * m_leftFlywheelMotor;
    Talon * m_rightFlywheelMotor;
-private:
    Timer m_timer;
+   float m_power;
+   bool m_running;
 public:
+   Flywheel(Talon * m_leftFlywheelMotor,Talon * m_rightFlywheelMotor);
+   virtual ~Flywheel();
 
    enum STATE{
       OFF,
       ON,
       STARTING
    };
-   Flywheel(Talon * m_leftFlywheelMotor,Talon * m_rightFlywheelMotor);
+
    void run();
-
    STATE getCurrentState();
-   STATE getGoalState();
+   void startMotors(float power);
+   void stopMotors();
 
-   bool getFlywheelMotorRunning(Talon *);
-   virtual ~Flywheel();
 };
-
 #endif /* SRC_FLYWHEEL_H_ */
