@@ -12,16 +12,11 @@
 #include "BaseController.h"
 #include "constants.h"
 #include "LoaderController.h"
-//will be have to be changed and put in constants later
-static const float leftFlywheelMotorSpeed = 1.0;
-static const float rightFlywheelMotorSpeed = 1.0;
+#include "Flywheel.h"
+
+
 
 class ShooterController : public BaseController{
-
-   Talon * m_leftFlywheelMotor;
-   Talon * m_rightFlywheelMotor;
-   LoaderController * m_loaderController;
-
 public:
 	enum STATE{
 	   OFF,
@@ -32,15 +27,20 @@ public:
 	   SHOOTING
 	};
 
-   ShooterController(Talon * leftFlywheelMotor, Talon * rightFlywheelMotor, LoaderController * loader);
+   ShooterController(LoaderController * loader, Flywheel * flywheel);
+   virtual ~ShooterController();
    void run();
 
    STATE getCurrentState();
    STATE getGoalState();
 
-   virtual ~ShooterController();
-private:
+   void setArmed();
+   void setOff();
+   void setShooting();
 
+private:
+   LoaderController * m_loaderController;
+   Flywheel * m_flywheel;
    STATE m_goalState;
    void firing(); //Not Implemented
 };

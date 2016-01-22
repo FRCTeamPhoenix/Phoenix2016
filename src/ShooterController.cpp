@@ -7,77 +7,78 @@
 
 #include <ShooterController.h>
 
-ShooterController::ShooterController(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor, LoaderController* loader):
-   m_leftFlywheelMotor(leftFlywheelMotor),
-   m_rightFlywheelMotor(rightFlywheelMotor),
-   m_loaderController(loader)
+ShooterController::ShooterController(LoaderController* loader, Flywheel * flywheel):
+   m_loaderController(loader),
+   m_flywheel(flywheel)
 {
    m_goalState = OFF;
 }
 
 ShooterController::~ShooterController() {
-	// TODO Auto-generated destructor stub
 }
 
 void ShooterController::run(){
-STATE current = getCurrentState();
-LoaderController::STATE loaderState = m_loaderController->getCurrentState();
-
-switch(getGoalState()){
+   switch(getGoalState()){
    case OFF:
-      if(current == ARMING ||current == SHOOTING){
-         m_leftFlywheelMotor->Set(0.0f);
-         m_rightFlywheelMotor->Set(0.0f);
-      }
+      m_flywheel->stopMotors();
       break;
    case ARMED:
-      if(current == ARMING ||current == SHOOTING){
-         m_leftFlywheelMotor->Set(leftFlywheelMotorSpeed);
-         m_rightFlywheelMotor->Set(rightFlywheelMotorSpeed);
-      }
+      m_flywheel->startMotors(0.6);
       break;
    case SHOOTING:
-      if((current == ARMED ||current == ARMING) && loaderState == LoaderController::LOADED){
-         m_leftFlywheelMotor->Set(leftFlywheelMotorSpeed);
-         m_rightFlywheelMotor->Set(rightFlywheelMotorSpeed);
-      }
+      m_flywheel->startMotors(0.6);
+
+   //   if((current == ARMED ||current == ARMING) && loaderState == LoaderController::LOADED){
+
+     // }
       break;
    default:
       break;
    }
 }
+
+void ShooterController::setArmed(){
+   m_goalState = ARMED;
+}
+
+void ShooterController::setOff(){
+   m_goalState = OFF;
+}
+
+void ShooterController::setShooting(){
+   m_goalState = SHOOTING;
+}
+
 ShooterController::STATE ShooterController::getCurrentState(){
    STATE currentGoal = getGoalState();
-   float leftFlywheel = m_leftFlywheelMotor->Get();
-   float rightFlywheel = m_rightFlywheelMotor->Get();
-   switch(currentGoal){
-   case ARMED:
-      if(leftFlywheel != 0 && rightFlywheel != 0 && m_loaderController->getCurrentState() == LoaderController::LOADED){
+   Flywheel::STATE flywheelState = m_flywheel->getCurrentState();
+   LoaderController::STATE loaderState = m_loaderController->getCurrentState();
+   if (currentGoal == ARMED){
+      if(flywheelState == Flywheel::ON && loaderState == LoaderController::LOADED){
          return ARMED;
       }
       else {
          return ARMING;
       }
-      break;
-   case SHOOTING:
-      if(leftFlywheel !=0 && rightFlywheel !=0){
+   }
+   else if(currentGoal == SHOOTING){
+      if(flywheelState == Flywheel::ON){
          return SHOOTING;
       }
       else{
          return PREPARINGTOSHOOT;
       }
-      break;
-   case OFF:
-      if(leftFlywheel == 0 && rightFlywheel == 0){
+   }
+   else{
+      if(flywheelState == Flywheel::OFF){
          return OFF;
       }
       else{
          return STOPPING;
       }
-      break;
    }
-
 }
+
 ShooterController::STATE ShooterController::getGoalState(){
    return m_goalState;
 }

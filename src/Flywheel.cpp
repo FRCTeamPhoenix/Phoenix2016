@@ -46,9 +46,11 @@ Flywheel::STATE Flywheel::getCurrentState(){
 }
 void Flywheel::startMotors(float power){
    m_power = power;
+   if(m_running == false){
+      m_timer.Reset();
+      m_timer.Start();
+   }
    m_running = true;
-   m_timer.Reset();
-   m_timer.Start();
 }
 void Flywheel::stopMotors(){
    m_power = 0;
