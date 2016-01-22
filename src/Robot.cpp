@@ -6,6 +6,10 @@
 #include "DriveTrainController.h"
 #include <thread>
 #include "Client.h"
+#include <iostream>
+#include <fstream>
+using namespace std;
+
 
 class Robot;
 
@@ -38,6 +42,7 @@ public:
       m_robotController(&m_driveStation, &m_autoC),
       m_driveTrainController(&m_driveTrain, &m_driveStation)
    {
+       cout << "call init socket" << endl;
        client.initilizeSocket();
        if (client.m_initGood){
           std::thread receiveThread(runClient, this, &client);
