@@ -1,5 +1,7 @@
 #pragma once
 
+class Timer;
+
 class DriveStation;
 class DriveTrainController;
 
@@ -14,7 +16,7 @@ enum ActionType { NO_ACTION,
 class Action
 {
 public:
-   Action(DriveStation*, DriveTrainController*, ActionType, float, int, float);
+   Action(DriveStation*, DriveTrainController*, ActionType, float, float, float);
    bool operator()(void);
    ActionType getAction(void);
    bool drive(void);
@@ -25,8 +27,8 @@ private:
    ActionType action;
    float power;
    float twist;
-   int time;
-   long startTime;
+   float time;
+   Timer timer;
 
    bool waitUntil(int buttonCode);
 };

@@ -2,10 +2,10 @@
 #include "DriveStation.h"
 #include "DriveTrainController.h"
 
-#include <ctime>
+#include <Timer.h>
 
-Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, float pow, int ms, float turn)
-   : controllers(ds), drive_t(dt), action(act), power(pow), time(ms), twist(turn)
+Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, float pow, float seconds, float turn)
+   : controllers(ds), drive_t(dt), action(act), power(pow), time(seconds), twist(turn)
 {
    firstTime = true;
 }
@@ -39,18 +39,16 @@ bool Action::operator()(void)
  */
 bool Action::drive(void)
 {
-   printf("%c\n", firstTime);
    if (firstTime)
       {
-	 startTime = clock();
+	 firstTime = false;
+	 timer.Start();
          drive_t->setCurrentState(DriveTrainController::AUTO);
 	 drive_t->setDriveConstants(power, twist);
-	 firstTime = false;
-         printf("%c\n", firstTime);
       }
-   long currentTime = clock();
-   printf("%ld : %ld\n", startTime, currentTime);
-   if ((currentTime - startTime) / 1000 >= time)
+   float currentTime = timer.Get();
+   printf("%f\n", currentTime);
+   if (currentTime >= time)
       return true;
    return false;
 }

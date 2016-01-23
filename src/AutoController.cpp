@@ -13,7 +13,7 @@
 AutoController::AutoController(DriveStation* ds, DriveTrainController* dt)
    : m_dstation(ds), m_drivet(dt)
 {
-   addAction(ACTION_DRIVE, 0.5f, 1000, 0.0f);
+   addAction(ACTION_DRIVE, 0.5f, 1.0f, 0.0f);
    addAction(ACTION_BRAKE);
 }
 
