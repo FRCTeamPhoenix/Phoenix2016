@@ -4,6 +4,7 @@
 #include "AutoController.h"
 #include "DriveStation.h"
 #include "DriveTrainController.h"
+#include "ConfigEditor.h"
 #include <thread>
 #include "Client.h"
 #include <iostream>
@@ -28,6 +29,8 @@ class Robot: public SampleRobot
 
    DriveTrainController m_driveTrainController;
    Client client;
+
+   ConfigEditor m_ConfigEditor;
 public:
    Robot() :
       m_flywheels(PortAssign::flywheels),
@@ -40,7 +43,8 @@ public:
             PortAssign::rearRightWheelMotor),
       m_autoC(&m_driveStation),
       m_robotController(&m_driveStation, &m_autoC),
-      m_driveTrainController(&m_driveTrain, &m_driveStation)
+      m_driveTrainController(&m_driveTrain, &m_driveStation),
+      m_ConfigEditor(&m_driveStation)
    {
        cout << "call init socket" << endl;
        client.initilizeSocket();
@@ -86,6 +90,10 @@ public:
    }
    void Test(){
       std::cout<<"This is test mode"<<std::endl;
+      while (IsTest() && IsEnabled()) {
+         m_driveStation.snapShot();
+         m_ConfigEditor.update();
+      }
    }
 };
 
