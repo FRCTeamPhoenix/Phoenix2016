@@ -60,6 +60,11 @@ void DriveStation::snapShot(){
    m_buttons[i]=m_gamepad->GetRawButton(i+1);
    }
 
+   for(int j=0; j<10; j++){
+      std::stringstream ss;
+      ss<<j;
+      m_stringInputs[j]=SmartDashboard::GetString("DB/String "+ss.str(),"");
+   }
    m_joystickY = m_joystick->GetY();
    m_joystickZ = m_joystick->GetZ();
    m_joystickZ = m_joystick->GetThrottle();

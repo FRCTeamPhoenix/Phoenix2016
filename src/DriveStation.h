@@ -31,6 +31,7 @@ private:
    Joystick * m_gamepad;
 
    bool m_buttons[DriveStationConstants::gamepadButtons];
+   std::string m_stringInputs[10];
    float m_joystickY;
    float m_joystickZ;
    float m_joystickThrottle;
