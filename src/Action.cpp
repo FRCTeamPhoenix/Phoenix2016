@@ -1,3 +1,20 @@
+/*
+ * Action API.
+ *
+ * The ActionType enum inside Action.h is the list
+ * of all possible actions. The "operator()" function
+ * is an overload of the function-call operator, so
+ * you can treat an action as a function. The overloading
+ * was purely aesthetic.
+ * 
+ * The handling of the actions is put in the "operator()"
+ * function, where there is a switch case for every action.
+ * You can add action handling here. If the action is done,
+ * then you return true. Otherwise, you return false. The
+ * action queue will discard the current action as soon as
+ * the action returns true.
+ */
+
 #include "Action.h"
 #include "DriveStation.h"
 #include "DriveTrainController.h"
