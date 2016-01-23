@@ -82,4 +82,3 @@ ShooterController::STATE ShooterController::getCurrentState(){
 ShooterController::STATE ShooterController::getGoalState(){
    return m_goalState;
 }
-

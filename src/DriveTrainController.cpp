@@ -11,7 +11,7 @@ DriveTrainController::DriveTrainController(RobotDrive* robotDrive, DriveStation*
    m_driveTrain(robotDrive),
    m_driveStation(driveStation)
 {
-
+   m_currentState = IDLE;
 }
 
 DriveTrainController::~DriveTrainController() {
@@ -19,7 +19,7 @@ DriveTrainController::~DriveTrainController() {
 }
 // ThrottleRatio .8 is too high :(
 void DriveTrainController::manualDrive(float throttleRatio){
-   float throttle = m_driveStation->getThrottle();
+   float throttle = m_driveStation->getYWithDeadzone();
    float twist = m_driveStation->getTwist();
    float twistRatio = 1 - throttleRatio;
 
@@ -30,16 +30,35 @@ void DriveTrainController::manualDrive(float throttleRatio){
 }
 
 void DriveTrainController::run() {
-
-   if(getCurrentState()== STATE::DRIVETRAIN_NORMAL){
+   float throttleRatio = 0;
+   switch(getCurrentState()){
+   case NORMAL:
       manualDrive(0.6f);
-   }
-   else if(getCurrentState()== STATE::DRIVETRAIN_TEST){
-      float throttleRatio = (m_driveStation->getJoystickThrottle() + 1) / 2;// .8 is too high :(
+      break;
+   case TEST:
+      throttleRatio = (m_driveStation->getJoystickThrottle() + 1) / 2;
       manualDrive(throttleRatio);
-   }
+      break;
+   case IDLE:
+      m_driveTrain->StopMotor();
+      break;
+   case AIMING_TARGET:
+      manualDrive(0.6f);
+      break;
+   case AIMING_OBSTACLE:
+      manualDrive(0.6f);
+      break;
+   case OBSTACLE:
+      manualDrive(0.6f);
+      break;
+   default:
+      break;
+   };
 }
 
 DriveTrainController::STATE DriveTrainController::getCurrentState() {
-   return STATE::DRIVETRAIN_TEST;
+   return m_currentState;
+}
+void DriveTrainController::setCurrentState(STATE currentState){
+   m_currentState = currentState;
 }

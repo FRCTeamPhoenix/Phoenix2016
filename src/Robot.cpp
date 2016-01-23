@@ -1,8 +1,19 @@
 #include "WPILib.h"
 #include "constants.h"
 #include "RobotController.h"
+#include "AutoController.h"
 #include "DriveStation.h"
 #include "DriveTrainController.h"
+#include <thread>
+#include "Client.h"
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+
+class Robot;
+
+void runClient(Robot* robot, Client* client);
 
 class Robot: public SampleRobot
 {
@@ -10,25 +21,32 @@ class Robot: public SampleRobot
    Joystick m_joystick;
    Joystick m_gamepad;
 
-   DriveStation m_DriveStation;
+   DriveStation m_driveStation;
    RobotDrive m_driveTrain;
+   AutoController m_autoC;
    RobotController m_robotController;
 
    DriveTrainController m_driveTrainController;
+   Client client;
 public:
    Robot() :
       m_flywheels(PortAssign::flywheels),
       m_joystick(PortAssign::joystick),
       m_gamepad(PortAssign::gamepad),
-      m_DriveStation(&m_joystick, &m_gamepad),
+      m_driveStation(&m_joystick, &m_gamepad),
       m_driveTrain(PortAssign::frontLeftWheelMotor,
             PortAssign::rearLeftWheelMotor,
             PortAssign::frontRightWheelMotor,
             PortAssign::rearRightWheelMotor),
-      m_robotController(&m_DriveStation),
-
-      m_driveTrainController(&m_driveTrain, &m_DriveStation)
+      m_autoC(&m_driveStation),
+      m_robotController(&m_driveStation, &m_autoC),
+      m_driveTrainController(&m_driveTrain, &m_driveStation)
    {
+       cout << "call init socket" << endl;
+       client.initilizeSocket();
+       if (client.m_initGood){
+          std::thread receiveThread(runClient, this, &client);
+       }
 
    }
 
@@ -62,11 +80,16 @@ public:
          {
             m_flywheels.Set(0);
          }*/
-
-         m_driveTrainController.run();
+         m_driveStation.snapShot();
+         m_robotController.run();
       }
    }
 
 };
+
+void runClient(Robot* robot,Client* client)
+   {
+      client->receivePacket();
+   }
 
 START_ROBOT_CLASS(Robot);
