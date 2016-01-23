@@ -17,6 +17,7 @@ public:
    Action(DriveStation*, DriveTrainController*, ActionType, float, int, float);
    bool operator()(void);
    ActionType getAction(void);
+   bool drive(void);
 private:
    bool firstTime;
    DriveStation* controllers;
@@ -25,8 +26,7 @@ private:
    float power;
    float twist;
    int time;
-   int startTime;
+   long startTime;
 
-   bool drive(void);
    bool waitUntil(int buttonCode);
 };

@@ -19,11 +19,10 @@ class Robot: public SampleRobot
 
    DriveStation m_driveStation;
    RobotDrive m_driveTrain;
-   AutoController m_autoC;
-   RobotController m_robotController;
-
    DriveTrainController m_driveTrainController;
-   Client client;
+   AutoController m_autoController;
+   RobotController m_robotController;
+//   Client client;
 public:
    Robot() :
       m_flywheels(PortAssign::flywheels),
@@ -35,48 +34,22 @@ public:
             PortAssign::frontRightWheelMotor,
             PortAssign::rearRightWheelMotor),
       m_driveTrainController(&m_driveTrain, &m_driveStation),
-      m_autoC(&m_driveStation, &m_driveTrainController),
-      m_robotController(&m_driveStation, &m_autoC)
+      m_autoController(&m_driveStation, &m_driveTrainController),
+      m_robotController(&m_driveStation, &m_autoController)
    {
-       client.initilizeSocket();
+       /*client.initilizeSocket();
        if (client.m_initGood){
           std::thread receiveThread(runClient, this, &client);
        }
-
+*/
    }
 
    void OperatorControl()
    {
       while(IsOperatorControl() && IsEnabled())
       {
-       /*  float throttle = - m_joystick.GetY();
-         if (fabs(throttle) < 0.05f) //This makes a deadzone
-         {
-             throttle = 0;
-         }
-
-         float twist = m_joystick.GetZ();
-         if (fabs(twist) < 0.05f) //This also makes a deadzone
-         {
-            twist = 0;
-         }
-         float throttleRatio = 0.7f;// .8 is too high :(
-         float twistRatio = 1 - throttleRatio;
-         float leftPower = (throttle * throttleRatio) + (twist * twistRatio);
-         float rightPower = (throttle * throttleRatio) - (twist * twistRatio);
-
-         m_driveTrain.TankDrive(leftPower, rightPower); */
-
-         /*if(m_gamepad.GetRawButton(1))
-         {
-            m_flywheels.Set(1);
-         }
-         if(m_gamepad.GetRawButton(2))
-         {
-            m_flywheels.Set(0);
-         }*/
-         m_driveStation.snapShot();
-         m_robotController.run();
+         m_autoController.run();
+         m_driveTrainController.run();
       }
    }
 

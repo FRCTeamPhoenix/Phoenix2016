@@ -37,8 +37,7 @@ void AutoController::performAction(void)
 	 m_drivet->setCurrentState(DriveTrainController::NORMAL);
 	 return;
       }
-   Action current_action = m_queue.back();
-   if (current_action())
+   if (m_queue.back()())
       {
 	 printf("Completed action.");
 	 m_queue.pop_back();

@@ -39,13 +39,18 @@ bool Action::operator()(void)
  */
 bool Action::drive(void)
 {
+   printf("%c\n", firstTime);
    if (firstTime)
       {
-	 startTime = clock() * 1000 / CLOCKS_PER_SEC;
+	 startTime = clock();
+         drive_t->setCurrentState(DriveTrainController::AUTO);
 	 drive_t->setDriveConstants(power, twist);
 	 firstTime = false;
+         printf("%c\n", firstTime);
       }
-   if (clock() * 1000 / CLOCKS_PER_SEC - startTime >= time)
+   long currentTime = clock();
+   printf("%ld : %ld\n", startTime, currentTime);
+   if ((currentTime - startTime) / 1000 >= time)
       return true;
    return false;
 }
