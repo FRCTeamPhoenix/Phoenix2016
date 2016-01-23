@@ -7,6 +7,7 @@
 Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, float pow, float seconds, float turn)
    : controllers(ds), drive_t(dt), action(act), power(pow), time(seconds), twist(turn)
 {
+   timer = new Timer();
    firstTime = true;
 }
 
@@ -42,11 +43,11 @@ bool Action::drive(void)
    if (firstTime)
       {
 	 firstTime = false;
-	 timer.Start();
+	 timer->Start();
          drive_t->setCurrentState(DriveTrainController::AUTO);
 	 drive_t->setDriveConstants(power, twist);
       }
-   float currentTime = timer.Get();
+   float currentTime = timer->Get();
    printf("%f\n", currentTime);
    if (currentTime >= time)
       return true;

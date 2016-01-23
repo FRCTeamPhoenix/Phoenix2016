@@ -28,7 +28,7 @@ private:
    float power;
    float twist;
    float time;
-   Timer timer;
+   Timer* timer;
 
    bool waitUntil(int buttonCode);
 };
