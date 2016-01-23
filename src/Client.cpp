@@ -1,11 +1,7 @@
 #include "Client.h"
-#include <unistd.h>
-#include <string.h>
-#include <iostream>
-using namespace std;
 #define NPACK 1
-#define PORT 31415
-#define SRV_IP "10.0.42.21" //change ip address
+#define PORT 31418
+#define SRV_IP "10.0.42.25" //change ip address
 
 
 
@@ -15,13 +11,16 @@ Client::Client() {
 
 }
 void Client::initilizeSocket(){
+    cout << "init socket" << endl;
    m_socket=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
    int sendCount=0;
    m_initGood=false;
    //defining and setting socket timeout
    struct timeval timeout;
-   timeout.tv_sec=0;
-   timeout.tv_usec=100;
+   timeout.tv_sec=1;
+   timeout.tv_usec=0;
+   cout << "set socket timout" << endl;
+
    setsockopt(m_socket, SOL_SOCKET, SO_RCVTIMEO,&timeout,sizeof(timeout));
 
    //Initializing everything to zero
@@ -38,11 +37,18 @@ void Client::initilizeSocket(){
 
    memset(m_receivedData,0,BUFLEN);
 
+   cout << "start ping loop" << endl;
+   while (!m_initGood && sendCount< 10){
 
-   while (!m_initGood && sendCount< 100){
       sendCount++;
+      cout << "sending ping " << sendCount << endl;
       sendto(m_socket,"start",5, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
-      recvfrom(m_socket,m_receivedData,BUFLEN, 0 ,(sockaddr*)&m_si_other, &m_si_other_len);
+      cout << "waiting to receive" << endl;
+      if ((recvfrom(m_socket,m_receivedData,BUFLEN, 0 ,(sockaddr*)&m_si_other, &m_si_other_len))>0){
+          m_initGood = true;
+          cout << "received packet" << endl;
+      }
+      cout << "Timout Reached" << endl;
     }
 
 }
