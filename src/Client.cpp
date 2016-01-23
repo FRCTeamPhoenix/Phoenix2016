@@ -1,6 +1,10 @@
 #include "Client.h"
+#include <unistd.h>
+#include <string.h>
+#include <iostream>
+using namespace std;
 #define NPACK 1
-#define PORT 31418
+#define PORT 31417
 #define SRV_IP "10.0.42.25" //change ip address
 
 
