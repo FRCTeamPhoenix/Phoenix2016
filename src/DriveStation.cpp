@@ -84,6 +84,19 @@ void DriveStation::snapShot(){
 
 }
 
+void DriveStation::setString(int stringNumber, std::string value) {
+   std::stringstream ss;
+   ss << stringNumber;
+   SmartDashboard::PutString("DB/String " + ss.str(), value);
+
+}
+
+void DriveStation::setButton(int buttonNumber, bool value) {
+   std::stringstream ss;
+   ss << buttonNumber;
+   SmartDashboard::PutBoolean("DB/Button " + ss.str(), value);
+
+}
 
 DriveStation::~DriveStation()
 {

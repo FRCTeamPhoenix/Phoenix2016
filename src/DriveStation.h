@@ -10,6 +10,7 @@
 #include "WPILib.h"
 #include "constants.h"
 #include "string.h"
+#include "sstream"
 
 class DriveStation {
 public:
@@ -27,6 +28,10 @@ public:
    bool getButtonInput(int);
 
    void snapShot();
+
+   void setString(int, std::string);
+
+   void setButton(int, bool);
 
 
 private:
