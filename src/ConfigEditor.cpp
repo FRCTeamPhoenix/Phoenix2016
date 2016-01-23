@@ -67,7 +67,10 @@ void ConfigEditor::update() {
          std::cout << "Button was pressed" << std::endl;
 
          if(i==1) {
-
+            saveConfig();
+         }
+         if(i==2) {
+            getConfig();
          }
       }
    }
