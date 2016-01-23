@@ -24,7 +24,7 @@ public:
   void addAction(ActionType, float = 0.0f, int = 0, float = 0.0f);
   void performAction(void);
 private:
-  std::vector<Action> m_queue;
+  std::vector<Action*> m_queue;
   DriveStation* m_dstation;
   DriveTrainController* m_drivet;
 };

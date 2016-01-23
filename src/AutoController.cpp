@@ -26,7 +26,7 @@ void AutoController::run(void)
 
 void AutoController::addAction(ActionType action, float pow, int ms, float turn)
 {
-   Action act(m_dstation, m_drivet, action, pow, ms, turn);
+   Action* act = new Action(m_dstation, m_drivet, action, pow, ms, turn);
    m_queue.insert(m_queue.begin(), act);
 }
 
@@ -37,9 +37,11 @@ void AutoController::performAction(void)
 	 m_drivet->setCurrentState(DriveTrainController::NORMAL);
 	 return;
       }
-   if (m_queue.back()())
+   Action &currentAction = *m_queue.back();
+   if (currentAction())
       {
 	 printf("Completed action.");
+	 delete &currentAction;
 	 m_queue.pop_back();
       }
 }
