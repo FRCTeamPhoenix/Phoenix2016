@@ -46,11 +46,11 @@ public:
       m_driveTrainController(&m_driveTrain, &m_driveStation),
       m_ConfigEditor(&m_driveStation)
    {
-       cout << "call init socket" << endl;
+       /*cout << "call init socket" << endl;
        client.initilizeSocket();
        if (client.m_initGood){
           std::thread receiveThread(runClient, this, &client);
-       }
+       }*/
 
    }
 

@@ -27,20 +27,18 @@ public:
    std::string getStringInput(int);
    bool getButtonInput(int);
 
-   void snapShot();
-
    void setString(int, std::string);
 
    void setButton(int, bool);
 
-
+   void snapShot();
 private:
    Joystick * m_joystick;
    Joystick * m_gamepad;
 
    bool m_buttons[DriveStationConstants::gamepadButtons];
    std::string m_stringInputs[10];
-   bool m_buttonInputs[3];
+   bool m_buttonInputs[4];
    float m_joystickY;
    float m_joystickZ;
    float m_joystickThrottle;

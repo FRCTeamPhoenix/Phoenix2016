@@ -12,6 +12,7 @@ DriveStation::DriveStation(Joystick* joystick, Joystick* gamepad) :
    m_joystick(joystick),
    m_gamepad(gamepad)
 {
+   SmartDashboard::init();
    snapShot();
 }
 
@@ -63,27 +64,6 @@ bool DriveStation::getButtonInput(int buttonCode) {
    return m_buttonInputs[buttonCode];
 }
 
-void DriveStation::snapShot(){
-   for(int i=0; i<12; i++){
-   m_buttons[i]=m_gamepad->GetRawButton(i+1);
-   }
-
-   for(int j=0; j<10; j++){
-      std::stringstream ss;
-      ss<<j;
-      m_stringInputs[j]=SmartDashboard::GetString("DB/String "+ss.str(),"");
-   }
-   for(int k=0;k<3;k++) {
-      std::stringstream ss;
-      ss<<k+1;
-      m_buttonInputs[k]=SmartDashboard::GetBoolean("DB/Button "+ss.str(),false);
-   }
-   m_joystickY = m_joystick->GetY();
-   m_joystickZ = m_joystick->GetZ();
-   m_joystickZ = m_joystick->GetThrottle();
-
-}
-
 void DriveStation::setString(int stringNumber, std::string value) {
    std::stringstream ss;
    ss << stringNumber;
@@ -95,6 +75,35 @@ void DriveStation::setButton(int buttonNumber, bool value) {
    std::stringstream ss;
    ss << buttonNumber;
    SmartDashboard::PutBoolean("DB/Button " + ss.str(), value);
+
+}
+
+void DriveStation::snapShot(){
+   for(int i=0; i<12; i++){
+   m_buttons[i]=m_gamepad->GetRawButton(i+1);
+   }
+
+   for(int j=0; j<10; j++){
+      std::stringstream ss;
+      ss<<"DB/String ";
+      ss<<j;
+      std::string temp = ss.str();
+
+      m_stringInputs[j]=SmartDashboard::GetString(temp,"");
+   }
+
+
+   for(int k=0;k<4;k++) {
+      std::stringstream ss;
+      ss<<"DB/Button ";
+      ss<<k;
+      std::string temp = ss.str();
+
+      m_buttonInputs[k]=SmartDashboard::GetBoolean(temp,false);
+   }
+   m_joystickY = m_joystick->GetY();
+   m_joystickZ = m_joystick->GetZ();
+   m_joystickZ = m_joystick->GetThrottle();
 
 }
 

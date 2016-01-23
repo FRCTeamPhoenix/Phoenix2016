@@ -17,7 +17,7 @@ ConfigEditor::~ConfigEditor() {
 }
 
 void ConfigEditor::update() {
-   for (int i = 0; i < 3; i++) {
+   for (int i = 0; i < 4; i++) {
       if (m_DriveStation->getButtonInput(i)) {
          m_DriveStation->setButton(i, false);
          std::cout << "Button was pressed" << std::endl;
