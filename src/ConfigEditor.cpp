@@ -16,4 +16,11 @@ ConfigEditor::~ConfigEditor() {
    // TODO Auto-generated destructor stub
 }
 
-void ConfigEditor::update() {}
+void ConfigEditor::update() {
+   for (int i = 0; i < 3; i++) {
+      if (m_DriveStation->getButtonInput(i)) {
+         m_DriveStation->setButton(i, false);
+         std::cout << "Button was pressed" << std::endl;
+      }
+   }
+}
