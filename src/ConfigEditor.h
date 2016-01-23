@@ -14,6 +14,9 @@ public:
    ConfigEditor(DriveStation* DriveStation);
    virtual ~ConfigEditor();
    void update();
+
+   void saveConfig();
+   void getConfig();
 private:
    DriveStation* m_DriveStation;
 };
