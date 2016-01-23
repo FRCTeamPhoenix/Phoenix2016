@@ -3,6 +3,7 @@
 #include "RobotController.h"
 #include "DriveStation.h"
 #include "DriveTrainController.h"
+#include <sstream>
 
 class Robot: public SampleRobot
 {
@@ -13,6 +14,8 @@ class Robot: public SampleRobot
    DriveStation m_DriveStation;
    RobotDrive m_driveTrain;
    RobotController m_robotController;
+   Encoder m_leftWheelEncoder;
+   Encoder m_rightWheelEncoder;
 
    DriveTrainController m_driveTrainController;
 public:
@@ -26,10 +29,12 @@ public:
             PortAssign::frontRightWheelMotor,
             PortAssign::rearRightWheelMotor),
       m_robotController(&m_DriveStation),
+      m_leftWheelEncoder(PortAssign::leftWheelEncoderChannelA, PortAssign::leftWheelEncoderChannelB),
+      m_rightWheelEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
 
-      m_driveTrainController(&m_driveTrain, &m_DriveStation)
+      m_driveTrainController(&m_driveTrain, &m_DriveStation, &m_leftWheelEncoder, &m_rightWheelEncoder)
    {
-
+      SmartDashboard::init();
    }
 
    void OperatorControl()
@@ -64,6 +69,21 @@ public:
          }*/
 
          m_driveTrainController.run();
+      }
+   }
+
+   void Test(){
+      SmartDashboard::PutString("DB/String 0", " ");
+      m_leftWheelEncoder.Reset();
+      m_rightWheelEncoder.Reset();
+
+      while(IsTest() && IsEnabled()){
+         std::ostringstream output;
+         output << "EncoderR: ";
+         output << (m_rightWheelEncoder.Get());
+         output << "EncoderL: ";
+         output << (m_leftWheelEncoder.Get());
+         SmartDashboard::PutString("DB/String 0", output.str());
       }
    }
 

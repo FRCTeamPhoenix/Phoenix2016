@@ -16,22 +16,29 @@
 class DriveTrainController : public BaseController{
 public:
 	enum STATE{
-	   DRIVETRAIN_IDLE,
-	   DRIVETRAIN_NORMAL,
-	   DRIVETRAIN_AIMING_TARGET,
-	   DRIVETRAIN_AIMING_OBSTACLE,
-	   DRIVETRAIN_OBSTACLE,
-	   DRIVETRAIN_TEST
+	   IDLE,
+	   NORMAL,
+	   AIMING_TARGET,
+	   AIMING_OBSTACLE,
+	   OBSTACLE,
+	   TEST,
+	   AUTO
 	};
-   DriveTrainController(RobotDrive*, DriveStation*);
+   DriveTrainController(RobotDrive*, DriveStation*, Encoder* leftWheelEncoder, Encoder* rightWheelEncoder);
    virtual ~DriveTrainController();
    void run();
    void manualDrive(float throttleRatio);
+   void aimRobotRight(float degree);
+   void aimRobotLeft(float degree);
+   void stopRobot();
 
    STATE getCurrentState();
 private:
    RobotDrive* m_driveTrain;
    DriveStation * m_driveStation;
+   Encoder* m_leftWheelEncoder;
+   Encoder* m_rightWheelEncoder;
+   STATE m_goalState;
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */

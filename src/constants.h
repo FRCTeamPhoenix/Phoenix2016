@@ -9,6 +9,12 @@ struct PortAssign{
    const static uint32_t frontRightWheelMotor  = 2;
    const static uint32_t rearRightWheelMotor   = 3;
 
+// Channels for wheel encoders
+   const static uint32_t leftWheelEncoderChannelA = 2;
+   const static uint32_t leftWheelEncoderChannelB = 3;
+   const static uint32_t rightWheelEncoderChannelA = 0;
+   const static uint32_t rightWheelEncoderChannelB = 1;
+
 //Flywheels
    const static uint32_t flywheels = 5; //Both on the same motor controller
 

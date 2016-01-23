@@ -7,11 +7,13 @@
 
 #include "DriveTrainController.h"
 
-DriveTrainController::DriveTrainController(RobotDrive* robotDrive, DriveStation* driveStation) :
+DriveTrainController::DriveTrainController(RobotDrive* robotDrive, DriveStation* driveStation, Encoder* leftWheelEncoder, Encoder* rightWheelEncoder) :
    m_driveTrain(robotDrive),
-   m_driveStation(driveStation)
+   m_driveStation(driveStation),
+   m_leftWheelEncoder(leftWheelEncoder),
+   m_rightWheelEncoder(rightWheelEncoder)
 {
-
+   m_goalState = IDLE;
 }
 
 DriveTrainController::~DriveTrainController() {
@@ -31,15 +33,32 @@ void DriveTrainController::manualDrive(float throttleRatio){
 
 void DriveTrainController::run() {
 
-   if(getCurrentState()== STATE::DRIVETRAIN_NORMAL){
+   STATE currentState = getCurrentState();
+
+   if(currentState == NORMAL){
       manualDrive(0.6f);
    }
-   else if(getCurrentState()== STATE::DRIVETRAIN_TEST){
+   else if(currentState == TEST){
       float throttleRatio = (m_driveStation->getJoystickThrottle() + 1) / 2;// .8 is too high :(
       manualDrive(throttleRatio);
    }
+   else if(currentState == AUTO){
+
+   }
+}
+
+void DriveTrainController::aimRobotRight(float degree){
+   m_goalState = AUTO;
+}
+
+void DriveTrainController::aimRobotLeft(float degree){
+   m_goalState = AUTO;
+}
+
+void DriveTrainController::stopRobot(){
+   m_goalState = IDLE;
 }
 
 DriveTrainController::STATE DriveTrainController::getCurrentState() {
-   return STATE::DRIVETRAIN_TEST;
+   return TEST;
 }
