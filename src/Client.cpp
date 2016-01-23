@@ -1,6 +1,6 @@
 #include "Client.h"
 #define NPACK 1
-#define PORT 31417 //port currently used for testing, can be changed
+#define PORT 31415 //port currently used for testing, can be changed
 #define SRV_IP "10.0.42.25" //change ip address
 
 
@@ -15,9 +15,9 @@ void Client::initilizeSocket(){
    m_socket=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
    int sendCount=0;
    m_initGood=false;
-   //defining and setting socket timeout
+   //defcouining and setting socket timeout
    struct timeval timeout;
-   timeout.tv_sec=.5;
+   timeout.tv_sec=1;
    timeout.tv_usec=0;
    cout<<"set socket timeout" << endl;
 
@@ -44,15 +44,15 @@ void Client::initilizeSocket(){
 
       cout<<"send ping" << endl;
       char buf[1024];
-      sprintf(buf,"hello %2d", sendCount);
-      sendto(m_socket,buf,11, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
+      sprintf(buf,"ping number %d", sendCount);
+      sendto(m_socket,buf,15, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
 
       cout<<"waiting to receive" << endl;
 
       if (recvfrom(m_socket,m_receivedData,BUFLEN, 0 ,(sockaddr*)&m_si_other, &m_si_other_len)>0){
           cout << "set init good" << endl;
-          cout << m_receivedData<<endl;
           m_initGood=true;
+          m_convertedData = byteToInt(m_receivedData);
       }
       else {
       cout<< "timeout reached" << endl;
@@ -74,10 +74,26 @@ void Client::receivePacket(){
         }
      }
 }
+int Client::byteToInt(char *byteArray){
+    int currentByte =0;
+    int intArray[8];
+    for (int currentInt =0;currentInt < 8;currentInt++){
+
+        intArray[currentInt]=(int)byteArray[currentByte] +(int)(byteArray[currentByte+1] <<8);
+        currentByte+=2;
+        cout << "received data = " <<  intArray[currentInt] << endl;
+    }
+    return intArray;
+
+}
 
 void Client::sendPacket() {
     cout << "sending packet" << endl;
     sendto(m_socket,m_sendData,BUFLEN, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
+}
+int Client::getData(){
+    return m_convertedData;
+
 }
 
 Client::~Client() {

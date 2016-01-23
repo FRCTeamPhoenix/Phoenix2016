@@ -22,12 +22,16 @@ public:
     bool m_initGood;
     char m_sendData[BUFLEN];
     sockaddr_in m_si_me, m_si_other;
-
+    int m_convertedData[8];
     Client();
 
     void initilizeSocket();
 
     void receivePacket();
+
+    int byteToInt(char *byteArray);
+
+    int getData();
 
     void sendPacket();
 
