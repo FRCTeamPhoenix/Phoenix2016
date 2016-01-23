@@ -16,20 +16,34 @@
 #ifndef SRC_AIMING_H_
 #define SRC_AIMING_H_
 #define ARRAY_SIZE(array) (sizeof((array))/sizeof((array[0])))
+#include "Math.h"
+#include "Client.h"
+#include "DriveTrainController.h"
 
 class Aiming {
 public:
-   Aiming(Client*);
+   Aiming(Client*, DriveTrainController*);
    int* getNewImageData();
    void align();
+   void rotate();
    void run();
    virtual ~Aiming();
 
 private:
+   enum m_Coordinates {
+      xUpperLeft,
+      yUpperLeft,
+      xUpperRight,
+      yUpperRight,
+      xLowerLeft,
+      yLowerLeft,
+      xLowerRight,
+      yLowerRight
+   };
    Client* m_client;
-   char m_coordinateCharData[31];
-   int m_coordinateIntData[8];
-
+   DriveTrainController* m_driveTrainController;
+   int m_bitsAsInts[128];
+   int m_currentCoordinates[8];
 };
 
 #endif /* SRC_AIMING_H_ */

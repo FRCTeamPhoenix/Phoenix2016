@@ -15,8 +15,9 @@
 
 #include <Aiming.h>
 
-Aiming::Aiming(Client* client) :
-   m_client(client)
+Aiming::Aiming(Client* client, DriveTrainController* driveTrainController) :
+   m_client(client),
+   m_driveTrainController(driveTrainController)
 {
 
 }
@@ -24,29 +25,53 @@ Aiming::Aiming(Client* client) :
 // Gives Aiming class access to image data sent over to client from Raspberry Pi
 int* Aiming::getNewImageData() {
 
-   //Assuming byte array represents a String
-   //TODO: change Client BUFLEN to 248
-   char originalBits[] = m_client->getData();
-
-
-
-   // This loop will convert each byte to a character (looping through 8 bits at a time;
-   // there are 8 bits in a byte)
-   for (int i = 0; i < ARRAY_SIZE(originalBits) - 8; i += 8) {
-
+   char m_originalBits[128];
+   strcpy(m_originalBits, m_client->getData());
+   // Goes through original array of bits as chars and converts to an integer array (easier to work with)
+   for (unsigned int i = 0; i < ARRAY_SIZE(m_originalBits); i++) {
+      m_bitsAsInts[i] = (unsigned int) m_originalBits[i];
    }
-   delete originalBits;
-   return *m_coordinateIntData;
+
+   // Goes through array of bits and splits into groups of 16 bits (2 bytes),
+   // then converts each group of 2 bytes into an integer
+   for (unsigned int i = 0; i < ARRAY_SIZE(m_bitsAsInts)/16; i += 16) {
+      for (unsigned int j = i*16 + 15; j >= i*16; j--) {
+         m_currentCoordinates[i] += m_bitsAsInts[j] * pow(2, (j - i*16));
+      }
+   }
+
+   // Cleans up memory space
+   delete m_originalBits;
+
+   return m_currentCoordinates;
 }
 
-// Centers the robot about the target (based on image-detected coordinates)
+// Centers robot about target (based on image-detected coordinates)
 void Aiming::align() {
 
 }
 
+// Turns robot to line up with target, once target is within field of vision
+void Aiming::rotate() {
+
+   // Checks if right side of robot is tilted too far forwards
+   if ((m_currentCoordinates[yUpperRight] - m_currentCoordinates[yUpperLeft]) > 20 &&
+         (m_currentCoordinates[yLowerLeft] - m_currentCoordinates[yLowerRight]) > 20) {
+      // TODO: Call DriveTrainController method to rotate right one degree
+   }
+
+   // Checks if left side of robot is tilted too far forwards
+   else if ((m_currentCoordinates[yUpperLeft] - m_currentCoordinates[yUpperRight]) > 20 &&
+         (m_currentCoordinates[yLowerRight] - m_currentCoordinates[yLowerLeft]) > 20) {
+      // TODO: Call DriveTrainController method to rotate left one degree
+   }
+}
+
 // This will be called in Robot.cpp to implement all aiming mechanisms
 void Aiming::run() {
-
+   getNewImageData();
+   align();
+   rotate();
 }
 
 Aiming::~Aiming() {
