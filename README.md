@@ -21,3 +21,8 @@ Or run the following on Windows
 git config --global core.autocrlf true
 # Configure Git on Windows to properly handle line endings
 ```
+
+### Fix CRLFs in directory
+```bash
+ find ./ -type f -exec sed -i -e 's/^M$//g' {} \;
+```
