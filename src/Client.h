@@ -6,6 +6,12 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <fstream>
+#include <iostream>
+#include <unistd.h>
+#include <string.h>
+using namespace std;
+
 
 #define BUFLEN 1024
 
@@ -20,6 +26,8 @@ public:
     sockaddr_in m_si_me, m_si_other;
 
     Client();
+
+    char getData();
 
     void initilizeSocket();
 

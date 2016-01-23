@@ -6,6 +6,10 @@
 #include "DriveTrainController.h"
 #include <thread>
 #include "Client.h"
+#include <iostream>
+#include <fstream>
+using namespace std;
+
 
 class Robot;
 
@@ -22,7 +26,7 @@ class Robot: public SampleRobot
    DriveTrainController m_driveTrainController;
    AutoController m_autoController;
    RobotController m_robotController;
-//   Client client;
+   Client client;
 public:
    Robot() :
       m_flywheels(PortAssign::flywheels),
@@ -30,34 +34,34 @@ public:
       m_gamepad(PortAssign::gamepad),
       m_driveStation(&m_joystick, &m_gamepad),
       m_driveTrain(PortAssign::frontLeftWheelMotor,
-            PortAssign::rearLeftWheelMotor,
-            PortAssign::frontRightWheelMotor,
-            PortAssign::rearRightWheelMotor),
+		   PortAssign::rearLeftWheelMotor,
+		   PortAssign::frontRightWheelMotor,
+		   PortAssign::rearRightWheelMotor),
       m_driveTrainController(&m_driveTrain, &m_driveStation),
       m_autoController(&m_driveStation, &m_driveTrainController),
       m_robotController(&m_driveStation, &m_autoController)
    {
-       /*client.initilizeSocket();
-       if (client.m_initGood){
-          std::thread receiveThread(runClient, this, &client);
-       }
-*/
+      // cout << "call init socket" << endl;
+      // client.initilizeSocket();
+      // if (client.m_initGood){
+      // 	 std::thread receiveThread(runClient, this, &client);
+      // }
    }
 
    void OperatorControl()
    {
       while(IsOperatorControl() && IsEnabled())
-      {
-         m_autoController.run();
-         m_driveTrainController.run();
-      }
+	 {
+	    m_autoController.run();
+	    m_driveTrainController.run();
+	 }
    }
 
 };
 
 void runClient(Robot* robot,Client* client)
-   {
-      client->receivePacket();
-   }
+{
+   client->receivePacket();
+}
 
 START_ROBOT_CLASS(Robot);
