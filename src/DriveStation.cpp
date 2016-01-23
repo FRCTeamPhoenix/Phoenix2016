@@ -55,6 +55,14 @@ bool DriveStation::getJoystickButton(int buttonCode)
    return m_joystick->GetRawButton(buttonCode);
 }
 
+std::string DriveStation::getStringInput(int inputCode) {
+   return m_stringInputs[inputCode];
+}
+
+bool DriveStation::getButtonInput(int buttonCode) {
+   return m_buttonInputs[buttonCode];
+}
+
 void DriveStation::snapShot(){
    for(int i=0; i<12; i++){
    m_buttons[i]=m_gamepad->GetRawButton(i+1);
@@ -64,6 +72,11 @@ void DriveStation::snapShot(){
       std::stringstream ss;
       ss<<j;
       m_stringInputs[j]=SmartDashboard::GetString("DB/String "+ss.str(),"");
+   }
+   for(int k=0;k<3;k++) {
+      std::stringstream ss;
+      ss<<k+1;
+      m_buttonInputs[k]=SmartDashboard::GetBoolean("DB/Button "+ss.str(),false);
    }
    m_joystickY = m_joystick->GetY();
    m_joystickZ = m_joystick->GetZ();

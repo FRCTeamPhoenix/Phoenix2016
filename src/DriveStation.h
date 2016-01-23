@@ -9,6 +9,7 @@
 #define SRC_DRIVESTATION_H_
 #include "WPILib.h"
 #include "constants.h"
+#include "string.h"
 
 class DriveStation {
 public:
@@ -22,6 +23,8 @@ public:
    float getTwist();
    bool getGamepadButton(int);
    bool getJoystickButton(int);
+   std::string getStringInput(int);
+   bool getButtonInput(int);
 
    void snapShot();
 
@@ -32,6 +35,7 @@ private:
 
    bool m_buttons[DriveStationConstants::gamepadButtons];
    std::string m_stringInputs[10];
+   bool m_buttonInputs[3];
    float m_joystickY;
    float m_joystickZ;
    float m_joystickThrottle;
