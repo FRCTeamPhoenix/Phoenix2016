@@ -84,12 +84,15 @@ public:
          m_robotController.run();
       }
    }
-
+   void Test(){
+      std::cout<<"This is test mode"<<std::endl;
+   }
 };
 
 void runClient(Robot* robot,Client* client)
    {
       client->receivePacket();
    }
+
 
 START_ROBOT_CLASS(Robot);
