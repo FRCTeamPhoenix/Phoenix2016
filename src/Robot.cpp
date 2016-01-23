@@ -78,12 +78,14 @@ public:
       m_rightWheelEncoder.Reset();
 
       while(IsTest() && IsEnabled()){
-         std::ostringstream output;
-         output << "EncoderR: ";
-         output << (m_rightWheelEncoder.Get());
-         output << "EncoderL: ";
-         output << (m_leftWheelEncoder.Get());
-         SmartDashboard::PutString("DB/String 0", output.str());
+         std::ostringstream outputR;
+         outputR << "EncoderR: ";
+         outputR << (m_rightWheelEncoder.Get());
+         SmartDashboard::PutString("DB/String 0", outputR.str());
+         std::ostringstream outputL;
+         outputL << "EncoderL: ";
+         outputL << (m_leftWheelEncoder.Get());
+         SmartDashboard::PutString("DB/String 1", outputL.str());
       }
    }
 
