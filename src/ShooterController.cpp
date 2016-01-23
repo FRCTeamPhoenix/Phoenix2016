@@ -21,16 +21,20 @@ void ShooterController::run(){
    switch(getGoalState()){
    case OFF:
       m_flywheel->stopMotors();
+      LoaderController::m_stationaryMotor->Set(0.0);
       break;
    case ARMED:
       m_flywheel->startMotors(0.6);
       break;
    case SHOOTING:
-      m_flywheel->startMotors(0.6);
-
-   //   if((current == ARMED ||current == ARMING) && loaderState == LoaderController::LOADED){
-
-     // }
+      LoaderController::STATE loaderState = m_loaderController->getCurrentState();
+      if (loaderState == LoaderController::LOADED){
+         LoaderController::m_stationaryMotor->Set(stationaryMotorSpeed);
+         m_flywheel->startMotors(0.6);
+      }
+      else {
+         setOff();
+      }
       break;
    default:
       break;

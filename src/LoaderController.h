@@ -35,7 +35,8 @@ public:
 	        HOMING,
 		EMPTY,
 		LOADING,
-		LOADED
+		LOADED,
+		LOADINGTOSHOOTER
 	};
 
 
