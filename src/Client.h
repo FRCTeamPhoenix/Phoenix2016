@@ -4,8 +4,12 @@
 #include <arpa/inet.h> // winsock2.h for windows
 #include <netinet/in.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <iostream>
+using namespace std;
 
 #define BUFLEN 1024
 

@@ -1,10 +1,6 @@
 #include "Client.h"
-#include <unistd.h>
-#include <string.h>
-#include <iostream>
-using namespace std;
 #define NPACK 1
-#define PORT 31417
+#define PORT 31417 //port currently used for testing, can be changed
 #define SRV_IP "10.0.42.25" //change ip address
 
 
@@ -21,7 +17,7 @@ void Client::initilizeSocket(){
    m_initGood=false;
    //defining and setting socket timeout
    struct timeval timeout;
-   timeout.tv_sec=1;
+   timeout.tv_sec=.5;
    timeout.tv_usec=0;
    cout<<"set socket timeout" << endl;
 
@@ -30,10 +26,10 @@ void Client::initilizeSocket(){
    //Initializing everything to zero
    memset((char *) &m_si_me, 0, sizeof(m_si_me));
 
-
-   m_si_me.sin_family = AF_INET;
-   m_si_me.sin_port = htons(PORT);
-   m_si_me.sin_addr.s_addr = htonl(INADDR_ANY);
+   //Only used in case of bind probably not used right now.
+   //m_si_me.sin_family = AF_INET;
+   //m_si_me.sin_port = htons(PORT);
+   //m_si_me.sin_addr.s_addr = htonl(INADDR_ANY);
 
    m_si_other.sin_family = AF_INET;
    m_si_other.sin_port = htons(PORT);
@@ -43,32 +39,44 @@ void Client::initilizeSocket(){
 
    cout<<"start ping loop" << endl;
 
-   while (!m_initGood && sendCount< 10){
+   while ((!m_initGood) && (sendCount< 10)){
       sendCount++;
-      cout<<"sent ping" << endl;
-      sendto(m_socket,"start",5, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
+
+      cout<<"send ping" << endl;
+      char buf[1024];
+      sprintf(buf,"hello %2d", sendCount);
+      sendto(m_socket,buf,11, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
+
       cout<<"waiting to receive" << endl;
+
       if (recvfrom(m_socket,m_receivedData,BUFLEN, 0 ,(sockaddr*)&m_si_other, &m_si_other_len)>0){
           cout << "set init good" << endl;
+          cout << m_receivedData<<endl;
           m_initGood=true;
       }
       else {
-      cout<< "timout reached" << endl;
+      cout<< "timeout reached" << endl;
       }
     }
 
 }
 void Client::receivePacket(){
         socklen_t m_si_other_len=sizeof(m_si_other);
+
         while (true){
         // breaks out of loop in case of error
-        if(recvfrom(m_socket,m_receivedData,BUFLEN, 0 ,(sockaddr*)&m_si_other, &m_si_other_len) == -1) {
+        cout << "waiting to receive packet" << endl;
+        if(recvfrom(m_socket,m_receivedData,BUFLEN, 0 ,(sockaddr*)&m_si_other, &m_si_other_len) < 0) {
            break;
+        }
+        else {
+            cout << "packet received = " << m_receivedData<<endl;
         }
      }
 }
 
 void Client::sendPacket() {
+    cout << "sending packet" << endl;
     sendto(m_socket,m_sendData,BUFLEN, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
 }
 
