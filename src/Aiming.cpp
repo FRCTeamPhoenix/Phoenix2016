@@ -40,7 +40,7 @@ int* Aiming::getNewImageData() {
       }
    }
 
-   // Cleans up memory space
+   // Cleans up memory space - this gives a warning, but it really shouldn't be a problem!
    delete m_originalBits;
 
    return m_currentCoordinates;
@@ -49,6 +49,16 @@ int* Aiming::getNewImageData() {
 // Centers robot about target (based on image-detected coordinates)
 void Aiming::align() {
 
+   // Checks if entire robot is too far left to see target
+   if (m_currentCoordinates[xUpperLeft] < 30 || m_currentCoordinates[xLowerLeft] < 30) {
+      // TODO: Call DriveTrainController method to drive robot rightwards a little bit
+   }
+
+   // Checks if entire robot is too far right to see target
+   else if (m_currentCoordinates[xUpperRight] > 225 || m_currentCoordinates[xLowerRight] > 225
+         || m_currentCoordinates[xUpperRight] < 0 || m_currentCoordinates[xLowerRight] < 0) {
+      // TODO: Call DriveTrainController method to drive robot leftwards a little bit
+   }
 }
 
 // Turns robot to line up with target, once target is within field of vision
@@ -76,4 +86,3 @@ void Aiming::run() {
 
 Aiming::~Aiming() {
 }
-
