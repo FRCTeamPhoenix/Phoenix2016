@@ -43,16 +43,17 @@ void Aiming::align() {
 
    // Robot is too far left to see target
    // Negative values indicate missing coordinates
-   if (m_currentCoordinates[xUpperLeft] < AimingConstants::leftVisionBoundary ||
-         m_currentCoordinates[xLowerLeft] < AimingConstants::leftVisionBoundary) {
+   if (m_currentCoordinates[AimingConstants::xUpperLeft] < AimingConstants::leftVisionBoundary ||
+         m_currentCoordinates[AimingConstants::xLowerLeft] < AimingConstants::leftVisionBoundary) {
       // TODO: Call DriveTrainController method to drive robot rightwards a little bit
    }
 
    // Robot is too far right to see target
    // Negative values indicate missing coordinates
-   else if (m_currentCoordinates[xUpperRight] > AimingConstants::rightVisionBoundary ||
-         m_currentCoordinates[xLowerRight] > AimingConstants::rightVisionBoundary
-         || m_currentCoordinates[xUpperRight] < 0 || m_currentCoordinates[xLowerRight] < 0) {
+   else if (m_currentCoordinates[AimingConstants::xUpperRight] > AimingConstants::rightVisionBoundary ||
+         m_currentCoordinates[AimingConstants::xLowerRight] > AimingConstants::rightVisionBoundary ||
+         m_currentCoordinates[AimingConstants::xUpperRight] < 0 ||
+         m_currentCoordinates[AimingConstants::xLowerRight] < 0) {
       // TODO: Call DriveTrainController method to drive robot leftwards a little bit
    }
 
@@ -65,14 +66,18 @@ void Aiming::align() {
 void Aiming::rotate() {
 
    // Right side of robot is tilted too far forwards
-   if ((m_currentCoordinates[yUpperRight] - m_currentCoordinates[yUpperLeft]) > 20 &&
-         (m_currentCoordinates[yLowerLeft] - m_currentCoordinates[yLowerRight]) > 20) {
+   if ((m_currentCoordinates[AimingConstants::yUpperRight] -
+         m_currentCoordinates[AimingConstants::yUpperLeft]) > 20 &&
+         (m_currentCoordinates[AimingConstants::yLowerLeft] -
+               m_currentCoordinates[AimingConstants::yLowerRight]) > 20) {
       // TODO: Call DriveTrainController method to rotate right one degree
    }
 
    // Left side of robot is tilted too far forwards
-   else if ((m_currentCoordinates[yUpperLeft] - m_currentCoordinates[yUpperRight]) > 20 &&
-         (m_currentCoordinates[yLowerRight] - m_currentCoordinates[yLowerLeft]) > 20) {
+   else if ((m_currentCoordinates[AimingConstants::yUpperLeft] -
+         m_currentCoordinates[AimingConstants::yUpperRight]) > 20 &&
+         (m_currentCoordinates[AimingConstants::yLowerRight] -
+               m_currentCoordinates[AimingConstants::yLowerLeft]) > 20) {
       // TODO: Call DriveTrainController method to rotate left one degree
    }
 

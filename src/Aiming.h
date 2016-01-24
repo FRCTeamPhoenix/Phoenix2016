@@ -43,17 +43,6 @@ public:
 
 private:
 
-   enum m_Coordinates {
-      xUpperLeft,
-      yUpperLeft,
-      xUpperRight,
-      yUpperRight,
-      xLowerLeft,
-      yLowerLeft,
-      xLowerRight,
-      yLowerRight
-   };
-
    Client* m_client;
    DriveTrainController* m_driveTrainController;
    int m_currentCoordinates[8];

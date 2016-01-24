@@ -37,12 +37,26 @@ struct DriveStationConstants{
 };
 
 struct AimingConstants {
+
+   // Detected corners of target
+   enum m_Coordinates {
+         xUpperLeft,
+         yUpperLeft,
+         xUpperRight,
+         yUpperRight,
+         xLowerLeft,
+         yLowerLeft,
+         xLowerRight,
+         yLowerRight
+      };
+
    const static int numXYVals = 8;
 
    // These may need to be changed depending upon the chosen coordinate system
    const static int leftVisionBoundary = 30;
    const static int rightVisionBoundary = 225;
    const static int maxTiltingFactor = 20;
+
 };
 
 #endif /* SRC_CONSTANTS_H_ */
