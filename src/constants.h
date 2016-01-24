@@ -14,6 +14,7 @@ struct PortAssign{
    const static uint32_t leftWheelEncoderChannelB = 3;
    const static uint32_t rightWheelEncoderChannelA = 0;
    const static uint32_t rightWheelEncoderChannelB = 1;
+   const static float tickPerDegree = 1.06666667;
 
 //Flywheels
    const static uint32_t flywheels = 5; //Both on the same motor controller
@@ -24,6 +25,10 @@ struct PortAssign{
 
 
 
+};
+
+struct RobotConstants{
+   const static float wheelEncoderTicksPerDegree = 1.06666667;
 };
 
 

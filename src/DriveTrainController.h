@@ -24,12 +24,19 @@ public:
 	   TEST,
 	   AUTO
 	};
-   DriveTrainController(RobotDrive*, DriveStation*, Encoder* leftWheelEncoder, Encoder* rightWheelEncoder);
+   DriveTrainController(RobotDrive* m_driveTrain,
+         DriveStation* m_driveStation,
+         Encoder* leftWheelEncoder,
+         Encoder* rightWheelEncoder,
+         int32_t initalEncoderValueLeft,
+         int32_t initalEncoderValueRight,
+         int32_t targetTickRight,
+         int32_t targetTickLeft);
    virtual ~DriveTrainController();
    void run();
    void manualDrive(float throttleRatio);
-   void aimRobotRight(float degree);
-   void aimRobotLeft(float degree);
+   void aimRobotClockwise(float degree, float motorSpeed);
+   void aimRobotCounterclockwise(float degree, float motorSpeed);
    void stopRobot();
 
    STATE getCurrentState();
@@ -39,6 +46,12 @@ private:
    Encoder* m_leftWheelEncoder;
    Encoder* m_rightWheelEncoder;
    STATE m_goalState;
+   int32_t m_initalEncoderValueLeft;
+   int32_t m_initalEncoderValueRight;
+   int32_t m_targetTickRight;
+   int32_t m_targetTickLeft;
+   bool m_rightMotorDirection = true; //true means forward and false means backwards
+   bool m_leftMotorDirection = true; //true means forward and false means backwards
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */
