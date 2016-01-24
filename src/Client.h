@@ -31,7 +31,7 @@ public:
 
     void byteToInt(char *byteArray,int *intArray);
 
-    int getData();
+    int getData(int element);
 
     void sendPacket();
 

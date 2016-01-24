@@ -36,4 +36,13 @@ struct DriveStationConstants{
    const static uint32_t gamepadButtons = 12;
 };
 
+struct AimingConstants {
+   const static int numXYVals = 8;
+
+   // These may need to be changed depending upon the chosen coordinate system
+   const static int leftVisionBoundary = 30;
+   const static int rightVisionBoundary = 225;
+   const static int maxTiltingFactor = 20;
+};
+
 #endif /* SRC_CONSTANTS_H_ */

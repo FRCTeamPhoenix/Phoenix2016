@@ -19,17 +19,30 @@
 #include "Math.h"
 #include "Client.h"
 #include "DriveTrainController.h"
+#include "Constants.h"
 
 class Aiming {
 public:
+
+   enum STATE {
+         IDLE,
+         ALIGNING,
+         ROTATING,
+         TARGETED
+      };
+
    Aiming(Client*, DriveTrainController*);
    void getNewImageData();
+   void beginAiming();
    void align();
    void rotate();
+   STATE getCurrentState();
+   void setCurrentState(STATE);
    void run();
    virtual ~Aiming();
 
 private:
+
    enum m_Coordinates {
       xUpperLeft,
       yUpperLeft,
@@ -40,10 +53,12 @@ private:
       xLowerRight,
       yLowerRight
    };
+
    Client* m_client;
    DriveTrainController* m_driveTrainController;
-   int m_bitsAsInts[128];
    int m_currentCoordinates[8];
+   STATE m_currentState;
+
 };
 
 #endif /* SRC_AIMING_H_ */
