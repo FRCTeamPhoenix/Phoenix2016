@@ -29,7 +29,7 @@ public:
 
     void receivePacket();
 
-    int byteToInt(char *byteArray);
+    void byteToInt(char *byteArray,int *intArray);
 
     int getData();
 
