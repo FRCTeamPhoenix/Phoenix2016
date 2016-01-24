@@ -61,7 +61,7 @@ bool Action::drive(void)
       {
 	 firstTime = false;
 	 timer->Start();
-         drive_t->setCurrentState(DriveTrainController::AUTO);
+         drive_t->setCurrentState(DriveTrainController::AUTOTEST);
 	 drive_t->setDriveConstants(power, twist);
       }
    float currentTime = timer->Get();
