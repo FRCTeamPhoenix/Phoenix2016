@@ -38,6 +38,7 @@ public:
    void rotate();
    STATE getCurrentState();
    void setCurrentState(STATE);
+   void printCurrentCoordinates();
    void run();
    virtual ~Aiming();
 

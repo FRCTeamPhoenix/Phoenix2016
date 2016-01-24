@@ -20,22 +20,32 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController) :
    m_driveTrainController(driveTrainController)
 {
    setCurrentState(IDLE);
+   //TESTING
+   int testingArray[8] = {170, 180, 340, 200, 170, 80, 340, 40};
+      for(int i = 0; i < AimingConstants:: numXYVals; i++) {
+         m_currentCoordinates[i] = testingArray[i];
+      }
+   beginAiming();
 }
 
 // Call this method to begin aiming process - same as manually setting state to first
 // phase of aiming process
 
 void Aiming::beginAiming() {
+   cout << "BEGINNING PHASE 1: ALIGN" << endl;
    setCurrentState(ALIGNING);
 }
 
 // Gives Aiming class access to image data sent over to client from Raspberry Pi
 void Aiming::getNewImageData() {
 
+   /*
    // Updates array of current coordinates with data received by client
    for(int i = 0; i < AimingConstants::numXYVals; i++) {
       m_currentCoordinates[i] = m_client->getData(i);
    }
+   */
+
 }
 
 // Centers robot about target (based on image-detected coordinates)
@@ -45,6 +55,10 @@ void Aiming::align() {
    // Negative values indicate missing coordinates
    if (m_currentCoordinates[AimingConstants::xUpperLeft] < AimingConstants::leftVisionBoundary ||
          m_currentCoordinates[AimingConstants::xLowerLeft] < AimingConstants::leftVisionBoundary) {
+
+      //TESTING
+      cout << "Moving right" << endl;
+
       // TODO: Call DriveTrainController method to drive robot rightwards a little bit
    }
 
@@ -55,11 +69,19 @@ void Aiming::align() {
          m_currentCoordinates[AimingConstants::xUpperRight] < 0 ||
          m_currentCoordinates[AimingConstants::xLowerRight] < 0) {
       // TODO: Call DriveTrainController method to drive robot leftwards a little bit
+
+      //TESTING
+      cout << "Moving left" << endl;
+
    }
 
    else {
       setCurrentState(ROTATING);
+      cout << "BEGINNING PHASE 2: ROTATE" << endl;
    }
+
+   setCurrentState(ROTATING);
+   cout << "BEGINNING PHASE 2: ROTATE" << endl;
 }
 
 // Turns robot to line up with target, once target is within field of vision
@@ -71,6 +93,11 @@ void Aiming::rotate() {
          (m_currentCoordinates[AimingConstants::yLowerLeft] -
                m_currentCoordinates[AimingConstants::yLowerRight]) > 20) {
       // TODO: Call DriveTrainController method to rotate right one degree
+
+      //TESTING
+      cout << "Rotating clockwise" << endl;
+
+
    }
 
    // Left side of robot is tilted too far forwards
@@ -79,11 +106,16 @@ void Aiming::rotate() {
          (m_currentCoordinates[AimingConstants::yLowerRight] -
                m_currentCoordinates[AimingConstants::yLowerLeft]) > 20) {
       // TODO: Call DriveTrainController method to rotate left one degree
+
+      //TESTING
+     cout << "Rotating counterclockwise" << endl;
+
    }
 
    else {
       setCurrentState(TARGETED);
    }
+   setCurrentState(TARGETED);
 }
 
 Aiming::STATE Aiming::getCurrentState() {
@@ -94,6 +126,21 @@ void Aiming::setCurrentState(Aiming::STATE newState) {
    m_currentState = newState;
 }
 
+// Outputs current coordinate values of target corners, in the following format:
+// "(xUpperLeft, yUpperLeft), (xUpperRight, yUpperRight), (xLowerLeft, yLowerLeft),
+// (xLowerRight, yLowerRight)"
+
+void Aiming::printCurrentCoordinates() {
+   cout << "(" << m_currentCoordinates[AimingConstants::xUpperLeft] << ", " <<
+         m_currentCoordinates[AimingConstants::yUpperLeft] << "), (" <<
+         m_currentCoordinates[AimingConstants::xUpperRight] << ", " <<
+         m_currentCoordinates[AimingConstants::yUpperRight] << "), (" <<
+         m_currentCoordinates[AimingConstants::xLowerLeft] << ", " <<
+         m_currentCoordinates[AimingConstants::yLowerLeft] << "), (" <<
+         m_currentCoordinates[AimingConstants::xLowerRight] << ", " <<
+         m_currentCoordinates[AimingConstants::yLowerRight] << ")" << endl;
+}
+
 // This will be called in Robot.cpp to implement all aiming mechanisms
 void Aiming::run() {
 
@@ -101,12 +148,16 @@ void Aiming::run() {
    case IDLE:
       break;
    case ALIGNING:
+   //   getNewImageData();
       align();
       break;
    case ROTATING:
+   //   getNewImageData();
       rotate();
       break;
    case TARGETED:
+      cout << "TARGETED" << endl;
+      setCurrentState(IDLE);
       break;
    default:
       break;
