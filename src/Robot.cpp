@@ -46,6 +46,7 @@ public:
       m_driveTrainController(&m_driveTrain, &m_driveStation),
       m_ConfigEditor(&m_driveStation)
    {
+
        /*cout << "call init socket" << endl;
        client.initilizeSocket();
        if (client.m_initGood){
@@ -90,6 +91,7 @@ public:
    }
    void Test(){
       std::cout<<"This is test mode"<<std::endl;
+      std::cout<<Preferences::GetInstance()->GetString("testKey","nothing")<<std::endl;
       while (IsTest() && IsEnabled()) {
          m_driveStation.snapShot();
          m_ConfigEditor.update();

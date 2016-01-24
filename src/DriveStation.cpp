@@ -65,16 +65,12 @@ bool DriveStation::getButtonInput(int buttonCode) {
 }
 
 void DriveStation::setString(int stringNumber, std::string value) {
-   std::stringstream ss;
-   ss << stringNumber;
-   SmartDashboard::PutString("DB/String " + ss.str(), value);
+   SmartDashboard::PutString(DriveStationConstants::textBoxNames[stringNumber], value);
 
 }
 
 void DriveStation::setButton(int buttonNumber, bool value) {
-   std::stringstream ss;
-   ss << buttonNumber;
-   SmartDashboard::PutBoolean("DB/Button " + ss.str(), value);
+   SmartDashboard::PutBoolean(DriveStationConstants::buttonNames[buttonNumber], value);
 
 }
 
@@ -83,23 +79,13 @@ void DriveStation::snapShot(){
    m_buttons[i]=m_gamepad->GetRawButton(i+1);
    }
 
-   for(int j=0; j<10; j++){
-      std::stringstream ss;
-      ss<<"DB/String ";
-      ss<<j;
-      std::string temp = ss.str();
-
-      m_stringInputs[j]=SmartDashboard::GetString(temp,"");
+   for(int j=0; j<13; j++){
+      m_stringInputs[j]=SmartDashboard::GetString(DriveStationConstants::textBoxNames[j],"");
    }
 
 
-   for(int k=0;k<4;k++) {
-      std::stringstream ss;
-      ss<<"DB/Button ";
-      ss<<k;
-      std::string temp = ss.str();
-
-      m_buttonInputs[k]=SmartDashboard::GetBoolean(temp,false);
+   for(int k=0;k<6;k++){
+      m_buttonInputs[k]=SmartDashboard::GetBoolean(DriveStationConstants::buttonNames[k],false);
    }
    m_joystickY = m_joystick->GetY();
    m_joystickZ = m_joystick->GetZ();

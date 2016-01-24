@@ -18,7 +18,7 @@ struct PortAssign{
 
 };
 
-struct DriveStationConstants{
+namespace DriveStationConstants{
    enum buttonNames {
           buttonX = 1,
           buttonA = 2,
