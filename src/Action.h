@@ -17,7 +17,7 @@ class Action
 {
 public:
    Action(DriveStation*, DriveTrainController*, ActionType, float, float, float);
-   bool operator()(void);
+   bool execute(void);
    ActionType getAction(void);
 private:
    bool firstTime;

@@ -1,18 +1,16 @@
 /*
  * Action API.
  *
- * The ActionType enum inside Action.h is the list
- * of all possible actions. The "operator()" function
- * is an overload of the function-call operator, so
- * you can treat an action as a function. The overloading
- * was purely aesthetic.
+ * The ActionType enum inside Action.h is the list of all
+ * possible actions. The execute method executes the action
+ * that this current object contains.
  * 
- * The handling of the actions is put in the "operator()"
- * function, where there is a switch case for every action.
- * You can add action handling here. If the action is done,
- * then you return true. Otherwise, you return false. The
- * action queue will discard the current action as soon as
- * the action returns true.
+ * The handling of the actions is put in the execute method,
+ * where there is a switch case for every action. You can
+ * add action handling here. If the action is done, then you
+ * return true. Otherwise, you return false. The action
+ * queue will discard the current action as soon as the
+ * action returns true.
  */
 
 #include "Action.h"
@@ -32,7 +30,7 @@ Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, float
  * Upon function call operator, perform action for one frame.
  * Returns true if action is done, false otherwise.
  */
-bool Action::operator()(void)
+bool Action::execute(void)
 {
    switch (action)
       {
