@@ -54,7 +54,7 @@ struct AimingConstants {
 
    // These may need to be changed depending upon the chosen coordinate system
    const static int leftVisionBoundary = 30;
-   const static int rightVisionBoundary = 225;
+   const static int rightVisionBoundary = 290;
    const static int maxTiltingFactor = 20;
 
 };
