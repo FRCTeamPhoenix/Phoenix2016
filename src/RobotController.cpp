@@ -6,23 +6,45 @@
  */
 
 #include "RobotController.h"
-#include "AutoController.h"
 
-RobotController::RobotController(DriveStation* driveStation, AutoController* autoC) :
-   m_driveStation(driveStation), m_auto(autoC)
-{}
+RobotController::RobotController(DriveStation* ds, DriveTrainController* dt, ShooterController* shooter, LoaderController* loader)
+   : m_dstation(ds), m_drivet(dt), m_shooter(shooter), m_loader(loader)
+{
+   m_state = ROBOT_AUTO;
+}
+
+RobotController::~RobotController() {}
 
 void RobotController::run()
 {
-   // TODO: Put functionality for both manual and auto, not just autonomous
-   m_auto->run();
+   if (m_state == ROBOT_AUTO)
+      performAction();
+   else if (m_state == ROBOT_MANUAL)
+      {
+	 m_drivet->run();
+	 m_shooter->run();
+	 m_loader->run();
+      }
 }
 
-DriveStation* RobotController::getDriveStation()
+void RobotController::addAction(ActionType action, float pow, int ms, float turn)
 {
-   return m_driveStation;
+   Action* act = new Action(m_dstation, m_drivet, action, pow, ms, turn);
+   m_queue.insert(m_queue.begin(), act);
 }
 
-RobotController::~RobotController() {
-
+void RobotController::performAction(void)
+{
+   if (m_queue.size() == 0)
+      {
+	 m_drivet->setCurrentState(DriveTrainController::NORMAL);
+	 return;
+      }
+   Action *currentAction = m_queue.back();
+   if (currentAction->execute())
+      {
+	 printf("Completed action.");
+	 delete currentAction;
+	 m_queue.pop_back();
+      }
 }
