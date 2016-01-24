@@ -4,12 +4,11 @@
  *  Created on: Jan 22, 2016
  *      Author: Brin Harper
  *
- * The Aiming class will take in the vision data received from the Raspberry Pi by way
- * of the UDP client, and work to implement in order to aim the shooter at the high
- * targets.  Currently, the specific data to be received by the Raspberry Pi is unknown,
- * so the class is configured to take in a character array representing the image data.
- * Optimally, the client will later be set up to only receive highly mandatory data from
- * the Raspberry Pi, giving a coordinate representation of the target's spatial location.
+ * The Aiming class takes in the vision data received from the Raspberry Pi, by way
+ * of the UDP client.  This data is passed to the Aiming class in the form
+ * of an integer array, which represents the coordinates of the target's four corners.
+ * Aiming implements the received vision data in order to align and rotate the robot,
+ * until the the shooter is positioned correctly to shoot at the desired high target.
  *
  */
 
