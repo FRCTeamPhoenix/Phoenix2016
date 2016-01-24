@@ -33,6 +33,32 @@ struct DriveStationConstants{
           joystickLeftButton = 11,
           joystickRightButton = 12
       };
+
+   const static std::string buttonNames[6] = {
+         "New Name",
+         "DB/Button 1",
+         "DB/Button 2",
+         "DB/Button 3",
+         "Get Value",
+         "Set Value"
+   };
+
+   const static std::string textBoxNames[13] = {
+         "DB/String 0",
+         "DB/String 1",
+         "DB/String 2",
+         "DB/String 3",
+         "DB/String 4",
+         "DB/String 5",
+         "DB/String 6",
+         "DB/String 7",
+         "DB/String 8",
+         "DB/String 9",
+         "Key Name",
+         "Key Value",
+         "New Value"
+   };
+
    const static uint32_t gamepadButtons = 12;
 };
 
