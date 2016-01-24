@@ -61,5 +61,14 @@ namespace DriveStationConstants{
 
    const static uint32_t gamepadButtons = 12;
 };
+namespace ConfigVariables {
+const static int numberOfVars = 1;
+   const static std::string variables[numberOfVars] = {
+         "Team Number"
+   };
+   const static std::string types[numberOfVars] = {
+         "int"
+   };
+};
 
 #endif /* SRC_CONSTANTS_H_ */
