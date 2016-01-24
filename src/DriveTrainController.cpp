@@ -45,7 +45,7 @@ void DriveTrainController::run() {
    case NORMAL:
       manualDrive(0.6f);
       break;
-   case AUTO:
+   case AUTOTEST:
       autoDrive();
       break;
    case TEST:
