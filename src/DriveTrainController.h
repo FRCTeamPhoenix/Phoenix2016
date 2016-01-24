@@ -18,7 +18,7 @@ public:
    enum STATE{
       IDLE,
       NORMAL,
-      AUTO,
+      AUTOTEST,
       AIMING_TARGET,
       AIMING_OBSTACLE,
       OBSTACLE,
