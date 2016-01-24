@@ -17,11 +17,36 @@ ConfigEditor::~ConfigEditor() {
 }
 
 void ConfigEditor::getConfig() {
-
 }
 
 void ConfigEditor::saveConfig() {
-std::string keyName = m_DriveStation->getStringInput(10);
+   std::string keyName = m_DriveStation->getStringInput(10);
+   std::string newValue = m_DriveStation->getStringInput(12);
+
+   int pos = -1;
+   for(int i=0;i<ConfigVariables::numberOfVars;i++) {
+      if(keyName == ConfigVariables::variables[i]) {
+         pos = i;
+         break;
+      }
+   }
+
+   if(pos == -1) {
+      std::cout << "Key entered was not a valid variable" << std::endl;
+      return;
+   }
+
+   std::string type = ConfigVariables::types[pos];
+
+   if(type == "int") {
+      Preferences::GetInstance()->PutInt(keyName, std::stoi(newValue));
+   } else if(type == "float") {
+      Preferences::GetInstance()->PutFloat(keyName, std::stof(newValue));
+   } else if(type == "double") {
+      Preferences::GetInstance()->PutDouble(keyName, std::stod(newValue));
+   } else {
+      Preferences::GetInstance()->PutString(keyName, newValue);
+   }
 }
 
 void ConfigEditor::update() {
