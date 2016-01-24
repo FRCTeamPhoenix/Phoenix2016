@@ -23,7 +23,8 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController) :
 }
 
 // Gives Aiming class access to image data sent over to client from Raspberry Pi
-int* Aiming::getNewImageData() {
+void Aiming::getNewImageData() {
+
 
    char m_originalBits[128];
    strcpy(m_originalBits, m_client->getData());
@@ -40,10 +41,10 @@ int* Aiming::getNewImageData() {
       }
    }
 
+
    // Cleans up memory space - this gives a warning, but it really shouldn't be a problem!
    delete m_originalBits;
 
-   return m_currentCoordinates;
 }
 
 // Centers robot about target (based on image-detected coordinates)
@@ -86,3 +87,6 @@ void Aiming::run() {
 
 Aiming::~Aiming() {
 }
+
+
+// TODO: add a function to alter state of shooter

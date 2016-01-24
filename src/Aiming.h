@@ -23,7 +23,7 @@
 class Aiming {
 public:
    Aiming(Client*, DriveTrainController*);
-   int* getNewImageData();
+   void getNewImageData();
    void align();
    void rotate();
    void run();

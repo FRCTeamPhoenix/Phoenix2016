@@ -7,9 +7,7 @@
 #include <thread>
 #include "Client.h"
 #include <iostream>
-#include <fstream>
 using namespace std;
-
 
 class Robot;
 
@@ -27,7 +25,7 @@ class Robot: public SampleRobot
    RobotController m_robotController;
 
    DriveTrainController m_driveTrainController;
-   Client client;
+   Client m_client;
 public:
    Robot() :
       m_flywheels(PortAssign::flywheels),
@@ -42,10 +40,11 @@ public:
       m_robotController(&m_driveStation, &m_autoC),
       m_driveTrainController(&m_driveTrain, &m_driveStation)
    {
-       cout << "call init socket" << endl;
-       client.initilizeSocket();
-       if (client.m_initGood){
-          std::thread receiveThread(runClient, this, &client);
+       cout<<"run init socket function" << endl;
+       m_client.initilizeSocket();
+       if (m_client.m_initGood){
+          cout<<"init good start thread" << endl;
+          std::thread receiveThread(runClient, this, &m_client);
        }
 
    }
