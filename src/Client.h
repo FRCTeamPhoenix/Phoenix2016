@@ -1,6 +1,7 @@
 #ifndef SRC_CLIENT_H_
 #define SRC_CLIENT_H_
 
+#include "WPILib.h"
 #include <arpa/inet.h> // winsock2.h for windows
 #include <netinet/in.h>
 #include <stdio.h>
@@ -11,7 +12,7 @@
 #include <iostream>
 using namespace std;
 
-#define BUFLEN 1024
+#define BUFLEN 10240
 
 class Client {
 public:
@@ -19,6 +20,7 @@ public:
     static bool receive;
     int m_socket;
     socklen_t m_si_other_len;
+    char buf2[20];
     bool m_initGood;
     char m_sendData[BUFLEN];
     sockaddr_in m_si_me, m_si_other;
