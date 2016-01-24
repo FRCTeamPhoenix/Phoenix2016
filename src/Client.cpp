@@ -24,7 +24,7 @@ void Client::initilizeSocket(){
    setsockopt(m_socket, SOL_SOCKET, SO_RCVTIMEO,&timeout,sizeof(timeout));
 
    //Initializing everything to zero
-   memset((char *) &m_si_me, 0, sizeof(m_si_me));
+   //memset((char *) &m_si_me, 0, sizeof(m_si_me));
 
    //Only used in case of bind probably not used right now.
    //m_si_me.sin_family = AF_INET;
@@ -52,7 +52,7 @@ void Client::initilizeSocket(){
       if (recvfrom(m_socket,m_receivedData,BUFLEN, 0 ,(sockaddr*)&m_si_other, &m_si_other_len)>0){
           cout << "set init good" << endl;
           m_initGood=true;
-          m_convertedData = byteToInt(m_receivedData);
+          byteToInt(m_receivedData,m_convertedData);
       }
       else {
       cout<< "timeout reached" << endl;
@@ -70,21 +70,19 @@ void Client::receivePacket(){
            break;
         }
         else {
-            cout << "packet received = " << m_receivedData<<endl;
+            cout << "packet received" <<endl;
+            byteToInt(m_receivedData,m_convertedData);
         }
      }
 }
-int Client::byteToInt(char *byteArray){
+void Client::byteToInt(char *byteArray,int *intArray){
     int currentByte =0;
-    int intArray[8];
-    for (int currentInt =0;currentInt < 8;currentInt++){
+    for (int currentInt =0;currentInt < sizeof(intArray);currentInt++){
 
         intArray[currentInt]=(int)byteArray[currentByte] +(int)(byteArray[currentByte+1] <<8);
         currentByte+=2;
         cout << "received data = " <<  intArray[currentInt] << endl;
     }
-    return intArray;
-
 }
 
 void Client::sendPacket() {
@@ -92,7 +90,7 @@ void Client::sendPacket() {
     sendto(m_socket,m_sendData,BUFLEN, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
 }
 int Client::getData(){
-    return m_convertedData;
+    return *m_convertedData;
 
 }
 
