@@ -65,7 +65,7 @@ void Client::receivePacket(){
 void Client::sendPacket() {
     sendto(m_socket,m_sendData,BUFLEN, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
 }
-char Client::getData(){
+char* Client::getData(){
     return m_receivedData;
 }
 Client::~Client() {
