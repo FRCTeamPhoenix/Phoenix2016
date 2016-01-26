@@ -27,6 +27,8 @@ public:
 
     Client();
 
+    char* getData();
+
     void initilizeSocket();
 
     void receivePacket();

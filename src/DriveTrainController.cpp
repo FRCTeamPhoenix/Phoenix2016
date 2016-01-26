@@ -25,6 +25,16 @@ DriveTrainController::DriveTrainController(
 DriveTrainController::~DriveTrainController() {
 
 }
+
+void DriveTrainController::autoDrive()
+{
+   float twistRatio = 1 - m_power;
+   float leftPower = m_power + (m_twist * twistRatio);
+   float rightPower = m_power - (m_twist * twistRatio);
+
+   m_driveTrain->TankDrive(leftPower, rightPower);
+}
+
 // ThrottleRatio .8 is too high :(
 void DriveTrainController::manualDrive(float throttleRatio) {
    float throttle = m_driveStation->getJoystickThrottle();
@@ -42,6 +52,9 @@ void DriveTrainController::run() {
    switch (getCurrentState()) {
    case NORMAL:
       manualDrive(0.6f);
+      break;
+   case AUTOTEST:
+      autoDrive();
       break;
    case TEST:
       throttleRatio = (m_driveStation->getJoystickThrottle() + 1) / 2;
@@ -111,4 +124,10 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
 
 void DriveTrainController::setCurrentState(STATE currentState) {
    m_currentState = currentState;
+}
+
+void DriveTrainController::setDriveConstants(float power, float twist)
+{
+   m_power = power;
+   m_twist = twist;
 }

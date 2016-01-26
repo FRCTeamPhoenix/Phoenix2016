@@ -16,7 +16,14 @@
 class DriveTrainController: public BaseController {
 public:
    enum STATE {
-      IDLE, NORMAL, AIMING_TARGET, AIMING_OBSTACLE, OBSTACLE, TEST, AUTO
+      IDLE,
+      NORMAL,
+      AUTOTEST,
+      AIMING_TARGET,
+      AIMING_OBSTACLE,
+      OBSTACLE,
+      TEST,
+      AUTO
    };
    DriveTrainController(RobotDrive* m_driveTrain,
          DriveStation* m_driveStation,
@@ -24,6 +31,7 @@ public:
          Encoder* rightWheelEncoder);
    virtual ~DriveTrainController();
    void run();
+   void autoDrive(void);
    void manualDrive(float throttleRatio);
    void aimRobotClockwise(float degree, float motorSpeed);
    void aimRobotCounterclockwise(float degree, float motorSpeed);
@@ -31,6 +39,7 @@ public:
 
    STATE getCurrentState();
    void setCurrentState(STATE currentState);
+   void setDriveConstants(float, float);
 
 private:
    RobotDrive* m_driveTrain;
@@ -43,6 +52,7 @@ private:
    int32_t m_targetTickRight;
    int32_t m_targetTickLeft;
    STATE m_currentState;
+   float m_power, m_twist;
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */
