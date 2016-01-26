@@ -64,7 +64,7 @@ namespace DriveStationConstants{
 namespace ConfigVariables {
 const static int numberOfVars = 1;
    const static std::string variables[numberOfVars] = {
-         "Team Number"
+         "teamNumber"
    };
    const static std::string types[numberOfVars] = {
          "int"
