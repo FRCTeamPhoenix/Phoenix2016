@@ -36,4 +36,12 @@ struct DriveStationConstants{
    const static uint32_t gamepadButtons = 12;
 };
 
+struct LoaderSenseConstants {
+   enum ballPositionData {
+      radius,
+      centerX,
+      centerY
+   };
+};
+
 #endif /* SRC_CONSTANTS_H_ */

@@ -96,8 +96,8 @@ void Client::sendPacket() {
     cout << "sending packet" << endl;
     sendto(m_socket,m_sendData,BUFLEN, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
 }
-int Client::getData(){
-    return *m_convertedData;
+int Client::getData(int i){
+    return m_convertedData[i];
 
 }
 

@@ -22,16 +22,26 @@ void LoaderSense::updateBallPositionData() {
    }
 
    // TODO: Make sure that the client method is in the appropriate format to correspond with this setup
-   // IMPORTANT QUESTIONS for the rest of the vision group: Will all data be sent over in a single packet,
-   // or will separate packets be sent over for each data subgroup? --> What kinds of getter methods and
-   // arrays will I be working with?
+   // May have to mess with configuration of arrays in Aiming class
 
-   /*
+/*
    for(int i = 0; i < ARRAY_SIZE(m_currentBallPosition); i++) {
-      m_currentBallPosition[i] = m_client->getData(i);
+      m_currentBallPosition[i] = m_client->getData(ARRAY_SIZE(Aiming::m_currentCoordinates) - 1 + i);
    }
-   */
+*/
 
+}
+
+int getCurrentRadius() {
+   return 0;
+}
+
+int getCurrentXCenter() {
+   return 0;
+}
+
+int getCurrentYCenter() {
+   return 0;
 }
 
 void LoaderSense::setCurrentState(STATE newState) {
