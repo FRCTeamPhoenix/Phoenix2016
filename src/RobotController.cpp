@@ -21,15 +21,13 @@ void RobotController::run()
       performAction();
    else if (m_state == ROBOT_MANUAL)
       {
-	 m_driveTrain->run();
-	 m_shooterController->run();
-	 m_loaderController->run();
+	 // TODO: Set drivetrain state to manual and add button-press handling.
       }
 }
 
-void RobotController::addAction(ActionType action, float pow, int ms, float turn)
+void RobotController::addAction(ActionType action, float pow, float secs, float turn)
 {
-   Action* act = new Action(m_driveStation, m_driveTrain, action, pow, ms, turn);
+   Action* act = new Action(m_driveStation, m_driveTrain, action, pow, secs, turn);
    m_queue.insert(m_queue.begin(), act);
 }
 

@@ -55,6 +55,8 @@ public:
 	 {
 	    m_robotController.run();
 	    m_driveTrainController.run();
+	    m_shooterController.run();
+	    m_loaderController.run();
 	 }
    }
 

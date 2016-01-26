@@ -27,7 +27,7 @@ class RobotController : public BaseController
    virtual ~RobotController();
 
    void run();
-   void addAction(ActionType, float = 0.0f, int = 0, float = 0.0f);
+   void addAction(ActionType, float = 0.0f, float = 0.0f, float = 0.0f);
    void performAction(void);
  private:
    STATE m_state;
