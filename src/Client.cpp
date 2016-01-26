@@ -1,6 +1,6 @@
 #include "Client.h"
 #define NPACK 1
-#define PORT 31418
+#define PORT 31415 //port currently used for testing, can be changed
 #define SRV_IP "10.0.42.25" //change ip address
 
 
@@ -11,62 +11,95 @@ Client::Client() {
 
 }
 void Client::initilizeSocket(){
-    cout << "init socket" << endl;
+   cout<<"init socket" << endl;
    m_socket=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
    int sendCount=0;
    m_initGood=false;
-   //defining and setting socket timeout
+   //defcouining and setting socket timeout
    struct timeval timeout;
    timeout.tv_sec=1;
    timeout.tv_usec=0;
-   cout << "set socket timout" << endl;
+   cout<<"set socket timeout" << endl;
 
    setsockopt(m_socket, SOL_SOCKET, SO_RCVTIMEO,&timeout,sizeof(timeout));
 
    //Initializing everything to zero
-   memset((char *) &m_si_me, 0, sizeof(m_si_me));
+   //memset((char *) &m_si_me, 0, sizeof(m_si_me));
 
-
-   m_si_me.sin_family = AF_INET;
-   m_si_me.sin_port = htons(PORT);
-   m_si_me.sin_addr.s_addr = htonl(INADDR_ANY);
+   //Only used in case of bind probably not used right now.
+   //m_si_me.sin_family = AF_INET;
+   //m_si_me.sin_port = htons(PORT);
+   //m_si_me.sin_addr.s_addr = htonl(INADDR_ANY);
 
    m_si_other.sin_family = AF_INET;
    m_si_other.sin_port = htons(PORT);
    m_si_other.sin_addr.s_addr = inet_addr(SRV_IP);
 
    memset(m_receivedData,0,BUFLEN);
-
-   cout << "start ping loop" << endl;
-   while (!m_initGood && sendCount< 10){
-
+   memset(m_convertedData,0,8);
+   cout<<"start ping loop" << endl;
+   char buf[BUFLEN];
+   while (sendCount< 10){
       sendCount++;
-      cout << "sending ping " << sendCount << endl;
-      sendto(m_socket,"start",5, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
-      cout << "waiting to receive" << endl;
-      if ((recvfrom(m_socket,m_receivedData,BUFLEN, 0 ,(sockaddr*)&m_si_other, &m_si_other_len))>0){
-          m_initGood = true;
-          cout << "received packet" << endl;
+
+      cout<<"send ping" << endl;
+      memset(buf,0,sizeof(buf));
+      sprintf(buf,"ping number %d", sendCount);
+
+      sendto(m_socket,buf,15, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
+
+      cout<<"waiting to receive" << endl;
+      Wait(1);
+
+      if(recvfrom(m_socket,m_receivedData,1024, MSG_TRUNC ,(sockaddr*)&m_si_other, &m_si_other_len)){
+          byteToInt(m_receivedData,m_convertedData);
+          cout<<"init good" <<endl;
+          m_initGood=true;
+
       }
-      cout << "Timout Reached" << endl;
+      else {
+          cout << "timout" << endl;
+      }
+
+
+
     }
+
 
 }
 void Client::receivePacket(){
         socklen_t m_si_other_len=sizeof(m_si_other);
+
         while (true){
         // breaks out of loop in case of error
-        if(recvfrom(m_socket,m_receivedData,BUFLEN, 0 ,(sockaddr*)&m_si_other, &m_si_other_len) == -1) {
+        cout << "waiting to receive packet" << endl;
+        if(recvfrom(m_socket,m_receivedData,BUFLEN, 0 ,(sockaddr*)&m_si_other, &m_si_other_len) < 0) {
            break;
+        }
+        else {
+            cout << "packet received" <<endl;
+            byteToInt(m_receivedData,m_convertedData);
         }
      }
 }
+void Client::byteToInt(char *byteArray,int *intArray){
+    int currentByte =0;
+    for (int currentInt = 0; currentInt<8;currentInt++){
+
+        intArray[currentInt]=(int)byteArray[currentByte] +(int)(byteArray[currentByte+1] <<8);
+        currentByte+=2;
+        cout << "received data = " <<  intArray[currentInt] << endl;
+    }
+}
 
 void Client::sendPacket() {
+    cout << "sending packet" << endl;
     sendto(m_socket,m_sendData,BUFLEN, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
 }
-char* Client::getData(){
-    return m_receivedData;
+int Client::getData(){
+    return *m_convertedData;
+
 }
+
 Client::~Client() {
 }
