@@ -45,10 +45,10 @@ public:
        if (m_client.m_initGood){
           cout<<"init good start thread" << endl;
           std::thread receiveThread(runClient, this, &m_client);
+          receiveThread.detach();
        }
 
    }
-
    void OperatorControl()
    {
       while(IsOperatorControl() && IsEnabled())

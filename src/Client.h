@@ -16,6 +16,7 @@ using namespace std;
 
 class Client {
 public:
+    bool m_unreadData;
     char m_receivedData[BUFLEN];
     static bool receive;
     int m_socket;
