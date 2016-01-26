@@ -70,9 +70,6 @@ void ConfigEditor::saveConfig() {
 
    std::string type = ConfigVariables::types[pos];
 
-   if(type != ConfigVariables::types[pos])
-      return;
-
    if(type == "int") {
       Preferences::GetInstance()->PutInt(keyName, std::stoi(newValue));
    } else if(type == "float") {
