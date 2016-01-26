@@ -18,14 +18,14 @@
 
 class ShooterController : public BaseController{
 public:
-	enum STATE{
-	   OFF,
-	   ARMING,
-	   ARMED,
-	   STOPPING,
-	   PREPARINGTOSHOOT,
-	   SHOOTING
-	};
+   enum STATE{
+      OFF,
+      ARMING,
+      ARMED,
+      STOPPING,
+      PREPARINGTOSHOOT,
+      SHOOTING
+   };
 
    ShooterController(LoaderController * loader, Flywheel * flywheel);
    virtual ~ShooterController();

@@ -20,7 +20,7 @@ static const float stationaryMotorSpeed = 1.0;
 static const float homingSpeed = 0.1;
 
 class LoaderController : public BaseController{
-
+private:
    Talon* m_verticalMotor;
    Talon* m_intakeMotor;
    Talon* m_stationaryMotor;
@@ -31,13 +31,15 @@ class LoaderController : public BaseController{
 
 
 public:
-	enum STATE {
-	        HOMING,
-		EMPTY,
-		LOADING,
-		LOADED,
-		LOADINGTOSHOOTER
-	};
+   enum STATE {
+      HOMING,
+      HOMED,
+      EMPTY,
+      LOADING,
+      LOADINGTOSHOOTER,
+      LOADED,
+      SHOOTING
+   };
 
 
    LoaderController(Talon* verticalMotor,
@@ -47,21 +49,25 @@ public:
          DigitalInput* lowerLimit,
          DigitalInput* loadedSensor,
          Encoder* armEncoder);
-	void run();
-	void moveArm();
-	void angleOfArm();
-	void homing();
-	virtual ~LoaderController();
+   void run();
+   void moveArm();
+   void angleOfArm();
+   void homing();
+   void setHomed();
+   void setLoaded();
+   void setShooting();
+   void setIdle();
+   virtual ~LoaderController();
 
-	STATE getCurrentState();
-	STATE getGoalState();
+   STATE getCurrentState();
+   STATE getGoalState();
 
 private:
-	STATE m_goalState;
-        enum HOMINGSTATES{
-           LOOKINGFORLOWERLIMIT,
-           HOMINGCOMPLETE
-        }m_homingState;
+   STATE m_goalState;
+   enum HOMINGSTATES{
+      LOOKINGFORLOWERLIMIT,
+      HOMINGCOMPLETE
+   }m_homingState;
 };
 
 #endif /* SRC_LOADERCONTROLLER_H_ */

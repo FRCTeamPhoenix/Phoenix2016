@@ -7,25 +7,27 @@
 
 #ifndef SRC_ROBOTCONTROLLER_H_
 #define SRC_ROBOTCONTROLLER_H_
-
-
+#include "WPILib.h"
 #include "DriveStation.h"
 #include "BaseController.h"
 
+class AutoController;
+
 class RobotController : public BaseController{
 public:
-   RobotController(DriveStation * driveStation);
-
    enum STATE{
-     AUTO,
-     MANUAL
+      AUTO,
+      MANUAL
    };
+
+   RobotController(DriveStation*, AutoController*);
    virtual ~RobotController();
    void run();
+   DriveStation* getDriveStation(void);
 
 private:
-   DriveStation * m_driveStation;
-
+   DriveStation* m_driveStation;
+   AutoController* m_auto;
 };
 
 #endif /* SRC_ROBOTCONTROLLER_H_ */

@@ -11,21 +11,14 @@ DriveTrainController::DriveTrainController(
       RobotDrive* robotDrive,
       DriveStation* driveStation,
       Encoder* leftWheelEncoder,
-      Encoder* rightWheelEncoder,
-      int32_t m_initalEncoderValueLeft,
-      int32_t m_initalEncoderValueRight,
-      int32_t m_targetTickRight,
-      int32_t m_targetTickLeft
-      ) :
-   m_driveTrain(robotDrive),
-   m_driveStation(driveStation),
-   m_leftWheelEncoder(leftWheelEncoder),
-   m_rightWheelEncoder(rightWheelEncoder),
-   m_initalEncoderValueLeft(m_initalEncoderValueLeft),
-   m_initalEncoderValueRight(m_initalEncoderValueRight),
-   m_targetTickRight(m_targetTickRight),
-   m_targetTickLeft(m_targetTickLeft)
-{
+      Encoder* rightWheelEncoder) :
+      m_driveTrain(robotDrive), m_driveStation(driveStation),
+      m_leftWheelEncoder(leftWheelEncoder),
+      m_rightWheelEncoder(rightWheelEncoder) {
+   m_initalEncoderValueLeft = 0;
+   m_initalEncoderValueRight = 0;
+   m_targetTickRight = 0;
+   m_targetTickLeft = 0;
    m_goalState = IDLE;
 }
 
@@ -33,8 +26,8 @@ DriveTrainController::~DriveTrainController() {
 
 }
 // ThrottleRatio .8 is too high :(
-void DriveTrainController::manualDrive(float throttleRatio){
-   float throttle = m_driveStation->getThrottle();
+void DriveTrainController::manualDrive(float throttleRatio) {
+   float throttle = m_driveStation->getJoystickThrottle();
    float twist = m_driveStation->getTwist();
    float twistRatio = 1 - throttleRatio;
 
@@ -45,22 +38,33 @@ void DriveTrainController::manualDrive(float throttleRatio){
 }
 
 void DriveTrainController::run() {
-
-   STATE currentState = getCurrentState();
-
-   if(currentState == NORMAL){
+   float throttleRatio = 0;
+   switch (getCurrentState()) {
+   case NORMAL:
       manualDrive(0.6f);
-   }
-   else if(currentState == TEST){
-      float throttleRatio = (m_driveStation->getJoystickThrottle() + 1) / 2;// .8 is too high :(
+      break;
+   case TEST:
+      throttleRatio = (m_driveStation->getJoystickThrottle() + 1) / 2;
       manualDrive(throttleRatio);
-   }
-   else if(currentState == AUTO){
-
-   }
+      break;
+   case IDLE:
+      m_driveTrain->StopMotor();
+      break;
+   case AIMING_TARGET:
+      manualDrive(0.6f);
+      break;
+   case AIMING_OBSTACLE:
+      manualDrive(0.6f);
+      break;
+   case OBSTACLE:
+      manualDrive(0.6f);
+      break;
+   default:
+      break;
+   };
 }
 
-void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed){
+void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
    m_initalEncoderValueRight = m_rightWheelEncoder->Get();
    m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
    float ticks = degree * RobotConstants::wheelEncoderTicksPerDegree;
@@ -73,23 +77,18 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed){
    /*
     * For motor direction true means forward and false means backward
     */
-   if (degree > 0){
-      int m_rightMotorTurnDirection = -1;
-      int m_leftMotorTurnDirection = 1;
-      if (m_targetTickRight > m_initalEncoderValueRight){
+   if (degree > 0) {
+      if (m_targetTickRight > m_initalEncoderValueRight) {
          rightPower = -motorSpeed;
       }
-      if (m_targetTickLeft < m_initalEncoderValueLeft){
+      if (m_targetTickLeft < m_initalEncoderValueLeft) {
          leftPower = motorSpeed;
       }
-   }
-   else {
-      int m_rightMotorTurnDirection = 1;
-      int m_leftMotorTurnDirection = -1;
-      if (m_targetTickRight < m_initalEncoderValueRight){
+   } else {
+      if (m_targetTickRight < m_initalEncoderValueRight) {
          rightPower = motorSpeed;
       }
-      if (m_targetTickLeft > m_initalEncoderValueLeft){
+      if (m_targetTickLeft > m_initalEncoderValueLeft) {
          leftPower = -motorSpeed;
       }
    }
@@ -97,14 +96,19 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed){
    m_goalState = AUTO;
 }
 
-void DriveTrainController::aimRobotCounterclockwise(float degree, float motorSpeed){
+void DriveTrainController::aimRobotCounterclockwise(float degree,
+      float motorSpeed) {
    aimRobotClockwise(-degree, motorSpeed);
 }
 
-void DriveTrainController::stopRobot(){
+void DriveTrainController::stopRobot() {
    m_goalState = IDLE;
 }
 
 DriveTrainController::STATE DriveTrainController::getCurrentState() {
-   return TEST;
+   return m_currentState;
+}
+
+void DriveTrainController::setCurrentState(STATE currentState) {
+   m_currentState = currentState;
 }

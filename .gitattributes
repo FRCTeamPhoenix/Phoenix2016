@@ -1,0 +1,13 @@
+# Default
+* text eol=lf
+
+*.cpp text eol=lf
+*.c text eol=lf
+*.h text eol=lf
+*.md text eol=lf
+*.gitignore text eol=lf
+
+*.o binary
+*.png binary
+*.jpeg binary
+*.jpg binary

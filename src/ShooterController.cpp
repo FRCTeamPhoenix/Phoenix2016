@@ -8,8 +8,8 @@
 #include <ShooterController.h>
 
 ShooterController::ShooterController(LoaderController* loader, Flywheel * flywheel):
-   m_loaderController(loader),
-   m_flywheel(flywheel)
+m_loaderController(loader),
+m_flywheel(flywheel)
 {
    m_goalState = OFF;
 }
@@ -21,22 +21,23 @@ void ShooterController::run(){
    switch(getGoalState()){
    case OFF:
       m_flywheel->stopMotors();
-      LoaderController::m_stationaryMotor->Set(0.0);
+      m_loaderController->setIdle();
       break;
    case ARMED:
       m_flywheel->startMotors(0.6);
       break;
    case SHOOTING:
-      LoaderController::STATE loaderState = m_loaderController->getCurrentState();
-      if (loaderState == LoaderController::LOADED){
-         LoaderController::m_stationaryMotor->Set(stationaryMotorSpeed);
+      if (m_loaderController->getCurrentState() == LoaderController::STATE::LOADED) {
+         m_loaderController->setShooting();
          m_flywheel->startMotors(0.6);
       }
       else {
          setOff();
       }
       break;
-   default:
+   case ARMING:
+   case STOPPING:
+   case PREPARINGTOSHOOT:
       break;
    }
 }
@@ -86,4 +87,3 @@ ShooterController::STATE ShooterController::getCurrentState(){
 ShooterController::STATE ShooterController::getGoalState(){
    return m_goalState;
 }
-

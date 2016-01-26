@@ -24,15 +24,15 @@ LoaderController::LoaderController(
       m_lowerLimit(lowerLimit),
       m_loadedSensor(loadedSensor),
       m_armEncoder(armEncoder)
-      {
-      m_goalState = HOMING;
-      m_homingState = LOOKINGFORLOWERLIMIT;
-	// TODO Auto-generated constructor stub
+{
+   m_goalState = HOMING;
+   m_homingState = LOOKINGFORLOWERLIMIT;
+   // TODO Auto-generated constructor stub
 
 }
 
 LoaderController::~LoaderController() {
-	// TODO Auto-generated destructor stub
+   // TODO Auto-generated destructor stub
 }
 
 void LoaderController::moveArm(){
@@ -111,4 +111,20 @@ LoaderController::STATE LoaderController::getCurrentState() {
 
 LoaderController::STATE LoaderController::getGoalState(){
    return m_goalState;
+}
+
+void LoaderController::setHomed(){
+   m_goalState = HOMED;
+}
+
+void LoaderController::setLoaded(){
+   m_goalState = LOADED;
+}
+
+void LoaderController::setShooting(){
+   m_goalState = SHOOTING;
+}
+
+void LoaderController::setIdle(){
+   //To do: figure out logic
 }

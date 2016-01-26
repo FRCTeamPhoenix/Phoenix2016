@@ -13,25 +13,15 @@
 #include "constants.h"
 #include "DriveStation.h"
 
-class DriveTrainController : public BaseController{
+class DriveTrainController: public BaseController {
 public:
-	enum STATE{
-	   IDLE,
-	   NORMAL,
-	   AIMING_TARGET,
-	   AIMING_OBSTACLE,
-	   OBSTACLE,
-	   TEST,
-	   AUTO
-	};
+   enum STATE {
+      IDLE, NORMAL, AIMING_TARGET, AIMING_OBSTACLE, OBSTACLE, TEST, AUTO
+   };
    DriveTrainController(RobotDrive* m_driveTrain,
          DriveStation* m_driveStation,
          Encoder* leftWheelEncoder,
-         Encoder* rightWheelEncoder,
-         int32_t initalEncoderValueLeft,
-         int32_t initalEncoderValueRight,
-         int32_t targetTickRight,
-         int32_t targetTickLeft);
+         Encoder* rightWheelEncoder);
    virtual ~DriveTrainController();
    void run();
    void manualDrive(float throttleRatio);
@@ -40,6 +30,8 @@ public:
    void stopRobot();
 
    STATE getCurrentState();
+   void setCurrentState(STATE currentState);
+
 private:
    RobotDrive* m_driveTrain;
    DriveStation * m_driveStation;
@@ -50,8 +42,7 @@ private:
    int32_t m_initalEncoderValueRight;
    int32_t m_targetTickRight;
    int32_t m_targetTickLeft;
-   bool m_rightMotorDirection = true; //true means forward and false means backwards
-   bool m_leftMotorDirection = true; //true means forward and false means backwards
+   STATE m_currentState;
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */
