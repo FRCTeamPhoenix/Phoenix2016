@@ -70,6 +70,9 @@ void ConfigEditor::saveConfig() {
 
    std::string type = ConfigVariables::types[pos];
 
+   if(! isType(newValue,type))
+      return;
+
    if(type == "int") {
       Preferences::GetInstance()->PutInt(keyName, std::stoi(newValue));
    } else if(type == "float") {
@@ -79,6 +82,35 @@ void ConfigEditor::saveConfig() {
    } else {
       Preferences::GetInstance()->PutString(keyName, newValue);
    }
+}
+
+bool ConfigEditor::isType(std::string str, std::string type){
+   if(type == "int"){
+      try{
+         std::stoi(str);
+      }
+      catch(std::invalid_argument& e){
+         return false;
+      }
+   }
+   else if(type == "float"){
+         try{
+            std::stof(str);
+         }
+         catch(std::invalid_argument& e){
+            return false;
+         }
+      }
+
+   else if(type == "double"){
+         try{
+            std::stod(str);
+         }
+         catch(std::invalid_argument& e){
+            return false;
+         }
+      }
+return true;
 }
 
 void ConfigEditor::update() {
