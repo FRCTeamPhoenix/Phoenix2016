@@ -70,6 +70,9 @@ void ConfigEditor::saveConfig() {
 
    std::string type = ConfigVariables::types[pos];
 
+   if(type != ConfigVariables::types[pos])
+      return;
+
    if(type == "int") {
       Preferences::GetInstance()->PutInt(keyName, std::stoi(newValue));
    } else if(type == "float") {
@@ -88,13 +91,14 @@ void ConfigEditor::update() {
          std::cout << "Button was pressed" << std::endl;
 
          if(i==5) {
+            std::cout << "reached stage one" << std::endl;
             saveConfig();
+            std::cout << "reached stage two with " << Preferences::GetInstance()->GetInt("teamNumber",481516) << std::endl;
          }
          if(i==4) {
             getConfig();
          }
       }
    }
-
 
 }
