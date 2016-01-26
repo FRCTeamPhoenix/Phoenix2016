@@ -17,7 +17,7 @@ LoaderSense::LoaderSense(Client* client, LoaderController* loaderController) :
 void LoaderSense::updateBallPositionData() {
 
    // Placeholder values
-   for(int i = VisionImplementationConstants::numXYVals; i < ARRAY_SIZE(m_currentBallPosition); i++) {
+   for(int i = 0; i < ARRAY_SIZE(m_currentBallPosition); i++) {
       m_currentBallPosition[i] = 23;
    }
 
