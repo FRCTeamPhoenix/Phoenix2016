@@ -8,7 +8,7 @@
 #include "RobotController.h"
 
 RobotController::RobotController(DriveStation* ds, DriveTrainController* dt, ShooterController* shooter, LoaderController* loader)
-   : m_dstation(ds), m_drivet(dt), m_shooter(shooter), m_loader(loader)
+   : m_driveStation(ds), m_driveTrain(dt), m_shooterController(shooter), m_loaderController(loader)
 {
    m_state = ROBOT_AUTO;
 }
@@ -21,15 +21,15 @@ void RobotController::run()
       performAction();
    else if (m_state == ROBOT_MANUAL)
       {
-	 m_drivet->run();
-	 m_shooter->run();
-	 m_loader->run();
+	 m_driveTrain->run();
+	 m_shooterController->run();
+	 m_loaderController->run();
       }
 }
 
 void RobotController::addAction(ActionType action, float pow, int ms, float turn)
 {
-   Action* act = new Action(m_dstation, m_drivet, action, pow, ms, turn);
+   Action* act = new Action(m_driveStation, m_driveTrain, action, pow, ms, turn);
    m_queue.insert(m_queue.begin(), act);
 }
 
@@ -37,7 +37,7 @@ void RobotController::performAction(void)
 {
    if (m_queue.size() == 0)
       {
-	 m_drivet->setCurrentState(DriveTrainController::NORMAL);
+	 m_driveTrain->setCurrentState(DriveTrainController::NORMAL);
 	 return;
       }
    Action *currentAction = m_queue.back();

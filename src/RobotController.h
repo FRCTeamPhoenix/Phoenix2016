@@ -34,10 +34,10 @@ class RobotController : public BaseController
 
    std::vector<Action*> m_queue;
 
-   DriveStation* m_dstation;
-   DriveTrainController* m_drivet;
-   ShooterController * m_shooter;
-   LoaderController * m_loader;
+   DriveStation* m_driveStation;
+   DriveTrainController* m_driveTrain;
+   ShooterController * m_shooterController;
+   LoaderController * m_loaderController;
 };
 
 #endif /* SRC_ROBOTCONTROLLER_H_ */
