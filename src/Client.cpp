@@ -39,7 +39,8 @@ void Client::initilizeSocket(){
    memset(m_convertedData,0,8);
    cout<<"start ping loop" << endl;
    char buf[BUFLEN];
-   while (sendCount < 5){
+   //not tested but should work
+   while (!m_initGood && sendCount < 5){
       sendCount++;
 
       cout<<"send ping " << sendCount << endl;
