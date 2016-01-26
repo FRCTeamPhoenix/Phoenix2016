@@ -36,6 +36,7 @@ struct DriveStationConstants{
    const static uint32_t gamepadButtons = 12;
 };
 
+<<<<<<< HEAD
 struct VisionImplementationConstants {
 
    // Detected corners of target
@@ -51,6 +52,20 @@ struct VisionImplementationConstants {
          ballRadius,
          ballCenterX,
          ballCenterY
+=======
+struct AimingConstants {
+
+   // Detected corners of target
+   enum m_Coordinates {
+         xUpperLeft,
+         yUpperLeft,
+         xUpperRight,
+         yUpperRight,
+         xLowerLeft,
+         yLowerLeft,
+         xLowerRight,
+         yLowerRight
+>>>>>>> refs/remotes/origin/Aiming
       };
 
    const static int numXYVals = 8;
