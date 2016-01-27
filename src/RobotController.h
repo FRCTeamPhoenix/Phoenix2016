@@ -8,26 +8,36 @@
 #ifndef SRC_ROBOTCONTROLLER_H_
 #define SRC_ROBOTCONTROLLER_H_
 
-#include "DriveStation.h"
 #include "BaseController.h"
+#include "DriveStation.h"
+#include "DriveTrainController.h"
+#include "ShooterController.h"
+#include "LoaderController.h"
+#include "Action.h"
 
-class AutoController;
-
-class RobotController : public BaseController{
-public:
-   enum STATE{
-      AUTO,
-      MANUAL
+class RobotController : public BaseController
+{
+ public:
+   enum STATE {
+      ROBOT_AUTO,
+      ROBOT_MANUAL
    };
 
-   RobotController(DriveStation*, AutoController*);
+   RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*);
    virtual ~RobotController();
-   void run();
-   DriveStation* getDriveStation(void);
 
-private:
+   void run();
+   void addAction(ActionType, float = 0.0f, float = 0.0f, float = 0.0f);
+   void performAction(void);
+ private:
+   STATE m_state;
+
+   std::vector<Action*> m_queue;
+
    DriveStation* m_driveStation;
-   AutoController* m_auto;
+   DriveTrainController* m_driveTrain;
+   ShooterController * m_shooterController;
+   LoaderController * m_loaderController;
 };
 
 #endif /* SRC_ROBOTCONTROLLER_H_ */

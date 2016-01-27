@@ -1,15 +1,15 @@
 #include "WPILib.h"
 #include "constants.h"
 #include "RobotController.h"
-#include "AutoController.h"
 #include "DriveStation.h"
 #include "DriveTrainController.h"
+#include "LoaderController.h"
+#include "ShooterController.h"
 #include <thread>
 #include "Client.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
-
 
 class Robot;
 
@@ -24,7 +24,8 @@ class Robot: public SampleRobot
    DriveStation m_driveStation;
    RobotDrive m_driveTrain;
    DriveTrainController m_driveTrainController;
-   AutoController m_autoController;
+   ShooterController m_shooterController;
+   LoaderController m_loaderController;
    RobotController m_robotController;
    Client client;
 public:
@@ -38,8 +39,9 @@ public:
 		   PortAssign::frontRightWheelMotor,
 		   PortAssign::rearRightWheelMotor),
       m_driveTrainController(&m_driveTrain, &m_driveStation),
-      m_autoController(&m_driveStation, &m_driveTrainController),
-      m_robotController(&m_driveStation, &m_autoController)
+      m_shooterController(&m_flywheels),
+      m_loaderController(),
+      m_robotController(&m_driveStation, &m_driveTrainController, &m_shooterController, &m_loaderController)
    {
       // cout << "call init socket" << endl;
       // client.initilizeSocket();
@@ -52,8 +54,10 @@ public:
    {
       while(IsOperatorControl() && IsEnabled())
 	 {
-	    m_autoController.run();
+	    m_robotController.run();
 	    m_driveTrainController.run();
+	    m_shooterController.run();
+	    m_loaderController.run();
 	 }
    }
 
