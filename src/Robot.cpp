@@ -91,6 +91,7 @@ public:
    }
    void Test(){
       std::cout<<"This is test mode"<<std::endl;
+      m_ConfigEditor.showAllKeys();
       std::cout<<Preferences::GetInstance()->GetString("testKey","nothing")<<std::endl;
       while (IsTest() && IsEnabled()) {
          m_driveStation.snapShot();

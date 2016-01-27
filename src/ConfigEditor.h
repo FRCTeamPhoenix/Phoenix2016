@@ -18,6 +18,7 @@ public:
    void saveConfig();
    void getConfig();
    bool isType(std::string str, std::string type);
+   void showAllKeys();
 private:
    DriveStation* m_DriveStation;
 };

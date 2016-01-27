@@ -62,12 +62,14 @@ namespace DriveStationConstants{
    const static uint32_t gamepadButtons = 12;
 };
 namespace ConfigVariables {
-const static int numberOfVars = 1;
+const static int numberOfVars = 2;
    const static std::string variables[numberOfVars] = {
-         "teamNumber"
+         "teamNumber",
+         "throttle"
    };
    const static std::string types[numberOfVars] = {
-         "int"
+         "int",
+         "float"
    };
 };
 

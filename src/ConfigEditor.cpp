@@ -113,6 +113,15 @@ bool ConfigEditor::isType(std::string str, std::string type){
 return true;
 }
 
+void ConfigEditor::showAllKeys(){
+   std::string final = "";
+   for(int i=0; i<ConfigVariables::numberOfVars; i++){
+      final+=ConfigVariables::variables[i]+"     "+ConfigVariables::types[i]+"\n";
+   }
+   std::cout<<final<<std::endl;
+   SmartDashboard::PutString("Keys",final);
+}
+
 void ConfigEditor::update() {
    for (int i = 0; i < 6; i++) {
       if (m_DriveStation->getButtonInput(i)) {
