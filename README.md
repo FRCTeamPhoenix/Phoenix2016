@@ -25,4 +25,6 @@ git config --global core.autocrlf true
 ### Fix CRLFs in directory
 ```bash
  find ./ -type f -exec sed -i -e 's/^M$//g' {} \;
+ # Or, much more concisely:
+ sed -i 's/^M//g' *
 ```
