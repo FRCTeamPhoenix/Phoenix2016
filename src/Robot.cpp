@@ -1,16 +1,16 @@
 #include "WPILib.h"
 #include "constants.h"
 #include "RobotController.h"
-#include "AutoController.h"
 #include "DriveStation.h"
 #include "DriveTrainController.h"
-#include <sstream>
-#include <thread>
+#include "LoaderController.h"
+#include "ShooterController.h"
 #include "Client.h"
+#include <thread>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 using namespace std;
-
 
 class Robot;
 
@@ -26,7 +26,15 @@ class Robot: public SampleRobot
    DriveStation m_driveStation;
    RobotDrive m_driveTrain;
    DriveTrainController m_driveTrainController;
-   AutoController m_autoController;
+   Talon m_verticalMotor;
+   Talon m_intakeMotor;
+   Talon m_stationaryMotor;
+   DigitalInput m_upperLimit;
+   DigitalInput m_lowerLimit;
+   DigitalInput m_loadedSensor;
+   Encoder m_armEncoder;
+   LoaderController m_loaderController;
+   ShooterController m_shooterController;
    RobotController m_robotController;
    Client client;
 
@@ -40,24 +48,33 @@ public:
       m_driveStation(&m_joystick, &m_gamepad),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
       m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder),
-      m_autoController(&m_driveStation,&m_driveTrainController),
-      m_robotController(&m_driveStation, &m_autoController)
-{
+      m_verticalMotor(PortAssign::verticalMotor),
+      m_intakeMotor(PortAssign::intakeMotor),
+      m_stationaryMotor(PortAssign::stationaryMotor),
+      m_upperLimit(PortAssign::upperLimit),
+      m_lowerLimit(PortAssign::lowerLimit),
+      m_loadedSensor(PortAssign::loadedSensor),
+      m_armEncoder(PortAssign::armEncoder),
+      m_loaderController(&m_verticalMotor, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder),
+      m_shooterController(&m_loaderController, &m_flywheels),
+      m_robotController(&m_driveStation, &m_driveTrainController, &m_shooterController, &m_loaderController){
       SmartDashboard::init();
+
       // cout << "call init socket" << endl;
       // client.initilizeSocket();
       // if (client.m_initGood){
       //         std::thread receiveThread(runClient, this, &client);
       // }
-}
+   }
 
 
-   void OperatorControl()
-   {
-      while(IsOperatorControl() && IsEnabled())
-      {
+   void OperatorControl(){
+      while(IsOperatorControl() && IsEnabled()){
          m_driveStation.snapShot();
          m_robotController.run();
+         m_driveTrainController.run();
+         m_shooterController.run();
+         m_loaderController.run();
       }
    }
 

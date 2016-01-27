@@ -18,6 +18,15 @@ struct PortAssign {
    //Flywheels
    const static uint32_t flywheels = 5; //Both on the same motor controller
 
+   //Loader
+   const static uint32_t verticalMotor = 6;
+   const static uint32_t intakeMotor = 7;
+   const static uint32_t stationaryMotor = 8;
+   const static uint32_t upperLimit = 9;
+   const static uint32_t lowerLimit = 10;
+   const static uint32_t loadedSensor = 11;
+   const static uint32_t armEncoder = 12;
+
    // Controllers
    const static uint32_t joystick = 0;
    const static uint32_t gamepad = 1;
