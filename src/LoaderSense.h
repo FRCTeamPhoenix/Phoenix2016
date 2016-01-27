@@ -19,19 +19,23 @@ public:
 
    enum STATE {
       IDLE,
-      INITIAL_ALIGN,
+      ROTATING,
       APPROACHING,
-      FINAL_ALIGN,
+      BACKUP,
       TARGETED
    };
 
    LoaderSense(Client*, LoaderController*);
+   void beginAligning();
    void updateBallPositionData();
    int getCurrentRadius();
    int getCurrentXCenter();
    int getCurrentYCenter();
    void setCurrentState(STATE);
    STATE getCurrentState();
+   void rotate();
+   void approach();
+   void backup();
    void run();
    ~LoaderSense();
 

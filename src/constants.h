@@ -36,10 +36,11 @@ struct DriveStationConstants{
    const static uint32_t gamepadButtons = 12;
 };
 
-struct VisionImplementationConstants {
+// TARGET VALUES (SHOOTER)
+struct AimingConstants {
 
    // Detected corners of target
-   enum positionData {
+   enum targetPositionData {
          xUpperLeft,
          yUpperLeft,
          xUpperRight,
@@ -48,17 +49,34 @@ struct VisionImplementationConstants {
          yLowerLeft,
          xLowerRight,
          yLowerRight,
-         ballRadius,
-         ballCenterX,
-         ballCenterY
       };
 
-   const static int numXYVals = 8;
+   const static int numTargetVals = 8;
 
    // These may need to be changed depending upon the chosen coordinate system
    const static int leftVisionBoundary = 30;
    const static int rightVisionBoundary = 290;
    const static int maxTiltingFactor = 20;
+
+};
+
+
+// BALL VALUES (LOADER)
+struct LoaderSenseConstants {
+
+   enum ballPositionData {
+         ballRadius,
+         ballCenterX,
+         ballCenterY
+      };
+
+   const static int numBallVals = 3;
+
+   // Basically placeholder values (educated guesses)
+   const static int optimalRadius = 150;
+   const static int optimalCenterX = 120;
+   const static int optimalCenterY = 160;
+   const static int maxAlignmentOffset = 20;
 
 };
 

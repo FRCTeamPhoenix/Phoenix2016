@@ -32,8 +32,8 @@ void Aiming::beginAiming() {
 void Aiming::getNewImageData() {
 
    // Updates array of current coordinates with data received by client
-   for(int i = 0; i < AimingConstants::numXYVals; i++) {
-      m_currentCoordinates[i] = m_client->getData(i);
+   for(int i = 0; i < AimingConstants::numTargetVals; i++) {
+      m_currentTargetCoordinates[i] = m_client->getData(i);
    }
 
 }
@@ -43,8 +43,8 @@ void Aiming::align() {
 
    // Robot is too far left to see target
    // Negative values indicate missing coordinates
-   if (m_currentCoordinates[AimingConstants::xUpperLeft] < AimingConstants::leftVisionBoundary ||
-         m_currentCoordinates[AimingConstants::xLowerLeft] < AimingConstants::leftVisionBoundary) {
+   if (m_currentTargetCoordinates[AimingConstants::xUpperLeft] < AimingConstants::leftVisionBoundary ||
+         m_currentTargetCoordinates[AimingConstants::xLowerLeft] < AimingConstants::leftVisionBoundary) {
 
       //TESTING
       cout << "Moving right" << endl;
@@ -54,10 +54,10 @@ void Aiming::align() {
 
    // Robot is too far right to see target
    // Negative values indicate missing coordinates
-   else if (m_currentCoordinates[AimingConstants::xUpperRight] > AimingConstants::rightVisionBoundary ||
-         m_currentCoordinates[AimingConstants::xLowerRight] > AimingConstants::rightVisionBoundary ||
-         m_currentCoordinates[AimingConstants::xUpperRight] < 0 ||
-         m_currentCoordinates[AimingConstants::xLowerRight] < 0) {
+   else if (m_currentTargetCoordinates[AimingConstants::xUpperRight] > AimingConstants::rightVisionBoundary ||
+         m_currentTargetCoordinates[AimingConstants::xLowerRight] > AimingConstants::rightVisionBoundary ||
+         m_currentTargetCoordinates[AimingConstants::xUpperRight] < 0 ||
+         m_currentTargetCoordinates[AimingConstants::xLowerRight] < 0) {
 
       //TESTING
       cout << "Moving left" << endl;
@@ -75,10 +75,10 @@ void Aiming::align() {
 void Aiming::rotate() {
 
    // Right side of robot is tilted too far forwards
-   if ((m_currentCoordinates[AimingConstants::yUpperRight] -
-         m_currentCoordinates[AimingConstants::yUpperLeft]) > 20 &&
-         (m_currentCoordinates[AimingConstants::yLowerLeft] -
-               m_currentCoordinates[AimingConstants::yLowerRight]) > 20) {
+   if ((m_currentTargetCoordinates[AimingConstants::yUpperRight] -
+         m_currentTargetCoordinates[AimingConstants::yUpperLeft]) > 20 &&
+         (m_currentTargetCoordinates[AimingConstants::yLowerLeft] -
+               m_currentTargetCoordinates[AimingConstants::yLowerRight]) > 20) {
 
       //TESTING
       cout << "Rotating clockwise" << endl;
@@ -88,10 +88,10 @@ void Aiming::rotate() {
    }
 
    // Left side of robot is tilted too far forwards
-   else if ((m_currentCoordinates[AimingConstants::yUpperLeft] -
-         m_currentCoordinates[AimingConstants::yUpperRight]) > 20 &&
-         (m_currentCoordinates[AimingConstants::yLowerRight] -
-               m_currentCoordinates[AimingConstants::yLowerLeft]) > 20) {
+   else if ((m_currentTargetCoordinates[AimingConstants::yUpperLeft] -
+         m_currentTargetCoordinates[AimingConstants::yUpperRight]) > 20 &&
+         (m_currentTargetCoordinates[AimingConstants::yLowerRight] -
+               m_currentTargetCoordinates[AimingConstants::yLowerLeft]) > 20) {
 
       //TESTING
       cout << "Rotating counterclockwise" << endl;
@@ -117,14 +117,14 @@ void Aiming::setCurrentState(Aiming::STATE newState) {
 // "(xUpperLeft, yUpperLeft), (xUpperRight, yUpperRight), (xLowerLeft, yLowerLeft),
 // (xLowerRight, yLowerRight)"
 void Aiming::printCurrentCoordinates() {
-   cout << "(" << m_currentCoordinates[AimingConstants::xUpperLeft] << ", " <<
-         m_currentCoordinates[AimingConstants::yUpperLeft] << "), (" <<
-         m_currentCoordinates[AimingConstants::xUpperRight] << ", " <<
-         m_currentCoordinates[AimingConstants::yUpperRight] << "), (" <<
-         m_currentCoordinates[AimingConstants::xLowerLeft] << ", " <<
-         m_currentCoordinates[AimingConstants::yLowerLeft] << "), (" <<
-         m_currentCoordinates[AimingConstants::xLowerRight] << ", " <<
-         m_currentCoordinates[AimingConstants::yLowerRight] << ")" << endl;
+   cout << "(" << m_currentTargetCoordinates[AimingConstants::xUpperLeft] << ", " <<
+         m_currentTargetCoordinates[AimingConstants::yUpperLeft] << "), (" <<
+         m_currentTargetCoordinates[AimingConstants::xUpperRight] << ", " <<
+         m_currentTargetCoordinates[AimingConstants::yUpperRight] << "), (" <<
+         m_currentTargetCoordinates[AimingConstants::xLowerLeft] << ", " <<
+         m_currentTargetCoordinates[AimingConstants::yLowerLeft] << "), (" <<
+         m_currentTargetCoordinates[AimingConstants::xLowerRight] << ", " <<
+         m_currentTargetCoordinates[AimingConstants::yLowerRight] << ")" << endl;
 }
 
 // This will be called in Robot.cpp to implement all aiming mechanisms
@@ -143,7 +143,7 @@ void Aiming::run() {
       break;
    case TARGETED:
       cout << "TARGETED" << endl;
-      // Reset the aiming state (is this always necessary/desirable?)
+      // Reset the aiming state
       setCurrentState(IDLE);
       break;
    default:

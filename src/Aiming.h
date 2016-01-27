@@ -45,7 +45,7 @@ private:
 
    Client* m_client;
    DriveTrainController* m_driveTrainController;
-   int m_currentCoordinates[8];
+   int m_currentTargetCoordinates[8];
    STATE m_currentState;
 
 };
