@@ -40,6 +40,7 @@ public:
 		   PortAssign::rearRightWheelMotor),
       m_driveTrainController(&m_driveTrain, &m_driveStation),
       m_shooterController(&m_flywheels),
+      m_loaderController(),
       m_robotController(&m_driveStation, &m_driveTrainController, &m_shooterController, &m_loaderController)
    {
       // cout << "call init socket" << endl;
