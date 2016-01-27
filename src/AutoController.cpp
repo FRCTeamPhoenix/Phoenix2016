@@ -34,7 +34,7 @@ void AutoController::performAction(void)
 {
    if (m_queue.size() == 0)
       {
-	 m_drivet->setCurrentState(DriveTrainController::NORMAL);
+	 //m_drivet->setCurrentState(DriveTrainController::TELEOP);
 	 return;
       }
    Action *currentAction = m_queue.back();

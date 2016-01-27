@@ -12,18 +12,15 @@
 #include "WPILib.h"
 #include "constants.h"
 #include "DriveStation.h"
+#include <math.h>
 
 class DriveTrainController: public BaseController {
 public:
    enum STATE {
       IDLE,
-      NORMAL,
-      AUTOTEST,
-      AIMING_TARGET,
-      AIMING_OBSTACLE,
-      OBSTACLE,
-      TEST,
-      AUTO
+      TELEOP,
+      ENCODERDRIVE
+      //CAMERADRIVE
    };
    DriveTrainController(RobotDrive* m_driveTrain,
          DriveStation* m_driveStation,
@@ -31,10 +28,10 @@ public:
          Encoder* rightWheelEncoder);
    virtual ~DriveTrainController();
    void run();
-   void autoDrive(void);
    void manualDrive(float throttleRatio);
    void aimRobotClockwise(float degree, float motorSpeed);
    void aimRobotCounterclockwise(float degree, float motorSpeed);
+   void moveRobotStraight(float distance, float motorSpeed);
    void stopRobot();
 
    STATE getCurrentState();
@@ -42,17 +39,19 @@ public:
    void setDriveConstants(float, float);
 
 private:
+   STATE m_goalState;
    RobotDrive* m_driveTrain;
    DriveStation * m_driveStation;
    Encoder* m_leftWheelEncoder;
    Encoder* m_rightWheelEncoder;
-   STATE m_goalState;
    int32_t m_initalEncoderValueLeft;
    int32_t m_initalEncoderValueRight;
    int32_t m_targetTickRight;
    int32_t m_targetTickLeft;
-   STATE m_currentState;
-   float m_power, m_twist;
+   float m_rightMotorPower;
+   float m_leftMotorPower;
+   bool m_rightEncoderComplete;
+   bool m_leftEncoderComplete;
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */
