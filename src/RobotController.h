@@ -8,6 +8,7 @@
 #ifndef SRC_ROBOTCONTROLLER_H_
 #define SRC_ROBOTCONTROLLER_H_
 
+#include "WPILib.h"
 #include "BaseController.h"
 #include "DriveStation.h"
 #include "DriveTrainController.h"
@@ -35,7 +36,7 @@ class RobotController : public BaseController
    std::vector<Action*> m_queue;
 
    DriveStation* m_driveStation;
-   DriveTrainController* m_driveTrain;
+   DriveTrainController* m_driveTrainController;
    ShooterController * m_shooterController;
    LoaderController * m_loaderController;
 };
