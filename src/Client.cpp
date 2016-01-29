@@ -96,7 +96,7 @@ void Client::sendPacket() {
 }
 int Client::getData(int element){
     m_unreadData=false;
-    return m_convertedData(element);
+    return m_convertedData[element];
 
 }
 

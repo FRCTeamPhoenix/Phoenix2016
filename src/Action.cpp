@@ -43,7 +43,7 @@ bool Action::execute(void)
       case ACTION_DRIVE:
 	 return drive();
       case ACTION_BRAKE:
-	 drive_t->setCurrentState(DriveTrainController::IDLE);
+	 //drive_t->setCurrentState(DriveTrainController::IDLE);
 	 return true;
       case NO_ACTION:
          return true;
@@ -59,8 +59,8 @@ bool Action::drive(void)
       {
 	 firstTime = false;
 	 timer->Start();
-         drive_t->setCurrentState(DriveTrainController::AUTOTEST);
-	 drive_t->setDriveConstants(power, twist);
+         //drive_t->setCurrentState(DriveTrainController::AUTOTEST);
+	 //drive_t->setDriveConstants(power, twist);
       }
    float currentTime = timer->Get();
    printf("%f\n", currentTime);

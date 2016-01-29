@@ -9,13 +9,34 @@ struct PortAssign{
    const static uint32_t frontRightWheelMotor  = 2;
    const static uint32_t rearRightWheelMotor   = 3;
 
-//Flywheels
-   const static uint32_t flywheels = 5; //Both on the same motor controller
+   // Channels for wheel encoders
+   const static uint32_t leftWheelEncoderChannelA = 2;
+   const static uint32_t leftWheelEncoderChannelB = 3;
+   const static uint32_t rightWheelEncoderChannelA = 0;
+   const static uint32_t rightWheelEncoderChannelB = 1;
 
-// Controllers
+   //Flywheels
+   const static uint32_t flywheelLeftMotor = 4; //Both on the same motor controller
+   const static uint32_t flywheelRightMotor = 5;
+   
+   //Loader
+   const static uint32_t verticalMotor = 6;
+   const static uint32_t intakeMotor = 7;
+   const static uint32_t stationaryMotor = 8;
+   const static uint32_t upperLimit = 4;
+   const static uint32_t lowerLimit = 5;
+   const static uint32_t loadedSensor = 6;
+   const static uint32_t armEncoderChannelA = 7;
+   const static uint32_t armEncoderChannelB = 8;
+
+	// Controllers
    const static uint32_t joystick = 0;
    const static uint32_t gamepad = 1;
 
+};
+
+struct RobotConstants {
+   constexpr static float wheelEncoderTicksPerDegree = 1.06666667f;
 };
 
 struct DriveStationConstants{
