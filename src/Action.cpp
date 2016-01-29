@@ -73,13 +73,13 @@ bool Action::execute(void)
          return waitUntil(1);
       case ACTION_DRIVE:
 	 if (m_firstTime)
-	    m_driveTrain->moveRobotStraight(argv[0], argv[1]);
+	    m_driveTrain->moveRobotStraight(m_argv[0], m_argv[1]);
 	 if (m_driveTrain->getCurrentState())
 	    return true;
 	 return false;
       case ACTION_TURN:
 	 if (m_firstTime)
-	    m_driveTrain->aimRobotClockwise(argv[0], argv[1]);
+	    m_driveTrain->aimRobotClockwise(m_argv[0], m_argv[1]);
 	 if (m_driveTrain->getCurrentState())
 	    return true;
 	 return false;
