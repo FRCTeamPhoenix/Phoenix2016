@@ -14,11 +14,12 @@ LoaderSense::LoaderSense(Client* client, LoaderController* loaderController) :
    setCurrentState(IDLE);
 }
 
-// Call to this method will implement the Loader's alignment process
+// IMPORTANT: Call to this method will implement the Loader's alignment process
 void LoaderSense::beginAligning() {
    setCurrentState(ROTATING);
 }
 
+// Refreshes array containing received client data (ball's radius and center coordinates)
 void LoaderSense::updateBallPositionData() {
 
    // TODO: Make sure that this array setup is in the appropriate format to match the client getter method
@@ -26,7 +27,7 @@ void LoaderSense::updateBallPositionData() {
    for(int i = 0; i < LoaderSenseConstants::numBallVals; i++) {
 
       // Parameter passed to getData() corresponds to appropriate index of integer array received by client;
-      // ball position values immediately follow target position values in received array
+      // ball position values (are presumed to) immediately follow target position values in received array
       m_currentBallPosition[i] = m_client->getData(AimingConstants::numTargetVals - 1 + i);
 
    }
@@ -44,42 +45,62 @@ int LoaderSense::getCurrentYCenter() {
    return m_currentBallPosition[LoaderSenseConstants::ballCenterY];
 }
 
-
+// Alter current state of LoaderSense module (possible parameters: IDLE, ROTATING, APPROACHING, BACKUP, TARGETED)
 void LoaderSense::setCurrentState(STATE newState) {
    m_currentState = newState;
 }
 
+// Returns current state of LoaderSense module
 LoaderSense::STATE LoaderSense::getCurrentState() {
    return m_currentState;
 }
 
-//TODO: translate the following three methods from pseudocode to actual code
-
+// Called to re-center whenever the ball is too far left or right
+// IMPORTANT NOTE: will not rotate until ball is a safe distance away
 void LoaderSense::rotate() {
-   //Check if rotation is needed
-      //If YES, then check if you'll hit the ball when you rotate (too close?)
-         //If YES, set state to BACKUP
-         //If NO, perform necessary rotation - rotate small amounts, and continually check for completion
-            //-Call to the DriveTrainController rotation function
-      //If NO, then set state to APPROACHING
+
+   if (m_currentBallPosition[LoaderSenseConstants::ballCenterX] < LoaderSenseConstants::minGoodCenterX) {
+      if (m_currentBallPosition[LoaderSenseConstants::ballRadius] > LoaderSenseConstants::maxSafeRotationRadius) {
+         setCurrentState(BACKUP);
+      } else {
+         //TODO:Call DriveTrainController function to rotate clockwise a little bit
+      }
+   } else if (m_currentBallPosition[LoaderSenseConstants::ballCenterY] > LoaderSenseConstants::maxGoodCenterX) {
+      if(m_currentBallPosition[LoaderSenseConstants::ballRadius] > LoaderSenseConstants::maxSafeRotationRadius) {
+         setCurrentState(BACKUP);
+      } else {
+         //TODO:Call DriveTrainController function to rotate counterclockwise a little bit
+      }
+   } else {
+      setCurrentState(APPROACHING);
+   }
 }
 
+// Approach ball until it is close enough to be loaded
 void LoaderSense::approach() {
-   //Check if you need to move towards the ball
-      //If YES, go gradually - move forwards a small amount, then set state to ROTATING
-         //(possible logical flaw? examine more closely later...)
-            //-Call to the DriveTrainController forward movement function
-      //If NO, set state to TARGETED
+
+   if (m_currentBallPosition[LoaderSenseConstants::ballRadius] < LoaderSenseConstants::minGoodRadius) {
+      //TODO:Call to DriveTrainController function to move forwards a little bit
+      setCurrentState(ROTATING);
+   } else {
+      setCurrentState(TARGETED);
+   }
 }
 
+// Back up until rotation can be safely completed
 void LoaderSense::backup() {
-   //Back up, then check if you have backed up enough to have a "safe" margin of rotational space
-         //(-Call to the DriveTrainController backward movement function)
-      //If YES, set state to ROTATING
-      //If NO, continue backing up
-         //-Call to the backup travel function
+
+   // FIRST THING THAT SHOULD BE EXECUTED IS A SLIGHT BACKUP
+   //TODO:Call to DriveTrainController function to back up a little bit
+
+   if(m_currentBallPosition[LoaderSenseConstants::ballRadius] < LoaderSenseConstants::maxSafeRotationRadius) {
+      setCurrentState(ROTATING);
+   } else {
+      //TODO:Call to the DriveTrainController function to back up a little bit
+   }
 }
 
+// Called to implement all LoaderSense mechanisms
 void LoaderSense::run() {
 
    switch(getCurrentState()) {
@@ -107,4 +128,3 @@ void LoaderSense::run() {
 LoaderSense::~LoaderSense() {
 
 }
-

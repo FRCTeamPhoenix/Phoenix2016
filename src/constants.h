@@ -53,9 +53,10 @@ struct AimingConstants {
 
    const static int numTargetVals = 8;
 
-   // These may need to be changed depending upon the chosen coordinate system
-   const static int leftVisionBoundary = 30;
-   const static int rightVisionBoundary = 290;
+   // These are all educated guesses and may need to be changed,
+   // depending upon the chosen coordinate system
+   const static int leftTargetVisionBoundary = 30;
+   const static int rightTargetVisionBoundary = 290;
    const static int maxTiltingFactor = 20;
 
 };
@@ -72,11 +73,15 @@ struct LoaderSenseConstants {
 
    const static int numBallVals = 3;
 
-   // Basically placeholder values (educated guesses)
-   const static int optimalRadius = 150;
-   const static int optimalCenterX = 120;
-   const static int optimalCenterY = 160;
-   const static int maxAlignmentOffset = 20;
+   // All of these are basically placeholder values (educated guesses)
+
+   const static int minGoodCenterX = 100;
+   const static int maxGoodCenterX = 220;
+
+   const static int minGoodRadius = 90;
+   const static int maxGoodRadius = 120;
+
+   const static int maxSafeRotationRadius = 50;
 
 };
 

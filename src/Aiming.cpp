@@ -21,10 +21,9 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController) :
    setCurrentState(IDLE);
 }
 
-// Call this method to begin aiming process - same as manually setting state to first
+// IMPORTANT: Call this method to begin aiming process - same as manually setting state to first
 // phase of aiming process
 void Aiming::beginAiming() {
-   cout << "BEGINNING PHASE 1: ALIGN" << endl;
    setCurrentState(ALIGNING);
 }
 
@@ -43,31 +42,24 @@ void Aiming::align() {
 
    // Robot is too far left to see target
    // Negative values indicate missing coordinates
-   if (m_currentTargetCoordinates[AimingConstants::xUpperLeft] < AimingConstants::leftVisionBoundary ||
-         m_currentTargetCoordinates[AimingConstants::xLowerLeft] < AimingConstants::leftVisionBoundary) {
-
-      //TESTING
-      cout << "Moving right" << endl;
+   if (m_currentTargetCoordinates[AimingConstants::xUpperLeft] < AimingConstants::leftTargetVisionBoundary ||
+         m_currentTargetCoordinates[AimingConstants::xLowerLeft] < AimingConstants::leftTargetVisionBoundary) {
 
       // TODO: Call DriveTrainController method to drive robot rightwards a little bit
    }
 
    // Robot is too far right to see target
    // Negative values indicate missing coordinates
-   else if (m_currentTargetCoordinates[AimingConstants::xUpperRight] > AimingConstants::rightVisionBoundary ||
-         m_currentTargetCoordinates[AimingConstants::xLowerRight] > AimingConstants::rightVisionBoundary ||
+   else if (m_currentTargetCoordinates[AimingConstants::xUpperRight] > AimingConstants::rightTargetVisionBoundary ||
+         m_currentTargetCoordinates[AimingConstants::xLowerRight] > AimingConstants::rightTargetVisionBoundary ||
          m_currentTargetCoordinates[AimingConstants::xUpperRight] < 0 ||
          m_currentTargetCoordinates[AimingConstants::xLowerRight] < 0) {
-
-      //TESTING
-      cout << "Moving left" << endl;
 
       // TODO: Call DriveTrainController method to drive robot leftwards a little bit
    }
 
    else {
       setCurrentState(ROTATING);
-      cout << "BEGINNING PHASE 2: ROTATE" << endl;
    }
 }
 
@@ -80,9 +72,6 @@ void Aiming::rotate() {
          (m_currentTargetCoordinates[AimingConstants::yLowerLeft] -
                m_currentTargetCoordinates[AimingConstants::yLowerRight]) > 20) {
 
-      //TESTING
-      cout << "Rotating clockwise" << endl;
-
       // TODO: Call DriveTrainController method to rotate right one degree
 
    }
@@ -92,9 +81,6 @@ void Aiming::rotate() {
          m_currentTargetCoordinates[AimingConstants::yUpperRight]) > 20 &&
          (m_currentTargetCoordinates[AimingConstants::yLowerRight] -
                m_currentTargetCoordinates[AimingConstants::yLowerLeft]) > 20) {
-
-      //TESTING
-      cout << "Rotating counterclockwise" << endl;
 
       // TODO: Call DriveTrainController method to rotate left one degree
 
@@ -127,7 +113,7 @@ void Aiming::printCurrentCoordinates() {
          m_currentTargetCoordinates[AimingConstants::yLowerRight] << ")" << endl;
 }
 
-// This will be called in Robot.cpp to implement all aiming mechanisms
+// Called to implement all aiming mechanisms
 void Aiming::run() {
 
    switch(getCurrentState()) {
@@ -142,7 +128,6 @@ void Aiming::run() {
       rotate();
       break;
    case TARGETED:
-      cout << "TARGETED" << endl;
       // Reset the aiming state
       setCurrentState(IDLE);
       break;
