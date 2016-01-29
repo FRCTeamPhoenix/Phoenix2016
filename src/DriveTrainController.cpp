@@ -102,7 +102,6 @@ void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
    if (m_goalState == ENCODERDRIVE)
      return;
 
-
    m_initalEncoderValueRight = m_rightWheelEncoder->Get();
    m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
    //will have to find the diameter of the wheel

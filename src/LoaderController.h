@@ -43,7 +43,6 @@ public:
       SHOOTING
    };
 
-
    LoaderController(
          Talon* armMotorLeft,
          Talon* armMotorRight,

@@ -29,7 +29,6 @@ LoaderController::LoaderController(
 {
    m_goalState = HOMING;
    m_homingState = LOOKINGFORLOWERLIMIT;
-
 }
 
 LoaderController::~LoaderController() {
@@ -133,5 +132,4 @@ void LoaderController::setIdle(){
    m_intakeMotor->Set(0);
    m_stationaryMotor->Set(0);
    //Need to fix LoaderController class.
-
 }
