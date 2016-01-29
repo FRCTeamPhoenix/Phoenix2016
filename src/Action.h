@@ -28,6 +28,5 @@ class Action
    float* m_argv;
    Timer* m_timer;
 
-   bool drive(void);
    bool waitUntil(int buttonCode);
 };
