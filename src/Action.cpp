@@ -71,7 +71,11 @@ bool Action::execute(void)
       case ACTION_X:
          return waitUntil(1);
       case ACTION_DRIVE:
-	 return drive();
+	 if (m_firstTime)
+	    m_driveTrain->moveRobotStraight(argv[0], argv[1]);
+	 if (m_driveTrain->getCurrentState())
+	    return true;
+	 return false;
       case ACTION_BRAKE:
 	 // TODO: Make robot brake.
 	 return true;
@@ -79,25 +83,6 @@ bool Action::execute(void)
          return true;
       }
    return true;
-}
-
-/*
- * Drives with specified power and time in milliseconds.
- */
-bool Action::drive(void)
-{
-   if (m_firstTime)
-      {
-	 m_firstTime = false;
-	 m_timer->Start();
-         //m_driveTrain->setCurrentState(DriveTrainController::AUTOTEST);
-	 //m_driveTrain->setDriveConstants(power, twist);
-      }
-   float currentTime = m_timer->Get();
-   printf("%f\n", currentTime);
-   if (currentTime >= m_argv[1])
-      return true;
-   return false;
 }
 
 /*
