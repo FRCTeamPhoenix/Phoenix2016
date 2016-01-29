@@ -100,5 +100,9 @@ int Client::getData(int element){
 
 }
 
+void Client::setPacketStatus(bool isFresh) {
+   m_unreadData = isFresh;
+}
+
 Client::~Client() {
 }

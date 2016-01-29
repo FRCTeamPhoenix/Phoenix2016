@@ -38,6 +38,8 @@ public:
 
     void sendPacket();
 
+    void setPacketStatus(bool isFresh);
+
     virtual ~Client();
 
 };

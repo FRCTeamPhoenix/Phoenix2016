@@ -24,12 +24,23 @@ void LoaderSense::updateBallPositionData() {
 
    // TODO: Make sure that this array setup is in the appropriate format to match the client getter method
 
-   for(int i = 0; i < LoaderSenseConstants::numBallVals; i++) {
+   // Checks if data is fresh
+   if (m_client->m_unreadData) {
 
-      // Parameter passed to getData() corresponds to appropriate index of integer array received by client;
-      // ball position values (are presumed to) immediately follow target position values in received array
-      m_currentBallPosition[i] = m_client->getData(AimingConstants::numTargetVals - 1 + i);
+      // Tests for loader data
+      if(m_client->getData[0] == 1) {
 
+         for(int i = 1; i <= LoaderSenseConstants::numBallVals; i++) {
+
+                     // Parameter passed to getData() corresponds to appropriate index of integer array received by client;
+                     // ball position values (are presumed to) immediately follow target position values in received array
+                     m_currentBallPosition[i - 1] = m_client->getData(AimingConstants::numTargetVals - 1 + i);
+         }
+
+      } else {
+         // Avoids causing data to be ignored by Aiming class
+         m_client->setPacketStatus(true);
+      }
    }
 }
 

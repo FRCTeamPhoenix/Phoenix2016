@@ -30,11 +30,21 @@ void Aiming::beginAiming() {
 // Gives Aiming class access to image data sent over to client from Raspberry Pi
 void Aiming::getNewImageData() {
 
-   // Updates array of current coordinates with data received by client
-   for(int i = 0; i < AimingConstants::numTargetVals; i++) {
-      m_currentTargetCoordinates[i] = m_client->getData(i);
-   }
+   //Check for fresh data
+   if(m_client->m_unreadData) {
 
+      //Tests for shooter data
+      if(m_client->getData(0) == 0) {
+
+         // Updates array of current coordinates with data received by client
+         for(int i = 1; i <= AimingConstants::numTargetVals; i++) {
+            m_currentTargetCoordinates[i - 1] = m_client->getData(i);
+         }
+      } else {
+         // Ensures that a non-applicable fresh packet won't be ignored by LoaderSense
+         m_client->setPacketStatus(true);
+      }
+   }
 }
 
 // Centers robot about target (based on image-detected coordinates)

@@ -44,7 +44,7 @@ private:
    Client* m_client;
    DriveTrainController* m_driveTrainController;
 
-   int m_currentBallPosition[3];
+   int m_currentBallPosition[4];
    STATE m_currentState;
 
 };
