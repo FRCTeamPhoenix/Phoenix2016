@@ -73,7 +73,7 @@ bool Action::execute(void)
       case ACTION_DRIVE:
 	 return drive();
       case ACTION_BRAKE:
-	 m_driveTrain->setCurrentState(DriveTrainController::IDLE);
+	 // TODO: Make robot brake.
 	 return true;
       case NO_ACTION:
          return true;
@@ -88,12 +88,12 @@ bool Action::drive(void)
 {
    if (m_firstTime)
       {
-	 firstTime = false;
+	 m_firstTime = false;
 	 m_timer->Start();
-         m_driveTrain->setCurrentState(DriveTrainController::AUTOTEST);
-	 m_driveTrain->setDriveConstants(power, twist);
+         //m_driveTrain->setCurrentState(DriveTrainController::AUTOTEST);
+	 //m_driveTrain->setDriveConstants(power, twist);
       }
-   float currentTime = timer->Get();
+   float currentTime = m_timer->Get();
    printf("%f\n", currentTime);
    if (currentTime >= m_argv[1])
       return true;
