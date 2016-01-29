@@ -25,9 +25,9 @@ void RobotController::run()
       }
 }
 
-void RobotController::addAction(ActionType action, float pow, float secs, float turn)
+void RobotController::addAction(ActionType action, int argc, float* argv)
 {
-   Action* act = new Action(m_driveStation, m_driveTrainController, action, pow, secs, turn);
+   Action* act = new Action(m_driveStation, m_driveTrainController, action, argc, argv);
    m_queue.insert(m_queue.begin(), act);
 }
 
