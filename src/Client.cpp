@@ -1,7 +1,7 @@
 #include "Client.h"
 #define NPACK 1
 #define PORT 31415 //port currently used for testing, can be changed
-#define SRV_IP "10.0.42.25" //change ip address
+#define SRV_IP "10.0.42.21" //change ip address
 
 
 
@@ -39,10 +39,11 @@ void Client::initilizeSocket(){
    memset(m_convertedData,0,8);
    cout<<"start ping loop" << endl;
    char buf[BUFLEN];
-   while (sendCount< 10){
+   //not tested but should work
+   while (!m_initGood && sendCount < 5){
       sendCount++;
 
-      cout<<"send ping" << endl;
+      cout<<"send ping " << sendCount << endl;
       memset(buf,0,sizeof(buf));
       sprintf(buf,"ping number %d", sendCount);
 
@@ -60,9 +61,6 @@ void Client::initilizeSocket(){
       else {
           cout << "timout" << endl;
       }
-
-
-
     }
 
 
@@ -71,14 +69,14 @@ void Client::receivePacket(){
         socklen_t m_si_other_len=sizeof(m_si_other);
 
         while (true){
-        // breaks out of loop in case of error
-        cout << "waiting to receive packet" << endl;
+        cout << "waiting to receive packet in thread" << endl;
         if(recvfrom(m_socket,m_receivedData,BUFLEN, 0 ,(sockaddr*)&m_si_other, &m_si_other_len) < 0) {
-           break;
+           cout << "packet receive error" << endl;
         }
         else {
-            cout << "packet received" <<endl;
+            cout << "packet received in thread" <<endl;
             byteToInt(m_receivedData,m_convertedData);
+            m_unreadData=true;
         }
      }
 }
@@ -86,7 +84,7 @@ void Client::byteToInt(char *byteArray,int *intArray){
     int currentByte =0;
     for (int currentInt = 0; currentInt<8;currentInt++){
 
-        intArray[currentInt]=(int)byteArray[currentByte] +(int)(byteArray[currentByte+1] <<8);
+        intArray[currentInt]=(int)byteArray[currentByte] + ((int)(byteArray[currentByte+1]) << 8);
         currentByte+=2;
         cout << "received data = " <<  intArray[currentInt] << endl;
     }
@@ -96,8 +94,9 @@ void Client::sendPacket() {
     cout << "sending packet" << endl;
     sendto(m_socket,m_sendData,BUFLEN, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
 }
-int Client::getData(int i){
-    return m_convertedData[i];
+int Client::getData(int element){
+    m_unreadData=false;
+    return m_convertedData(element);
 
 }
 

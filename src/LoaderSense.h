@@ -42,7 +42,7 @@ public:
 private:
 
    Client* m_client;
-   LoaderController* m_driveTrainController;
+   DriveTrainController* m_driveTrainController;
 
    int m_currentBallPosition[3];
    STATE m_currentState;

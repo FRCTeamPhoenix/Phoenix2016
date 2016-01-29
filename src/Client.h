@@ -16,6 +16,7 @@ using namespace std;
 
 class Client {
 public:
+    bool m_unreadData;
     char m_receivedData[BUFLEN];
     static bool receive;
     int m_socket;
@@ -24,7 +25,7 @@ public:
     bool m_initGood;
     char m_sendData[BUFLEN];
     sockaddr_in m_si_me, m_si_other;
-    int m_convertedData[11];
+    int m_convertedData[9];
     Client();
 
     void initilizeSocket();
@@ -33,7 +34,7 @@ public:
 
     void byteToInt(char *byteArray,int *intArray);
 
-    int getData(int i);
+    int getData(int element);
 
     void sendPacket();
 
