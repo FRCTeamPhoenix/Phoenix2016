@@ -5,6 +5,7 @@
 #include "DriveTrainController.h"
 #include "LoaderController.h"
 #include "ShooterController.h"
+#include "Flywheel.h"
 #include "Client.h"
 #include <thread>
 #include <iostream>
@@ -18,7 +19,9 @@ void runClient(Robot* robot, Client* client);
 
 class Robot: public SampleRobot
 {
-   Talon m_flywheels;
+   Talon m_flywheelLeftMotor;
+   Talon m_flywheelRightMotor;
+   Flywheel m_flywheel;
    Joystick m_joystick;
    Joystick m_gamepad;
    Encoder m_leftWheelEncoder;
@@ -40,7 +43,9 @@ class Robot: public SampleRobot
 
 public:
    Robot() :
-      m_flywheels(PortAssign::flywheels),
+      m_flywheelLeftMotor(PortAssign::flywheelLeftMotor),
+      m_flywheelRightMotor(PortAssign::flywheelRightMotor),
+      m_flywheel(&m_flywheelLeftMotor, &m_flywheelRightMotor),
       m_joystick(PortAssign::joystick),
       m_gamepad(PortAssign::gamepad),
       m_leftWheelEncoder(PortAssign::leftWheelEncoderChannelA, PortAssign::leftWheelEncoderChannelB),
@@ -54,10 +59,10 @@ public:
       m_upperLimit(PortAssign::upperLimit),
       m_lowerLimit(PortAssign::lowerLimit),
       m_loadedSensor(PortAssign::loadedSensor),
-      m_armEncoder(PortAssign::armEncoder),
+      m_armEncoder(PortAssign::armEncoderChannelA, PortAssign::armEncoderChannelB),
       m_loaderController(&m_verticalMotor, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder),
-      m_shooterController(&m_loaderController, &m_flywheels),
-      m_robotController(&m_driveStation, &m_driveTrainController, &m_shooterController, &m_loaderController){
+      m_shooterController(&m_loaderController, &m_flywheel),
+      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController){
       SmartDashboard::init();
 
       // cout << "call init socket" << endl;

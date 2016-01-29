@@ -36,7 +36,7 @@ class RobotController : public BaseController
    std::vector<Action*> m_queue;
 
    DriveStation* m_driveStation;
-   DriveTrainController* m_driveTrain;
+   DriveTrainController* m_driveTrainController;
    ShooterController * m_shooterController;
    LoaderController * m_loaderController;
 };

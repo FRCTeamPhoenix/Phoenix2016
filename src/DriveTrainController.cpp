@@ -12,7 +12,8 @@ DriveTrainController::DriveTrainController(
       DriveStation* driveStation,
       Encoder* leftWheelEncoder,
       Encoder* rightWheelEncoder) :
-      m_driveTrain(robotDrive), m_driveStation(driveStation),
+      m_driveTrain(robotDrive),
+      m_driveStation(driveStation),
       m_leftWheelEncoder(leftWheelEncoder),
       m_rightWheelEncoder(rightWheelEncoder) {
    m_initalEncoderValueLeft = 0;
