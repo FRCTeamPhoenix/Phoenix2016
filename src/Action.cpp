@@ -20,7 +20,7 @@
 #include <Timer.h>
 
 Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, float pow, float seconds, float turn)
-   : controllers(ds), drive_t(dt), action(act), power(pow), time(seconds), twist(turn)
+   : controllers(ds), drive_t(dt), action(act), power(pow), twist(turn), time(seconds)
 {
    timer = new Timer();
    firstTime = true;
@@ -48,6 +48,7 @@ bool Action::execute(void)
       case NO_ACTION:
          return true;
       }
+   return true;
 }
 
 /*

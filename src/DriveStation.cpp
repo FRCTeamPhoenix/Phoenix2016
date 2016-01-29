@@ -5,9 +5,7 @@
  *      Author: Rose
  */
 
-#include "WPILib.h"
 #include "DriveStation.h"
-#include "constants.h"
 
 DriveStation::DriveStation(Joystick* joystick, Joystick* gamepad) :
       m_joystick(joystick), m_gamepad(gamepad) {

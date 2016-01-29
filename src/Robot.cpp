@@ -89,6 +89,17 @@ public:
       m_rightWheelEncoder.Reset();
 
       while(IsTest() && IsEnabled()){
+
+         m_driveTrainController.run();
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
+            m_driveTrainController.aimRobotClockwise(90, 0.5);
+         }
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
+            m_driveTrainController.aimRobotCounterclockwise(90, 0.5);
+         }
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonY)){
+            m_driveTrainController.moveRobotStraight(45, 0.5);
+         }
          std::ostringstream outputR;
          outputR << "EncoderR: ";
          outputR << (m_rightWheelEncoder.Get());
