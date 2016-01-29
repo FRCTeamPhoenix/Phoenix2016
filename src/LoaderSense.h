@@ -10,7 +10,7 @@
 #define ARRAY_SIZE(array) (sizeof((array))/sizeof((array[0])))
 #include "Math.h"
 #include "Client.h"
-#include "LoaderController.h"
+#include "DriveTrainController.h"
 #include "Constants.h"
 
 class LoaderSense {
@@ -25,7 +25,7 @@ public:
       TARGETED
    };
 
-   LoaderSense(Client*, LoaderController*);
+   LoaderSense(Client*, DriveTrainController*);
    void beginAligning();
    void updateBallPositionData();
    int getCurrentRadius();

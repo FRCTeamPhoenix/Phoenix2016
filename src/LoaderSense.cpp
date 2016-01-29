@@ -7,9 +7,9 @@
 
 #include "LoaderSense.h"
 
-LoaderSense::LoaderSense(Client* client, LoaderController* loaderController) :
+LoaderSense::LoaderSense(Client* client, DriveTrainController* driveTrainController) :
    m_client(client),
-   m_loaderController(loaderController)
+   m_driveTrainController(driveTrainController)
 {
    setCurrentState(IDLE);
 }
