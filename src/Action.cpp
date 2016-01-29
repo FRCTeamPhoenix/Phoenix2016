@@ -37,7 +37,8 @@ Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, int a
    switch (m_action)
       {
       case ACTION_DRIVE:
-	 argn = 3;
+      case ACTION_TURN:
+	 argn = 2;
 	 break;
       default:
 	 argn = 0;
@@ -73,6 +74,12 @@ bool Action::execute(void)
       case ACTION_DRIVE:
 	 if (m_firstTime)
 	    m_driveTrain->moveRobotStraight(argv[0], argv[1]);
+	 if (m_driveTrain->getCurrentState())
+	    return true;
+	 return false;
+      case ACTION_TURN:
+	 if (m_firstTime)
+	    m_driveTrain->aimRobotClockwise(argv[0], argv[1]);
 	 if (m_driveTrain->getCurrentState())
 	    return true;
 	 return false;

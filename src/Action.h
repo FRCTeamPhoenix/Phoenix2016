@@ -10,6 +10,7 @@ enum ActionType { NO_ACTION,
 		  ACTION_B,
 		  ACTION_X,
 		  ACTION_DRIVE,
+		  ACTION_TURN,
 		  ACTION_BRAKE, };
 
 class Action
