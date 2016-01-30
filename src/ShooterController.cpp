@@ -24,12 +24,12 @@ void ShooterController::run(){
       m_loaderController->setIdle();
       break;
    case ARMED:
-      m_flywheel->startMotors(0.6);
+      m_flywheel->startMotors(RobotConstants::flywheelMotorSpeed);
       break;
    case SHOOTING:
       if (m_loaderController->getCurrentState() == LoaderController::STATE::LOADED) {
          m_loaderController->setShooting();
-         m_flywheel->startMotors(0.6);
+         m_flywheel->startMotors(RobotConstants::flywheelMotorSpeed);
       }
       else {
          setOff();

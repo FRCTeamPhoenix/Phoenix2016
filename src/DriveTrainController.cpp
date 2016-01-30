@@ -70,9 +70,11 @@ void DriveTrainController::run() {
 }
 
 void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
+   if (m_goalState == ENCODERDRIVE)
+     return;
+
    m_initalEncoderValueRight = m_rightWheelEncoder->Get();
    m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
-   //Will have to be changed to make it so the robot will move one degree instead of the wheels moving one degree
    float ticks = degree * RobotConstants::wheelEncoderTicksPerDegree;
 
    m_targetTickRight = m_initalEncoderValueRight - ticks;
@@ -96,6 +98,9 @@ void DriveTrainController::aimRobotCounterclockwise(float degree, float motorSpe
 }
 
 void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
+   if (m_goalState == ENCODERDRIVE)
+     return;
+
    m_initalEncoderValueRight = m_rightWheelEncoder->Get();
    m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
    //will have to find the diameter of the wheel

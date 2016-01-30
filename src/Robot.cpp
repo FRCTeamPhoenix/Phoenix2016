@@ -91,24 +91,101 @@ public:
       while(IsTest() && IsEnabled()){
 
          m_driveTrainController.run();
+         m_loaderController.run();
+         m_shooterController.run();
+
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
             m_driveTrainController.aimRobotClockwise(90, 0.5);
+            SmartDashboard::PutString("DB/String 6", "Aiming Robot Clockwise 90");
+
          }
+
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
             m_driveTrainController.aimRobotCounterclockwise(90, 0.5);
+            SmartDashboard::PutString("DB/String 6", "Aiming Robot CounterClockwise 90");
+
          }
+
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonY)){
             m_driveTrainController.moveRobotStraight(45, 0.5);
+            SmartDashboard::PutString("DB/String 6", "Moving Robot Straight");
+
          }
-         std::ostringstream outputR;
-         outputR << "EncoderR: ";
-         outputR << (m_rightWheelEncoder.Get());
-         SmartDashboard::PutString("DB/String 0", outputR.str());
-         std::ostringstream outputL;
-         outputL << "EncoderL: ";
-         outputL << (m_leftWheelEncoder.Get());
-         SmartDashboard::PutString("DB/String 1", outputL.str());
+         //test drivetrain repeatability by running forwards and backward five times.
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonX)){
+            SmartDashboard::PutString("DB/String 6", "Repeatability Test Straight");
+            bool changeDirection = true;
+            int loop = 0;
+            while(loop<=10){
+               m_driveTrainController.run();
+               if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
+                  loop++;
+                  if(changeDirection){
+                     m_driveTrainController.moveRobotStraight(45, 0.5);
+                     changeDirection = false;
+                  }
+                  else {
+                     m_driveTrainController.moveRobotStraight(-45, 0.5);
+                     changeDirection = true;
+                  }
+               }
+            }
+         }
+
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonRB)){
+            SmartDashboard::PutString("DB/String 6", "Repeatability Test Rotation");
+            bool changeRotation = true;
+            int loop = 0;
+            while(loop<=10){
+               m_driveTrainController.run();
+               if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
+                  loop++;
+                  if(changeRotation){
+                     m_driveTrainController.aimRobotClockwise(90, 0.5);
+                     changeRotation = false;
+                  }
+                  else{
+                     m_driveTrainController.aimRobotCounterclockwise(90, 0.5);
+                     changeRotation = true;
+                  }
+               }
+            }
+         }
+
+         if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
+            SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
+
+            m_driveTrainController.stopRobot();
+            m_loaderController.setIdle();
+            m_shooterController.setOff();
+         }
+
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonLB)){
+            SmartDashboard::PutString("DB/String 6", "Loader Test");
+
+            m_loaderController.setLoaded();
+         }
+
+         if(m_driveStation.getGamepadButton(DriveStationConstants::triggerRT)){
+            SmartDashboard::PutString("DB/String 6", "Shooter Test");
+
+            if(m_shooterController.getCurrentState() == ShooterController::ARMED){
+               m_shooterController.setShooting();
+            }
+            else{
+               m_shooterController.setArmed();
+            }
+         }
       }
+
+      std::ostringstream outputR;
+      outputR << "EncoderR: ";
+      outputR << (m_rightWheelEncoder.Get());
+      SmartDashboard::PutString("DB/String 0", outputR.str());
+      std::ostringstream outputL;
+      outputL << "EncoderL: ";
+      outputL << (m_leftWheelEncoder.Get());
+      SmartDashboard::PutString("DB/String 1", outputL.str());
    }
 
 };
