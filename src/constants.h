@@ -21,8 +21,8 @@ struct PortAssign {
 
    //Loader
    //Redo lifter motors
-   // vertical motor is arm motor
-   const static uint32_t verticalMotor = 8;
+   const static uint32_t armMotorRight = 8;
+   const static uint32_t armMotorLeft = 7;
    const static uint32_t intakeMotor = 9;
    const static uint32_t stationaryMotor = 4;
    const static uint32_t upperLimit = 4;

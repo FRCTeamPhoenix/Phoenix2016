@@ -29,7 +29,8 @@ class Robot: public SampleRobot
    DriveStation m_driveStation;
    RobotDrive m_driveTrain;
    DriveTrainController m_driveTrainController;
-   Talon m_verticalMotor;
+   Talon m_armMotorLeft;
+   Talon m_armMotorRight;
    Talon m_intakeMotor;
    Talon m_stationaryMotor;
    DigitalInput m_upperLimit;
@@ -53,14 +54,15 @@ public:
       m_driveStation(&m_joystick, &m_gamepad),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
       m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder),
-      m_verticalMotor(PortAssign::verticalMotor),
+      m_armMotorLeft(PortAssign::armMotorLeft),
+      m_armMotorRight(PortAssign::armMotorRight),
       m_intakeMotor(PortAssign::intakeMotor),
       m_stationaryMotor(PortAssign::stationaryMotor),
       m_upperLimit(PortAssign::upperLimit),
       m_lowerLimit(PortAssign::lowerLimit),
       m_loadedSensor(PortAssign::loadedSensor),
       m_armEncoder(PortAssign::armEncoderChannelA, PortAssign::armEncoderChannelB),
-      m_loaderController(&m_verticalMotor, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder),
+      m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder),
       m_shooterController(&m_loaderController, &m_flywheel),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController){
       SmartDashboard::init();

@@ -14,14 +14,16 @@
 
 
 //Values for the motor speeds might need to be changed
-static const float verticalMotorSpeed = 1.0;
+static const float armMotorLeft = 1.0;
+static const float armMotorRight = 1.0;
 static const float intakeMotorSpeed = 1.0;
 static const float stationaryMotorSpeed = 1.0;
 static const float homingSpeed = 0.1;
 
 class LoaderController : public BaseController{
 private:
-   Talon* m_verticalMotor;
+   Talon* m_armMotorLeft;
+   Talon* m_armMotorRight;
    Talon* m_intakeMotor;
    Talon* m_stationaryMotor;
    DigitalInput* m_upperLimit;
@@ -42,7 +44,9 @@ public:
    };
 
 
-   LoaderController(Talon* verticalMotor,
+   LoaderController(
+         Talon* armMotorLeft,
+         Talon* armMotorRight,
          Talon* intakeMotor,
          Talon* stationaryMotor,
          DigitalInput* uppterLimit,
