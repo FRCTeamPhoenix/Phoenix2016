@@ -20,7 +20,7 @@ DriveTrainController::DriveTrainController(
    m_initalEncoderValueRight = 0;
    m_targetTickRight = 0;
    m_targetTickLeft = 0;
-   m_goalState = IDLE;
+   m_goalState = TELEOP;
    m_rightMotorPower = 0.0f;
    m_leftMotorPower = 0.0f;
    m_rightEncoderComplete = true;

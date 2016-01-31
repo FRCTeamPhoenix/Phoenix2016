@@ -84,7 +84,7 @@ public:
    }
 
    void Test(){
-      SmartDashboard::PutString("DB/String 0", " ");
+      SmartDashboard::PutString("DB/String 0", "Entering Test ");
       m_leftWheelEncoder.Reset();
       m_rightWheelEncoder.Reset();
 
@@ -96,19 +96,19 @@ public:
 
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
             m_driveTrainController.aimRobotClockwise(90, 0.5);
-            SmartDashboard::PutString("DB/String 6", "Aiming Robot Clockwise 90");
+            SmartDashboard::PutString("DB/String 6", "Aiming Robot Clockwise 90 Test");
 
          }
 
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
             m_driveTrainController.aimRobotCounterclockwise(90, 0.5);
-            SmartDashboard::PutString("DB/String 6", "Aiming Robot CounterClockwise 90");
+            SmartDashboard::PutString("DB/String 6", "Aiming Robot CounterClockwise 90 Test");
 
          }
 
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonY)){
             m_driveTrainController.moveRobotStraight(45, 0.5);
-            SmartDashboard::PutString("DB/String 6", "Moving Robot Straight");
+            SmartDashboard::PutString("DB/String 6", "Moving Robot Straight Test");
 
          }
          //test drivetrain repeatability by running forwards and backward five times.
@@ -118,6 +118,13 @@ public:
             int loop = 0;
             while(loop<=10){
                m_driveTrainController.run();
+               if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
+                  SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
+
+                  m_driveTrainController.stopRobot();
+                  m_shooterController.setOff();
+                  loop = 111;
+               }
                if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
                   loop++;
                   if(changeDirection){
@@ -138,6 +145,13 @@ public:
             int loop = 0;
             while(loop<=10){
                m_driveTrainController.run();
+               if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
+                  SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
+
+                  m_driveTrainController.stopRobot();
+                  m_shooterController.setOff();
+                  loop = 111;
+               }
                if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
                   loop++;
                   if(changeRotation){
@@ -156,7 +170,6 @@ public:
             SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
 
             m_driveTrainController.stopRobot();
-            m_loaderController.setIdle();
             m_shooterController.setOff();
          }
 

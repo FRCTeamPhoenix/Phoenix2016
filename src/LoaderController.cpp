@@ -27,12 +27,10 @@ LoaderController::LoaderController(
 {
    m_goalState = HOMING;
    m_homingState = LOOKINGFORLOWERLIMIT;
-   // TODO Auto-generated constructor stub
 
 }
 
 LoaderController::~LoaderController() {
-   // TODO Auto-generated destructor stub
 }
 
 void LoaderController::moveArm(){
@@ -126,5 +124,8 @@ void LoaderController::setShooting(){
 }
 
 void LoaderController::setIdle(){
-   //To do: figure out logic
+   m_intakeMotor->Set(0);
+   m_stationaryMotor->Set(0);
+   //Need to fix LoaderController class.
+
 }

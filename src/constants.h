@@ -16,13 +16,15 @@ struct PortAssign {
    const static uint32_t rightWheelEncoderChannelB = 1;
 
    //Flywheels
-   const static uint32_t flywheelLeftMotor = 4; //Both on the same motor controller
+   const static uint32_t flywheelLeftMotor = 6; //Both on the same motor controller
    const static uint32_t flywheelRightMotor = 5;
 
    //Loader
-   const static uint32_t verticalMotor = 6;
-   const static uint32_t intakeMotor = 7;
-   const static uint32_t stationaryMotor = 8;
+   //Redo lifter motors
+   // vertical motor is arm motor
+   const static uint32_t verticalMotor = 8;
+   const static uint32_t intakeMotor = 9;
+   const static uint32_t stationaryMotor = 4;
    const static uint32_t upperLimit = 4;
    const static uint32_t lowerLimit = 5;
    const static uint32_t loadedSensor = 6;
