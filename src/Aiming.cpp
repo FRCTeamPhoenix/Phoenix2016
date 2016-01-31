@@ -24,7 +24,7 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController) :
 // IMPORTANT: Call this method to begin aiming process - same as manually setting state to first
 // phase of aiming process
 void Aiming::beginAiming() {
-   setCurrentState(ALIGNING);
+   setCurrentState(ROTATING);
 }
 
 // Gives Aiming class access to image data sent over to client from Raspberry Pi
@@ -47,58 +47,150 @@ void Aiming::getNewImageData() {
    }
 }
 
-// Centers robot about target (based on image-detected coordinates)
-void Aiming::align() {
+/*
+// Analyzes given coordinates - this will guess one missing coordinate, but will output an error
+// message if more than one is missing
+void Aiming::processImageData() {
 
-   // Robot is too far left to see target
-   // Negative values indicate missing coordinates
-   if (m_currentTargetCoordinates[AimingConstants::xUpperLeft] < AimingConstants::leftTargetVisionBoundary ||
-         m_currentTargetCoordinates[AimingConstants::xLowerLeft] < AimingConstants::leftTargetVisionBoundary) {
+   if ((m_currentTargetCoordinates[AimingConstants::xUL] < 0) || (m_currentTargetCoordinates[AimingConstants::yUL] < 0)) {
 
-      // TODO: Call DriveTrainController method to drive robot rightwards a little bit
-   }
+         if ((m_currentTargetCoordinates[AimingConstants::xUR] > 0) && (m_currentTargetCoordinates[AimingConstants::yUR] > 0)
+               && (m_currentTargetCoordinates[AimingConstants::xLL] > 0) && (m_currentTargetCoordinates[AimingConstants::yLL] > 0)
+               && (m_currentTargetCoordinates[AimingConstants::xLR] > 0) && (m_currentTargetCoordinates[AimingConstants::yLR] > 0)) {
 
-   // Robot is too far right to see target
-   // Negative values indicate missing coordinates
-   else if (m_currentTargetCoordinates[AimingConstants::xUpperRight] > AimingConstants::rightTargetVisionBoundary ||
-         m_currentTargetCoordinates[AimingConstants::xLowerRight] > AimingConstants::rightTargetVisionBoundary ||
-         m_currentTargetCoordinates[AimingConstants::xUpperRight] < 0 ||
-         m_currentTargetCoordinates[AimingConstants::xLowerRight] < 0) {
 
-      // TODO: Call DriveTrainController method to drive robot leftwards a little bit
-   }
+            // Set missing x-coordinate (xUL) to same value as other left x-coordinate (xLL)
+            if (m_currentTargetCoordinates[AimingConstants::xUL] < 0) {
+               setTargetCoordinateValue(AimingConstants::xUL, m_currentTargetCoordinates[AimingConstants::xLL]);
+            }
 
-   else {
-      setCurrentState(ROTATING);
-   }
+            // Set missing y-coordinate (yUL), using distance between lower y-coordinates to estimate offset
+            if (m_currentTargetCoordinates[AimingConstants::yUL] < 0) {
+
+               // Chosen signs account for rotation
+               int lowerYOffset = m_currentTargetCoordinates[AimingConstants::yLR] - m_currentTargetCoordinates[AimingConstants::yLL];
+               setTargetCoordinateValue(AimingConstants::yUL, m_currentTargetCoordinates[AimingConstants::yUR] + lowerYOffset);
+            }
+
+         } else {
+            //TODO: print error message to SmartDashboard (Target MUST be w/in field of vision before
+            // aiming process can begin - please re-align and try again
+            setCurrentState(IDLE);
+         }
+      }
+
+   else if ((m_currentTargetCoordinates[AimingConstants::xUR] < 0) || (m_currentTargetCoordinates[AimingConstants::yUR] < 0)) {
+
+         if ((m_currentTargetCoordinates[AimingConstants::xUL] > 0) && (m_currentTargetCoordinates[AimingConstants::yUL] > 0)
+               && (m_currentTargetCoordinates[AimingConstants::xLL] > 0) && (m_currentTargetCoordinates[AimingConstants::yLL] > 0)
+               && (m_currentTargetCoordinates[AimingConstants::xLR] > 0) && (m_currentTargetCoordinates[AimingConstants::yLR] > 0)) {
+
+
+            // Set missing x-coordinate (xUR) to same value as other right x-coordinate (xLR)
+            if (m_currentTargetCoordinates[AimingConstants::xUR] < 0) {
+               setTargetCoordinateValue(AimingConstants::xUR, m_currentTargetCoordinates[AimingConstants::xLR]);
+            }
+
+            // Set missing y-coordinate (yUR), using distance between lower y-coordinates to estimate offset
+            if (m_currentTargetCoordinates[AimingConstants::yUR] < 0) {
+
+               // Chosen signs account for rotation
+               int lowerYOffset = m_currentTargetCoordinates[AimingConstants::yLL] - m_currentTargetCoordinates[AimingConstants::yLR];
+               setTargetCoordinateValue(AimingConstants::yUR, m_currentTargetCoordinates[AimingConstants::yUL] + lowerYOffset);
+            }
+
+         } else {
+            //TODO: print error message to SmartDashboard (Target MUST be w/in field of vision before
+            // aiming process can begin - please re-align and try again
+            setCurrentState(IDLE);
+         }
+      }
+
+   else if ((m_currentTargetCoordinates[AimingConstants::xLL] < 0) || (m_currentTargetCoordinates[AimingConstants::yLL] < 0)) {
+
+            if ((m_currentTargetCoordinates[AimingConstants::xUL] > 0) && (m_currentTargetCoordinates[AimingConstants::yUL] > 0)
+                  && (m_currentTargetCoordinates[AimingConstants::xUR] > 0) && (m_currentTargetCoordinates[AimingConstants::yUR] > 0)
+                  && (m_currentTargetCoordinates[AimingConstants::xLR] > 0) && (m_currentTargetCoordinates[AimingConstants::yLR] > 0)) {
+
+
+               // Set missing x-coordinate (xLL) to same value as other left x-coordinate (xUL)
+               if (m_currentTargetCoordinates[AimingConstants::xLL] < 0) {
+                  setTargetCoordinateValue(AimingConstants::xLL, m_currentTargetCoordinates[AimingConstants::xUL]);
+               }
+
+               // Set missing y-coordinate (yLL), using distance between upper y-coordinates to estimate offset
+               if (m_currentTargetCoordinates[AimingConstants::yLL] < 0) {
+
+                  // Chosen signs account for rotation
+                  int upperYOffset = m_currentTargetCoordinates[AimingConstants::yUR] - m_currentTargetCoordinates[AimingConstants::yUL];
+                  setTargetCoordinateValue(AimingConstants::yLL, m_currentTargetCoordinates[AimingConstants::yLR] + upperYOffset);
+               }
+
+            } else {
+               //TODO: print error message to SmartDashboard (Target MUST be w/in field of vision before
+               // aiming process can begin - please re-align and try again
+               setCurrentState(IDLE);
+            }
+         }
+
+   else if ((m_currentTargetCoordinates[AimingConstants::xLR] < 0) || (m_currentTargetCoordinates[AimingConstants::yLR] < 0)) {
+
+            if ((m_currentTargetCoordinates[AimingConstants::xUL] > 0) && (m_currentTargetCoordinates[AimingConstants::yUL] > 0)
+                  && (m_currentTargetCoordinates[AimingConstants::xUR] > 0) && (m_currentTargetCoordinates[AimingConstants::yUR] > 0)
+                  && (m_currentTargetCoordinates[AimingConstants::xLL] > 0) && (m_currentTargetCoordinates[AimingConstants::yLL] > 0)) {
+
+
+               // Set missing x-coordinate (xLR) to same value as other right x-coordinate (xUR)
+               if (m_currentTargetCoordinates[AimingConstants::xLR] < 0) {
+                  setTargetCoordinateValue(AimingConstants::xLR, m_currentTargetCoordinates[AimingConstants::xUR]);
+               }
+
+               // Set missing y-coordinate (yLR), using distance between upper y-coordinates to estimate offset
+               if (m_currentTargetCoordinates[AimingConstants::yLR] < 0) {
+
+                  // Chosen signs account for rotation
+                  int upperYOffset = m_currentTargetCoordinates[AimingConstants::yUL] - m_currentTargetCoordinates[AimingConstants::yUR];
+                  setTargetCoordinateValue(AimingConstants::yLR, m_currentTargetCoordinates[AimingConstants::yLL] + upperYOffset);
+               }
+
+            } else {
+               //TODO: print error message to SmartDashboard (Target MUST be w/in field of vision before
+               // aiming process can begin - please re-align and try again
+               setCurrentState(IDLE);
+            }
+         }
+
 }
+*/
 
 // Turns robot to line up with target, once target is within field of vision
 void Aiming::rotate() {
 
    // Right side of robot is tilted too far forwards
-   if ((m_currentTargetCoordinates[AimingConstants::yUpperRight] -
-         m_currentTargetCoordinates[AimingConstants::yUpperLeft]) > 20 &&
-         (m_currentTargetCoordinates[AimingConstants::yLowerLeft] -
-               m_currentTargetCoordinates[AimingConstants::yLowerRight]) > 20) {
+   if ((m_currentTargetCoordinates[AimingConstants::yUR] -
+         m_currentTargetCoordinates[AimingConstants::yUL]) > 20 &&
+         (m_currentTargetCoordinates[AimingConstants::yLL] -
+               m_currentTargetCoordinates[AimingConstants::yLR]) > 20) {
 
-      // TODO: Call DriveTrainController method to rotate right one degree
-
+      m_driveTrainController->aimRobotClockwise(1, 0.5);
    }
 
    // Left side of robot is tilted too far forwards
-   else if ((m_currentTargetCoordinates[AimingConstants::yUpperLeft] -
-         m_currentTargetCoordinates[AimingConstants::yUpperRight]) > 20 &&
-         (m_currentTargetCoordinates[AimingConstants::yLowerRight] -
-               m_currentTargetCoordinates[AimingConstants::yLowerLeft]) > 20) {
+   else if ((m_currentTargetCoordinates[AimingConstants::yUL] -
+         m_currentTargetCoordinates[AimingConstants::yUR]) > 20 &&
+         (m_currentTargetCoordinates[AimingConstants::yLR] -
+               m_currentTargetCoordinates[AimingConstants::yLL]) > 20) {
 
-      // TODO: Call DriveTrainController method to rotate left one degree
-
+      m_driveTrainController->aimRobotClockwise(1, 0.5);
    }
 
    else {
       setCurrentState(TARGETED);
    }
+}
+
+void Aiming::setTargetCoordinateValue(AimingConstants::targetPositionData position, int newValue) {
+   m_currentTargetCoordinates[position] = newValue;
 }
 
 Aiming::STATE Aiming::getCurrentState() {
@@ -113,14 +205,14 @@ void Aiming::setCurrentState(Aiming::STATE newState) {
 // "(xUpperLeft, yUpperLeft), (xUpperRight, yUpperRight), (xLowerLeft, yLowerLeft),
 // (xLowerRight, yLowerRight)"
 void Aiming::printCurrentCoordinates() {
-   cout << "(" << m_currentTargetCoordinates[AimingConstants::xUpperLeft] << ", " <<
-         m_currentTargetCoordinates[AimingConstants::yUpperLeft] << "), (" <<
-         m_currentTargetCoordinates[AimingConstants::xUpperRight] << ", " <<
-         m_currentTargetCoordinates[AimingConstants::yUpperRight] << "), (" <<
-         m_currentTargetCoordinates[AimingConstants::xLowerLeft] << ", " <<
-         m_currentTargetCoordinates[AimingConstants::yLowerLeft] << "), (" <<
-         m_currentTargetCoordinates[AimingConstants::xLowerRight] << ", " <<
-         m_currentTargetCoordinates[AimingConstants::yLowerRight] << ")" << endl;
+   cout << "(" << m_currentTargetCoordinates[AimingConstants::xUL] << ", " <<
+         m_currentTargetCoordinates[AimingConstants::yUL] << "), (" <<
+         m_currentTargetCoordinates[AimingConstants::xUR] << ", " <<
+         m_currentTargetCoordinates[AimingConstants::yUR] << "), (" <<
+         m_currentTargetCoordinates[AimingConstants::xLL] << ", " <<
+         m_currentTargetCoordinates[AimingConstants::yLL] << "), (" <<
+         m_currentTargetCoordinates[AimingConstants::xLR] << ", " <<
+         m_currentTargetCoordinates[AimingConstants::yLR] << ")" << endl;
 }
 
 // Called to implement all aiming mechanisms
@@ -128,10 +220,6 @@ void Aiming::run() {
 
    switch(getCurrentState()) {
    case IDLE:
-      break;
-   case ALIGNING:
-      getNewImageData();
-      align();
       break;
    case ROTATING:
       getNewImageData();

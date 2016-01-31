@@ -62,14 +62,14 @@ struct AimingConstants {
 
    // Detected corners of target
    enum targetPositionData {
-         xUpperLeft,
-         yUpperLeft,
-         xUpperRight,
-         yUpperRight,
-         xLowerLeft,
-         yLowerLeft,
-         xLowerRight,
-         yLowerRight,
+         xUL, // upper left x-coordinate
+         yUL, // upper left y-coordinate
+         xUR, // upper right x-coordinate
+         yUR, // upper right y-coordinate
+         xLL, // lower left x-coordinate
+         yLL, // lower left y-coordinate
+         xLR, // lower right x-coordinate
+         yLR, // lower right y-coordinate
       };
 
    const static int numTargetVals = 8;

@@ -28,7 +28,7 @@ void LoaderSense::updateBallPositionData() {
    if (m_client->m_unreadData) {
 
       // Tests for loader data
-      if(m_client->getData[0] == 1) {
+      if(m_client->getData(0) == 1) {
 
          for(int i = 1; i <= LoaderSenseConstants::numBallVals; i++) {
 
@@ -74,13 +74,15 @@ void LoaderSense::rotate() {
       if (m_currentBallPosition[LoaderSenseConstants::ballRadius] > LoaderSenseConstants::maxSafeRotationRadius) {
          setCurrentState(BACKUP);
       } else {
-         //TODO:Call DriveTrainController function to rotate clockwise a little bit
+         //Robot will rotate clockwise 1 degree, at motor speed 0.5
+         m_driveTrainController->aimRobotClockwise(1, 0.5);
       }
    } else if (m_currentBallPosition[LoaderSenseConstants::ballCenterY] > LoaderSenseConstants::maxGoodCenterX) {
       if(m_currentBallPosition[LoaderSenseConstants::ballRadius] > LoaderSenseConstants::maxSafeRotationRadius) {
          setCurrentState(BACKUP);
       } else {
-         //TODO:Call DriveTrainController function to rotate counterclockwise a little bit
+         //Robot will rotate counterclockwise 1 degree, at motor speed 0.5
+         m_driveTrainController->aimRobotCounterclockwise(1, 0.5);
       }
    } else {
       setCurrentState(APPROACHING);
@@ -91,7 +93,8 @@ void LoaderSense::rotate() {
 void LoaderSense::approach() {
 
    if (m_currentBallPosition[LoaderSenseConstants::ballRadius] < LoaderSenseConstants::minGoodRadius) {
-      //TODO:Call to DriveTrainController function to move forwards a little bit
+      //Robot will move forward an inch, at motor speed 0.5
+      m_driveTrainController->moveRobotStraight(1, 0.5);
       setCurrentState(ROTATING);
    } else {
       setCurrentState(TARGETED);
@@ -101,13 +104,10 @@ void LoaderSense::approach() {
 // Back up until rotation can be safely completed
 void LoaderSense::backup() {
 
-   // FIRST THING THAT SHOULD BE EXECUTED IS A SLIGHT BACKUP
-   //TODO:Call to DriveTrainController function to back up a little bit
-
    if(m_currentBallPosition[LoaderSenseConstants::ballRadius] < LoaderSenseConstants::maxSafeRotationRadius) {
       setCurrentState(ROTATING);
    } else {
-      //TODO:Call to the DriveTrainController function to back up a little bit
+      m_driveTrainController->moveRobotStraight(-1, 0.5);
    }
 }
 
