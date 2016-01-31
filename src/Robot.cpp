@@ -67,6 +67,10 @@ public:
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController){
       SmartDashboard::init();
 
+
+//      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
+//      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true);
+
       // cout << "call init socket" << endl;
       // client.initilizeSocket();
       // if (client.m_initGood){
@@ -90,6 +94,16 @@ public:
       SmartDashboard::PutString("DB/String 0", "Entering Test ");
       m_leftWheelEncoder.Reset();
       m_rightWheelEncoder.Reset();
+      SmartDashboard::PutString("DB/String 0", " ");
+      SmartDashboard::PutString("DB/String 1", " ");
+      SmartDashboard::PutString("DB/String 2", " ");
+      SmartDashboard::PutString("DB/String 3", " ");
+      SmartDashboard::PutString("DB/String 4", " ");
+      SmartDashboard::PutString("DB/String 5", " ");
+      SmartDashboard::PutString("DB/String 6", " ");
+      SmartDashboard::PutString("DB/String 7", " ");
+      SmartDashboard::PutString("DB/String 8", " ");
+      SmartDashboard::PutString("DB/String 9", " ");
 
       while(IsTest() && IsEnabled()){
 
@@ -99,17 +113,17 @@ public:
          m_loaderController.run();
 
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
-            SmartDashboard::PutString("DB/String 6", "Aiming Robot Clockwise 90 Test");
-            m_driveTrainController.aimRobotClockwise(90, 0.5);
+            SmartDashboard::PutString("DB/String 6", ":) Aiming Robot Clockwise 90 Test");
+            m_driveTrainController.aimRobotClockwise(90, 0.6);
          }
 
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
-            SmartDashboard::PutString("DB/String 6", "Aiming Robot CounterClockwise 90 Test");
-            m_driveTrainController.aimRobotCounterclockwise(90, 0.5);
+            SmartDashboard::PutString("DB/String 6", ":) Aiming Robot CounterClockwise 90 Test");
+            m_driveTrainController.aimRobotCounterclockwise(90, 0.6);
          }
 
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonY)){
-            SmartDashboard::PutString("DB/String 6", "Moving Robot Straight Test");
+            SmartDashboard::PutString("DB/String 6", ":) Moving Robot Straight Test");
             m_driveTrainController.moveRobotStraight(45, 0.5);
          }
          //test drivetrain repeatability by running forwards and backward five times.
@@ -130,11 +144,11 @@ public:
                if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
                   loop++;
                   if(changeDirection){
-                     m_driveTrainController.moveRobotStraight(45, 0.5);
+                     m_driveTrainController.moveRobotStraight(20, 0.5);
                      changeDirection = false;
                   }
                   else {
-                     m_driveTrainController.moveRobotStraight(-45, 0.5);
+                     m_driveTrainController.moveRobotStraight(-20, 0.5);
                      changeDirection = true;
                   }
                }
@@ -158,11 +172,11 @@ public:
                if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
                   loop++;
                   if(changeRotation){
-                     m_driveTrainController.aimRobotClockwise(90, 0.5);
+                     m_driveTrainController.aimRobotClockwise(90, 0.6);
                      changeRotation = false;
                   }
                   else{
-                     m_driveTrainController.aimRobotCounterclockwise(90, 0.5);
+                     m_driveTrainController.aimRobotCounterclockwise(90, 0.6);
                      changeRotation = true;
                   }
                }

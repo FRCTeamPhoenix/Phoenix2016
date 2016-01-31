@@ -10,10 +10,10 @@ struct PortAssign {
    const static uint32_t rearRightWheelMotor = 3;
 
    // Channels for wheel encoders
-   const static uint32_t leftWheelEncoderChannelA = 2;
-   const static uint32_t leftWheelEncoderChannelB = 3;
-   const static uint32_t rightWheelEncoderChannelA = 0;
-   const static uint32_t rightWheelEncoderChannelB = 1;
+   const static uint32_t leftWheelEncoderChannelA = 0;
+   const static uint32_t leftWheelEncoderChannelB = 1;
+   const static uint32_t rightWheelEncoderChannelA = 2;
+   const static uint32_t rightWheelEncoderChannelB = 3;
 
    //Flywheels
    const static uint32_t flywheelLeftMotor = 6; //Both on the same motor controller
@@ -46,18 +46,18 @@ struct RobotConstants {
 
 struct DriveStationConstants {
    enum buttonNames {
-      buttonX = 1,
-      buttonA = 2,
-      buttonB = 3,
-      buttonY = 4,
-      buttonLB = 5,
-      buttonRB = 6,
-      triggerLT = 7,
-      triggerRT = 8,
-      buttonBack = 9,
-      buttonStart = 10,
-      joystickLeftButton = 11,
-      joystickRightButton = 12
+      buttonX = 0,
+      buttonA = 1,
+      buttonB = 2,
+      buttonY = 3,
+      buttonLB = 4,
+      buttonRB = 5,
+      triggerLT = 6,
+      triggerRT = 7,
+      buttonBack = 8,
+      buttonStart = 9,
+      joystickLeftButton = 10,
+      joystickRightButton = 11
    };
    const static uint32_t gamepadButtons = 12;
 };

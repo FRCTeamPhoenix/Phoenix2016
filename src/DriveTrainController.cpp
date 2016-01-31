@@ -98,8 +98,10 @@ void DriveTrainController::aimRobotCounterclockwise(float degree, float motorSpe
 }
 
 void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
+   printf("IN TEST THING/n");
    if (m_goalState == ENCODERDRIVE)
      return;
+
 
    m_initalEncoderValueRight = m_rightWheelEncoder->Get();
    m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
@@ -108,11 +110,11 @@ void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
    float ticks = distance * (M_PI* 6);
    m_targetTickRight = m_initalEncoderValueRight + ticks;
    std::ostringstream outputTR;
-   outputTR << "T-Right" << m_targetTickRight;
+   outputTR << "T-Right " << m_targetTickRight;
    SmartDashboard::PutString("DB/String 0", outputTR.str());
    m_targetTickLeft = m_initalEncoderValueLeft + ticks;
    std::ostringstream outputTL;
-   outputTL << "T-Left" << m_targetTickLeft;
+   outputTL << "T-Left " << m_targetTickLeft;
    SmartDashboard::PutString("DB/String 0", outputTL.str());
    m_rightEncoderComplete = false;
    m_leftEncoderComplete = false;
