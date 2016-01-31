@@ -25,15 +25,18 @@ public:
 
    enum STATE {
          IDLE,
+         FINDING_TARGET,
          ROTATING,
+         APPROACHING,
          TARGETED
       };
 
    Aiming(Client*, DriveTrainController*);
    void getNewImageData();
-   void processImageData();
    void beginAiming();
+   void findTarget();
    void rotate();
+   void approachTarget();
    STATE getCurrentState();
    void setTargetCoordinateValue(AimingConstants::targetPositionData, int);
    void setCurrentState(STATE);

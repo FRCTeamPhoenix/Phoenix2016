@@ -79,6 +79,8 @@ struct AimingConstants {
    const static int leftTargetVisionBoundary = 30;
    const static int rightTargetVisionBoundary = 290;
    const static int maxTiltingFactor = 20;
+   const static int minTargetWidth = 250;
+   const static int maxTargetWidth = 350;
 
 };
 
