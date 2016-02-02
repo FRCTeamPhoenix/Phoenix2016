@@ -18,14 +18,14 @@ class Robot: public SampleRobot
    Talon m_flywheels;
    Joystick m_joystick;
    Joystick m_gamepad;
-
    DriveStation m_driveStation;
    RobotDrive m_driveTrain;
    AutoController m_autoC;
    RobotController m_robotController;
-
    DriveTrainController m_driveTrainController;
    Client m_client;
+   USBCamera m_driveCamera;
+
 public:
    Robot() :
       m_flywheels(PortAssign::flywheels),
@@ -38,9 +38,13 @@ public:
             PortAssign::rearRightWheelMotor),
       m_autoC(&m_driveStation),
       m_robotController(&m_driveStation, &m_autoC),
-      m_driveTrainController(&m_driveTrain, &m_driveStation)
+      m_driveTrainController(&m_driveTrain, &m_driveStation),
+      m_driveCamera("cam0",false)
    {
-       cout<<"run init socket function" << endl;
+
+   }
+   void RobotInit() override{
+              cout<<"run init socket function" << endl;
        m_client.initilizeSocket();
        if (m_client.m_initGood){
           cout<<"init good start thread" << endl;
@@ -48,11 +52,17 @@ public:
           receiveThread.detach();
        }
 
+       m_driveCamera.SetExposureManual(20);
+       m_driveCamera.SetWhiteBalanceAuto();
+       CameraServer::GetInstance()->SetQuality(50);
+       CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+
    }
    void OperatorControl()
    {
       while(IsOperatorControl() && IsEnabled())
       {
+
        /*  float throttle = - m_joystick.GetY();
          if (fabs(throttle) < 0.05f) //This makes a deadzone
          {

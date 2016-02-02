@@ -1,7 +1,7 @@
 #include "Client.h"
 #define NPACK 1
 #define PORT 31415 //port currently used for testing, can be changed
-#define SRV_IP "10.0.42.21" //change ip address
+#define SRV_IP "10.0.42.25" //change ip address
 
 
 
@@ -36,10 +36,14 @@ void Client::initilizeSocket(){
    m_si_other.sin_addr.s_addr = inet_addr(SRV_IP);
 
    memset(m_receivedData,0,BUFLEN);
-   memset(m_convertedData,0,8);
+
+   memset(m_targetData,0,9);
+   memset(m_ballData,0,9);
+   memset(m_distanceData,0,9);
+
    cout<<"start ping loop" << endl;
    char buf[BUFLEN];
-   //not tested but should work
+
    while (!m_initGood && sendCount < 5){
       sendCount++;
 
@@ -75,8 +79,25 @@ void Client::receivePacket(){
         }
         else {
             cout << "packet received in thread" <<endl;
-            byteToInt(m_receivedData,m_convertedData);
-            m_unreadData=true;
+            byteToInt(m_receivedData,m_targetData);
+            //Target has flag 1 in first place of array ball has flag 2, lydar has flag 3
+            if (m_convertedData[0]==1){
+                copyArray(m_convertedData,m_targetData);
+                m_unreadTargetData=true;
+
+            }
+            else if (m_convertedData[0]==2){
+                copyArray(m_convertedData,m_ballData);
+                m_unreadBallData=true;
+
+            }
+            else if (m_convertedData[0]==3){
+                copyArray(m_convertedData,m_distanceData);
+                m_unreadDistanceData=true;
+            }
+            else {
+                cout << "no valid flag found" <<endl;
+             }
         }
      }
 }
@@ -94,10 +115,32 @@ void Client::sendPacket() {
     cout << "sending packet" << endl;
     sendto(m_socket,m_sendData,BUFLEN, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
 }
-int Client::getData(){
-    m_unreadData=false;
-    return *m_convertedData;
+int Client::getBallData(){
+    m_unreadBallData=false;
+    return *m_ballData;
 
+}
+int Client::getTargetData(){
+    m_unreadTargetData=false;
+    return *m_targetData;
+
+}
+int Client::getDistanceData(){
+    m_unreadDistanceData=false;
+    return *m_distanceData;
+
+}
+void Client::copyArray(int *array1, int *array2){
+   if (sizeof(array1)>=sizeof(array2)){
+      for (int i =0;i<sizeof(array2);i++){
+         array2[i]=array1[i];
+      }
+   }
+   else {
+      for (int i =0;i<sizeof(array1);i++){
+            array2[i]=array1[i];
+      }
+   }
 }
 
 Client::~Client() {
