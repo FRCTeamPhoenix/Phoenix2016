@@ -9,9 +9,11 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <fstream>
 #include <iostream>
+#include <unistd.h>
+#include <string.h>
 using namespace std;
-
 #define BUFLEN 10240
 
 class Client {
@@ -32,6 +34,8 @@ public:
     int m_ballData[9];
     int m_distanceData[9];
     Client();
+
+    char* getData();
 
     void initilizeSocket();
 
