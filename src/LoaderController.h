@@ -14,11 +14,11 @@
 
 
 //Values for the motor speeds might need to be changed
-static const float armMotorLeft = 1.0;
-static const float armMotorRight = 1.0;
-static const float intakeMotorSpeed = 1.0;
-static const float stationaryMotorSpeed = 1.0;
-static const float homingSpeed = 0.1;
+static const float armMotorLeft = 1.0f;
+static const float armMotorRight = 1.0f;
+static const float intakeMotorSpeed = 1.0f;
+static const float stationaryMotorSpeed = 1.0f;
+static const float homingSpeed = 0.1f;
 
 class LoaderController : public BaseController{
 private:
@@ -34,6 +34,7 @@ private:
 
 public:
    enum STATE {
+      IDLE,
       HOMING,
       HOMED,
       EMPTY,
@@ -61,6 +62,7 @@ public:
    void setLoaded();
    void setShooting();
    void setIdle();
+   void startLoading();
    virtual ~LoaderController();
 
    STATE getCurrentState();

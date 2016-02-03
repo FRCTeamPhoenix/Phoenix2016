@@ -71,30 +71,38 @@ void LoaderController::homing(){
 }
 
 void LoaderController::run(){
-   STATE current = getCurrentState();
+   //STATE current = getCurrentState();
    switch (getGoalState()){
    case HOMING:
+      SmartDashboard::PutString("DB/String 5", "HOMING");
       homing();
-   case EMPTY:
+   case IDLE:
       //set motors to 0 if loading or loaded
-      if (current == LOADING || current == LOADED){
+         SmartDashboard::PutString("DB/String 5", "IDLE");
          m_intakeMotor->Set(0);
          m_stationaryMotor->Set(0);
-      }
+      break;
+   case LOADING:
+      SmartDashboard::PutString("DB/String 5", "LOADING");
+//      if (m_loadedSensor->Get()){
+//         SmartDashboard::PutString("DB/String 4", "IN IF LOADING");
+//         m_goalState = LOADED;
+//      }
+//      else{
+         m_intakeMotor->Set(-intakeMotorSpeed);
+         m_stationaryMotor->Set(-stationaryMotorSpeed);
+//      }
       break;
    case LOADED:
-      //if empty turn on motors
-      if (current == EMPTY){
-         m_intakeMotor->Set(intakeMotorSpeed);
-         m_stationaryMotor->Set(stationaryMotorSpeed);
-      }
-      //if loaded turn off motors
-      else if (current == LOADED){
+      SmartDashboard::PutString("DB/String 5", "LOADED");
          m_intakeMotor->Set(0);
          m_stationaryMotor->Set(0);
-      }
+      break;
+   case SHOOTING:
+      m_stationaryMotor->Set(-stationaryMotorSpeed);
       break;
    default:
+      SmartDashboard::PutString("DB/String 5", "DEFAULT");
       break;
    }
    moveArm();
@@ -102,9 +110,9 @@ void LoaderController::run(){
 
 
 LoaderController::STATE LoaderController::getCurrentState() {
-   if (m_loadedSensor->Get()){
-      return LOADED;
-   }
+   //   if (m_loadedSensor->Get()){
+   //      return LOADED;
+   //   }
    if (m_intakeMotor->Get() != 0){
       return LOADING;
    }
@@ -125,13 +133,14 @@ void LoaderController::setLoaded(){
    m_goalState = LOADED;
 }
 
+void LoaderController::startLoading(){
+   m_goalState = LOADING;
+}
 void LoaderController::setShooting(){
    m_goalState = SHOOTING;
 }
 
 void LoaderController::setIdle(){
-   m_intakeMotor->Set(0);
-   m_stationaryMotor->Set(0);
+   m_goalState = IDLE;
    //Need to fix LoaderController class.
-
 }

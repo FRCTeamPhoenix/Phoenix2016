@@ -68,8 +68,8 @@ public:
       SmartDashboard::init();
 
 
-//      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
-//      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true);
+      //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
+      //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true);
 
       // cout << "call init socket" << endl;
       // client.initilizeSocket();
@@ -186,14 +186,15 @@ public:
          if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
             SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
 
-            m_driveTrainController.stopRobot();
             m_shooterController.setOff();
+            m_intakeMotor.Set(-0);
+            m_stationaryMotor.Set(-0);
+            m_driveTrainController.stopRobot();
          }
 
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonLB)){
             SmartDashboard::PutString("DB/String 6", "Loader Test");
-
-            m_loaderController.setLoaded();
+            m_loaderController.startLoading();
          }
 
          if(m_driveStation.getGamepadButton(DriveStationConstants::triggerRT)){

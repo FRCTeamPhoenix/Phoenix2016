@@ -53,7 +53,8 @@ void DriveTrainController::run() {
       //manualDrive(throttleRatio);
       //break;
    case IDLE:
-      m_driveTrain->StopMotor();
+      m_rightMotorPower = 0.0f;
+      m_leftMotorPower = 0.0f;
       break;
    case ENCODERDRIVE:
       float leftMotorPower = 0.0f;

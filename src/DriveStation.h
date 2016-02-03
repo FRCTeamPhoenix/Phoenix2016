@@ -20,11 +20,13 @@ public:
    float getJoystickThrottle();
    float getYWithDeadzone();
    float getTwist();
+   float GetAngle();
    bool getGamepadButton(int);
    bool getJoystickButton(int);
 
    void snapShot();
    void printToDashboard(unsigned long *pointToString, int space);
+   void gyroTest();
 
 
 private:
@@ -35,6 +37,7 @@ private:
    float m_joystickY;
    float m_joystickZ;
    float m_joystickThrottle;
+   float m_gyroAngle;
 };
 
 

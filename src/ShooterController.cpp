@@ -21,25 +21,26 @@ void ShooterController::run(){
    switch(getGoalState()){
    case OFF:
       m_flywheel->stopMotors();
-      m_loaderController->setIdle();
+      //m_loaderController->setIdle();
       break;
    case ARMED:
       m_flywheel->startMotors(RobotConstants::flywheelMotorSpeed);
       break;
    case SHOOTING:
-      if (m_loaderController->getCurrentState() == LoaderController::STATE::LOADED) {
+      //if (m_loaderController->getCurrentState() == LoaderController::STATE::LOADED) {
          m_loaderController->setShooting();
          m_flywheel->startMotors(RobotConstants::flywheelMotorSpeed);
-      }
-      else {
-         setOff();
-      }
+    //}
+      //else {
+         //setOff();
+      //}
       break;
    case ARMING:
    case STOPPING:
    case PREPARINGTOSHOOT:
       break;
    }
+   m_flywheel->run();
 }
 
 void ShooterController::setArmed(){
@@ -48,10 +49,12 @@ void ShooterController::setArmed(){
 
 void ShooterController::setOff(){
    m_goalState = OFF;
+   m_loaderController->setIdle();
 }
 
 void ShooterController::setShooting(){
    m_goalState = SHOOTING;
+
 }
 
 ShooterController::STATE ShooterController::getCurrentState(){
