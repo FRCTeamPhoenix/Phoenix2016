@@ -74,13 +74,13 @@ bool Action::execute(void)
       case ACTION_DRIVE:
 	 if (m_firstTime)
 	    m_driveTrain->moveRobotStraight(m_argv[0], m_argv[1]);
-	 if (m_driveTrain->getCurrentState())
+	 if (m_driveTrain->getCurrentState() == DriveTrainController::ENCODERDRIVE)
 	    return true;
 	 return false;
       case ACTION_TURN:
 	 if (m_firstTime)
 	    m_driveTrain->aimRobotClockwise(m_argv[0], m_argv[1]);
-	 if (m_driveTrain->getCurrentState())
+	 if (m_driveTrain->getCurrentState() == DriveTrainController::ENCODERDRIVE)
 	    return true;
 	 return false;
       case ACTION_BRAKE:
