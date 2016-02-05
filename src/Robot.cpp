@@ -39,7 +39,8 @@ class Robot: public SampleRobot
    LoaderController m_loaderController;
    ShooterController m_shooterController;
    RobotController m_robotController;
-   Client client;
+   USBCamera m_driveCamera;
+   Client m_client;
 
 public:
    Robot() :
@@ -62,8 +63,10 @@ public:
       m_armEncoder(PortAssign::armEncoderChannelA, PortAssign::armEncoderChannelB),
       m_loaderController(&m_verticalMotor, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder),
       m_shooterController(&m_loaderController, &m_flywheel),
-      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController){
-      SmartDashboard::init();
+      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController),
+      m_driveCamera("cam0",false)
+
+   {
 
       // cout << "call init socket" << endl;
       // client.initilizeSocket();
@@ -71,8 +74,21 @@ public:
       //         std::thread receiveThread(runClient, this, &client);
       // }
    }
+   void RobotInit() override{
+       cout<<"run init socket function" << endl;
+       m_client.initilizeSocket();
+       if (m_client.m_initGood){
+          cout<<"init good start thread" << endl;
+          std::thread receiveThread(runClient, this, &m_client);
+          receiveThread.detach();
+       }
 
+       m_driveCamera.SetExposureManual(20);
+       m_driveCamera.SetWhiteBalanceAuto();
+       CameraServer::GetInstance()->SetQuality(50);
+       CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 
+   }
    void OperatorControl(){
       while(IsOperatorControl() && IsEnabled()){
          m_driveStation.snapShot();
