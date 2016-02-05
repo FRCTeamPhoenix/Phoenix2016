@@ -21,6 +21,9 @@ public:
    float getYWithDeadzone();
    float getTwist();
    float GetAngle();
+   float getGamepadJoystick();
+   float getGamepadJoystickY();
+   float deadzoneOfGamepadJoystick();
    bool getGamepadButton(int);
    bool getJoystickButton(int);
 
@@ -38,6 +41,8 @@ private:
    float m_joystickZ;
    float m_joystickThrottle;
    float m_gyroAngle;
+   float m_gamepadJoystick;
+   float m_gamepadJoystickY;
 };
 
 

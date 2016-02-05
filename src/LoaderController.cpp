@@ -16,7 +16,8 @@ LoaderController::LoaderController(
       DigitalInput* upperLimit,
       DigitalInput* lowerLimit,
       DigitalInput* loadedSensor,
-      Encoder* armEncoder):
+      Encoder* armEncoder,
+      DriveStation* driveStation):
 
       m_armMotorLeft(armMotorLeft),
       m_armMotorRight(armMotorRight),
@@ -25,7 +26,8 @@ LoaderController::LoaderController(
       m_upperLimit(upperLimit),
       m_lowerLimit(lowerLimit),
       m_loadedSensor(loadedSensor),
-      m_armEncoder(armEncoder)
+      m_armEncoder(armEncoder),
+      m_driveStation(driveStation)
 {
    m_goalState = HOMING;
    m_homingState = LOOKINGFORLOWERLIMIT;
@@ -39,14 +41,17 @@ void LoaderController::moveArm(){
    bool atUpperLimit = m_upperLimit->Get();
    bool atLowerLimit = m_lowerLimit->Get();
 
-   if (atUpperLimit /*&& Add direction of the arm*/){
-      m_armMotorLeft->Set(0);
-      m_armMotorRight->Set(0);
+   float power = m_driveStation->deadzoneOfGamepadJoystick();
+
+   if (atUpperLimit && (power > 0.0)){
+      power = 0;
    }
-   else if (atLowerLimit /*&& Add direction of the arm*/){
-      m_armMotorLeft->Set(0);
-      m_armMotorRight->Set(0);
+   if (atLowerLimit && (power < 0.0)){
+      power = 0;
    }
+
+   m_armMotorLeft->Set(power / 2);
+   m_armMotorRight->Set(power / 2);
 }
 
 int LoaderController::angleOfArm(){

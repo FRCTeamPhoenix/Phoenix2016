@@ -62,7 +62,7 @@ public:
       m_lowerLimit(PortAssign::lowerLimit),
       m_loadedSensor(PortAssign::loadedSensor),
       m_armEncoder(PortAssign::armEncoderChannelA, PortAssign::armEncoderChannelB),
-      m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder),
+      m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder, &m_driveStation),
       m_shooterController(&m_loaderController, &m_flywheel),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController){
       SmartDashboard::init();

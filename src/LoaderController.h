@@ -11,6 +11,7 @@
 #include "BaseController.h"
 #include "WPILib.h"
 #include "constants.h"
+#include "DriveStation.h"
 
 
 //Values for the motor speeds might need to be changed
@@ -30,6 +31,7 @@ private:
    DigitalInput* m_lowerLimit;
    DigitalInput* m_loadedSensor;
    Encoder* m_armEncoder;
+   DriveStation* m_driveStation;
 
 
 public:
@@ -53,10 +55,12 @@ public:
          DigitalInput* uppterLimit,
          DigitalInput* lowerLimit,
          DigitalInput* loadedSensor,
-         Encoder* armEncoder);
+         Encoder* armEncoder,
+         DriveStation* driveStation);
    void run();
-   void moveArm();
+   void armLimitSwitches(float power);
    int angleOfArm();
+   void moveArm();
    void homing();
    void setHomed();
    void setLoaded();

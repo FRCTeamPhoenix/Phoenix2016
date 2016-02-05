@@ -24,6 +24,20 @@ float DriveStation::getJoystickThrottle() {
    return m_joystickThrottle;
 }
 
+float DriveStation::getGamepadJoystick(){
+   return m_gamepadJoystick;
+}
+
+float DriveStation::deadzoneOfGamepadJoystick(){
+   float power = getGamepadJoystick();
+   if (fabs(power) < 0.05f){
+          power = 0;
+   }
+   else{
+      return power;
+   }
+}
+
 float DriveStation::getYWithDeadzone() {
    float throttle = -getJoystickY();
    if (fabs(throttle) < 0.05f) //This makes a deadzone
@@ -58,6 +72,7 @@ void DriveStation::snapShot() {
    m_joystickY = m_joystick->GetY();
    m_joystickZ = m_joystick->GetZ();
    m_joystickZ = m_joystick->GetThrottle();
+   m_gamepadJoystickY = m_gamepad->GetY();
 
 }
 
