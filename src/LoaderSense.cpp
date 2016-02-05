@@ -114,7 +114,7 @@ void LoaderSense::backup() {
 // Called to implement all LoaderSense mechanisms
 void LoaderSense::run() {
 
-   switch(getCurrentState()) {
+   switch(m_currentState) {
    case IDLE:
       break;
    case ROTATING:

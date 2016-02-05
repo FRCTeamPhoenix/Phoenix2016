@@ -138,7 +138,7 @@ void Aiming::printCurrentCoordinates() {
 // Called to implement all aiming mechanisms
 void Aiming::run() {
 
-   switch(getCurrentState()) {
+   switch(m_currentState) {
    case IDLE:
       break;
    case FINDING_TARGET:
