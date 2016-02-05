@@ -27,8 +27,7 @@ public:
          IDLE,
          FINDING_TARGET,
          ROTATING,
-         APPROACHING,
-         TARGETED
+         APPROACHING
       };
 
    Aiming(Client*, DriveTrainController*);

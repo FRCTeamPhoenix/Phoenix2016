@@ -89,7 +89,7 @@ void Aiming::rotate() {
    }
 
    else {
-      setCurrentState(TARGETED);
+      setCurrentState(IDLE);
    }
 }
 
@@ -152,10 +152,6 @@ void Aiming::run() {
    case APPROACHING:
       getNewImageData();
       approachTarget();
-   case TARGETED:
-      // Reset the aiming state
-      setCurrentState(IDLE);
-      break;
    default:
       break;
    }
