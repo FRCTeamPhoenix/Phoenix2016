@@ -7,8 +7,8 @@
 
 #include "RobotController.h"
 
-RobotController::RobotController(DriveStation* ds, DriveTrainController* dt, ShooterController* shooter, LoaderController* loader, Aiming* aimer)
-   : m_driveStation(ds), m_driveTrainController(dt), m_shooterController(shooter), m_loaderController(loader), m_aimer(aimer)
+RobotController::RobotController(DriveStation* ds, DriveTrainController* dt, ShooterController* shooter, LoaderController* loader, LoaderSense* lsense, Aiming* aimer)
+   : m_driveStation(ds), m_driveTrainController(dt), m_shooterController(shooter), m_loaderController(loader), m_loaderSense(lsense), m_aimer(aimer)
 {
    m_state = ROBOT_AUTO;
 
@@ -30,7 +30,7 @@ void RobotController::run()
 
 void RobotController::addAction(ActionType action, int argc, float* argv)
 {
-   Action* act = new Action(m_driveStation, m_driveTrainController, m_aimer, action, argc, argv);
+   Action* act = new Action(m_driveStation, m_driveTrainController, m_loaderSense, m_aimer, action, argc, argv);
    m_queue.insert(m_queue.begin(), act);
 }
 

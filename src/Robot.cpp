@@ -7,6 +7,7 @@
 #include "ShooterController.h"
 #include "Flywheel.h"
 #include "Client.h"
+#include "LoaderSense.h"
 #include "Aiming.h"
 #include <thread>
 #include <iostream>
@@ -41,6 +42,7 @@ class Robot: public SampleRobot
    LoaderController m_loaderController;
    ShooterController m_shooterController;
    Client m_client;
+   LoaderSense m_loaderSense;
    Aiming m_aiming;
    RobotController m_robotController;
    
@@ -70,8 +72,9 @@ public:
       m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder),
       m_shooterController(&m_loaderController, &m_flywheel),
       m_client(),
+      m_loaderSense(&m_client, &m_driveTrainController),
       m_aiming(&m_client, &m_driveTrainController),
-      m_robotController(&m_driveStation, &m_driveTrainController, &m_shooterController, &m_loaderController, &m_aiming)
+      m_robotController(&m_driveStation, &m_driveTrainController, &m_shooterController, &m_loaderController, &m_loaderSense, &m_aiming)
    {
       SmartDashboard::init();
 

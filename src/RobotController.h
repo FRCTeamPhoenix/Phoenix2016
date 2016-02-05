@@ -25,7 +25,7 @@ class RobotController : public BaseController
       ROBOT_MANUAL
    };
 
-   RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, Aiming*);
+   RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, LoaderSense*, Aiming*);
    virtual ~RobotController();
 
    void run();
@@ -38,8 +38,9 @@ class RobotController : public BaseController
 
    DriveStation* m_driveStation;
    DriveTrainController* m_driveTrainController;
-   ShooterController * m_shooterController;
-   LoaderController * m_loaderController;
+   ShooterController* m_shooterController;
+   LoaderController* m_loaderController;
+   LoaderSense* m_loaderSense;
    Aiming* m_aimer;
 };
 
