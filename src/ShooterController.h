@@ -36,6 +36,7 @@ public:
 
    void setArmed();
    void setOff();
+   void stopShooting();
    void setShooting();
 
 private:

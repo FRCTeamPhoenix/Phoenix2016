@@ -49,8 +49,8 @@ void LoaderController::moveArm(){
    }
 }
 
-void LoaderController::angleOfArm(){
-
+int LoaderController::angleOfArm(){
+   return 0;
 }
 
 void LoaderController::homing(){
@@ -78,9 +78,9 @@ void LoaderController::run(){
       homing();
    case IDLE:
       //set motors to 0 if loading or loaded
-         SmartDashboard::PutString("DB/String 5", "IDLE");
-         m_intakeMotor->Set(0);
-         m_stationaryMotor->Set(0);
+      SmartDashboard::PutString("DB/String 5", "IDLE");
+      m_intakeMotor->Set(0);
+      m_stationaryMotor->Set(0);
       break;
    case LOADING:
       SmartDashboard::PutString("DB/String 5", "LOADING");
@@ -95,8 +95,8 @@ void LoaderController::run(){
       break;
    case LOADED:
       SmartDashboard::PutString("DB/String 5", "LOADED");
-         m_intakeMotor->Set(0);
-         m_stationaryMotor->Set(0);
+      m_intakeMotor->Set(0);
+      m_stationaryMotor->Set(0);
       break;
    case SHOOTING:
       m_stationaryMotor->Set(-stationaryMotorSpeed);
@@ -110,9 +110,9 @@ void LoaderController::run(){
 
 
 LoaderController::STATE LoaderController::getCurrentState() {
-   //   if (m_loadedSensor->Get()){
-   //      return LOADED;
-   //   }
+//   if (m_loadedSensor->Get()){
+//      return LOADED;
+//   }
    if (m_intakeMotor->Get() != 0){
       return LOADING;
    }
@@ -142,5 +142,4 @@ void LoaderController::setShooting(){
 
 void LoaderController::setIdle(){
    m_goalState = IDLE;
-   //Need to fix LoaderController class.
 }

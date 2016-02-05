@@ -91,7 +91,9 @@ public:
    }
 
    void Test(){
+      //Clears the Dashboard
       SmartDashboard::PutString("DB/String 0", "Entering Test ");
+      //Resets the encoders
       m_leftWheelEncoder.Reset();
       m_rightWheelEncoder.Reset();
       SmartDashboard::PutString("DB/String 0", " ");
@@ -107,21 +109,25 @@ public:
 
       while(IsTest() && IsEnabled()){
 
+         //Calls all run functions involved with testing
          m_driveStation.snapShot();
          m_driveTrainController.run();
          m_shooterController.run();
          m_loaderController.run();
 
+         //Aiming Robot Clockwise 90 degrees
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
             SmartDashboard::PutString("DB/String 6", ":) Aiming Robot Clockwise 90 Test");
             m_driveTrainController.aimRobotClockwise(90, 0.6);
          }
 
+         //Aiming Robot Counter Clockwise 90 degrees
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
             SmartDashboard::PutString("DB/String 6", ":) Aiming Robot CounterClockwise 90 Test");
             m_driveTrainController.aimRobotCounterclockwise(90, 0.6);
          }
 
+         //Robot drives straight
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonY)){
             SmartDashboard::PutString("DB/String 6", ":) Moving Robot Straight Test");
             m_driveTrainController.moveRobotStraight(45, 0.5);
@@ -134,6 +140,7 @@ public:
             while(loop<=10){
                m_driveStation.snapShot();
                m_driveTrainController.run();
+               //Stops everything on the robot
                if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
                   SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
 
@@ -141,6 +148,7 @@ public:
                   m_shooterController.setOff();
                   loop = 111;
                }
+               //Switching between going forward and backward
                if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
                   loop++;
                   if(changeDirection){
@@ -155,6 +163,7 @@ public:
             }
          }
 
+         //Tests drivetrain repeatablity test
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonRB)){
             SmartDashboard::PutString("DB/String 6", "Repeatability Test Rotation");
             bool changeRotation = true;
@@ -162,6 +171,7 @@ public:
             while(loop<=10){
                m_driveStation.snapShot();
                m_driveTrainController.run();
+               //Stops everything on the robot
                if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
                   SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
 
@@ -169,6 +179,7 @@ public:
                   m_shooterController.setOff();
                   loop = 111;
                }
+               //Switches the dirctions between
                if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
                   loop++;
                   if(changeRotation){
@@ -187,8 +198,7 @@ public:
             SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
 
             m_shooterController.setOff();
-            m_intakeMotor.Set(-0);
-            m_stationaryMotor.Set(-0);
+            m_loaderController.setIdle();
             m_driveTrainController.stopRobot();
          }
 

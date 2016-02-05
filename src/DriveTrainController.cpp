@@ -48,10 +48,6 @@ void DriveTrainController::run() {
    case TELEOP:
       manualDrive(0.6f);
       break;
-   //case TEST:
-      //throttleRatio = (m_driveStation->getJoystickThrottle() + 1) / 2;
-      //manualDrive(throttleRatio);
-      //break;
    case IDLE:
       m_rightMotorPower = 0.0f;
       m_leftMotorPower = 0.0f;

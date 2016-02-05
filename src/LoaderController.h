@@ -56,7 +56,7 @@ public:
          Encoder* armEncoder);
    void run();
    void moveArm();
-   void angleOfArm();
+   int angleOfArm();
    void homing();
    void setHomed();
    void setLoaded();
