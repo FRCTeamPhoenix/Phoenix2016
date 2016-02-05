@@ -34,7 +34,7 @@ void Aiming::getNewImageData() {
    if(m_client->m_unreadData) {
 
       //Tests for shooter data
-      if(m_client->getData(0) == 0) {
+      if(m_client->getData(0) == AimingConstants::targetFlag) {
 
          // Updates array of current coordinates with data received by client
          for(int i = 1; i <= AimingConstants::numTargetVals; i++) {

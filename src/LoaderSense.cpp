@@ -28,7 +28,7 @@ void LoaderSense::updateBallPositionData() {
    if (m_client->m_unreadData) {
 
       // Tests for loader data
-      if(m_client->getData(0) == 1) {
+      if(m_client->getData(0) == LoaderSenseConstants::loaderFlag) {
 
          for(int i = 1; i <= LoaderSenseConstants::numBallVals; i++) {
 

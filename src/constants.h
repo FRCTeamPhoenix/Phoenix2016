@@ -87,6 +87,9 @@ struct AimingConstants {
    const static int minTargetWidth = 250;
    const static int maxTargetWidth = 350;
 
+   // First array element passed in a target data array
+   const static int targetFlag = 1;
+
 };
 
 
@@ -110,6 +113,9 @@ struct LoaderSenseConstants {
    const static int maxGoodRadius = 120;
 
    const static int maxSafeRotationRadius = 50;
+
+   // First array element passed in a loader data array
+   const static int loaderFlag = 2;
 
 };
 
