@@ -70,9 +70,11 @@ void DriveTrainController::run() {
 }
 
 void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
+   if (m_goalState == ENCODERDRIVE)
+     return;
+
    m_initalEncoderValueRight = m_rightWheelEncoder->Get();
    m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
-   //Will have to be changed to make it so the robot will move one degree instead of the wheels moving one degree
    float ticks = degree * RobotConstants::wheelEncoderTicksPerDegree;
 
    m_targetTickRight = m_initalEncoderValueRight - ticks;
@@ -96,13 +98,23 @@ void DriveTrainController::aimRobotCounterclockwise(float degree, float motorSpe
 }
 
 void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
+   printf("IN TEST THING/n");
+   if (m_goalState == ENCODERDRIVE)
+     return;
+
    m_initalEncoderValueRight = m_rightWheelEncoder->Get();
    m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
    //will have to find the diameter of the wheel
    //the 6 is the diameter of the wheel
    float ticks = distance * (M_PI* 6);
    m_targetTickRight = m_initalEncoderValueRight + ticks;
+   std::ostringstream outputTR;
+   outputTR << "T-Right " << m_targetTickRight;
+   SmartDashboard::PutString("DB/String 0", outputTR.str());
    m_targetTickLeft = m_initalEncoderValueLeft + ticks;
+   std::ostringstream outputTL;
+   outputTL << "T-Left " << m_targetTickLeft;
+   SmartDashboard::PutString("DB/String 0", outputTL.str());
    m_rightEncoderComplete = false;
    m_leftEncoderComplete = false;
 
@@ -144,4 +156,8 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
    default:
       return IDLE;
    }
+}
+
+void DriveTrainController::setGoalState(STATE goal){
+   m_goalState = goal;
 }

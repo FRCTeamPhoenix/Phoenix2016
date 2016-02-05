@@ -24,6 +24,7 @@ public:
    bool getJoystickButton(int);
 
    void snapShot();
+   void printToDashboard(unsigned long *pointToString, int space);
 
 
 private:

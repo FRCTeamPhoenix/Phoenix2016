@@ -5,9 +5,7 @@
  *      Author: Rose
  */
 
-#include "WPILib.h"
 #include "DriveStation.h"
-#include "constants.h"
 
 DriveStation::DriveStation(Joystick* joystick, Joystick* gamepad) :
       m_joystick(joystick), m_gamepad(gamepad) {
@@ -61,6 +59,12 @@ void DriveStation::snapShot() {
    m_joystickZ = m_joystick->GetZ();
    m_joystickZ = m_joystick->GetThrottle();
 
+}
+
+void printToDashboard(unsigned long *pointToString, int space){
+   std::ostringstream outputS;
+   outputS << *pointToString;
+   SmartDashboard::PutString("DB/String " + space, outputS.str());
 }
 
 DriveStation::~DriveStation() {

@@ -11,6 +11,9 @@ RobotController::RobotController(DriveStation* ds, DriveTrainController* dt, Sho
    : m_driveStation(ds), m_driveTrainController(dt), m_shooterController(shooter), m_loaderController(loader)
 {
    m_state = ROBOT_AUTO;
+
+   float args[2] = {1.0f, 0.5f};
+   addAction(ACTION_DRIVE, 2, args);
 }
 
 RobotController::~RobotController() {}
@@ -25,9 +28,9 @@ void RobotController::run()
       }
 }
 
-void RobotController::addAction(ActionType action, float pow, float secs, float turn)
+void RobotController::addAction(ActionType action, int argc, float* argv)
 {
-   Action* act = new Action(m_driveStation, m_driveTrainController, action, pow, secs, turn);
+   Action* act = new Action(m_driveStation, m_driveTrainController, action, argc, argv);
    m_queue.insert(m_queue.begin(), act);
 }
 

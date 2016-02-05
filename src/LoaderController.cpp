@@ -9,7 +9,8 @@
 
 
 LoaderController::LoaderController(
-      Talon* verticalMotor,
+      Talon* armMotorLeft,
+      Talon* armMotorRight,
       Talon* intakeMotor,
       Talon* stationaryMotor,
       DigitalInput* upperLimit,
@@ -17,7 +18,8 @@ LoaderController::LoaderController(
       DigitalInput* loadedSensor,
       Encoder* armEncoder):
 
-      m_verticalMotor(verticalMotor),
+      m_armMotorLeft(armMotorLeft),
+      m_armMotorRight(armMotorRight),
       m_intakeMotor(intakeMotor),
       m_stationaryMotor(stationaryMotor),
       m_upperLimit(upperLimit),
@@ -27,12 +29,9 @@ LoaderController::LoaderController(
 {
    m_goalState = HOMING;
    m_homingState = LOOKINGFORLOWERLIMIT;
-   // TODO Auto-generated constructor stub
-
 }
 
 LoaderController::~LoaderController() {
-   // TODO Auto-generated destructor stub
 }
 
 void LoaderController::moveArm(){
@@ -40,10 +39,12 @@ void LoaderController::moveArm(){
    bool atLowerLimit = m_lowerLimit->Get();
 
    if (atUpperLimit /*&& Add direction of the arm*/){
-      m_verticalMotor->Set(0);
+      m_armMotorLeft->Set(0);
+      m_armMotorRight->Set(0);
    }
    else if (atLowerLimit /*&& Add direction of the arm*/){
-      m_verticalMotor->Set(0);
+      m_armMotorLeft->Set(0);
+      m_armMotorRight->Set(0);
    }
 }
 
@@ -52,7 +53,8 @@ void LoaderController::angleOfArm(){
 }
 
 void LoaderController::homing(){
-   m_verticalMotor->Set(0.0);
+   m_armMotorLeft->Set(0.0);
+   m_armMotorRight->Set(0.0);
 
    if (m_homingState == LOOKINGFORLOWERLIMIT){
       if (m_lowerLimit->Get()){
@@ -61,7 +63,8 @@ void LoaderController::homing(){
          m_armEncoder->Reset();
       }
       else {
-         m_verticalMotor->Set(homingSpeed);
+         m_armMotorLeft->Set(homingSpeed);
+         m_armMotorRight->Set(homingSpeed);
       }
    }
 }
@@ -126,5 +129,7 @@ void LoaderController::setShooting(){
 }
 
 void LoaderController::setIdle(){
-   //To do: figure out logic
+   m_intakeMotor->Set(0);
+   m_stationaryMotor->Set(0);
+   //Need to fix LoaderController class.
 }
