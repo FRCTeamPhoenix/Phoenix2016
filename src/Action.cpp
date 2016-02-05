@@ -22,14 +22,16 @@
 #include "Action.h"
 #include "DriveStation.h"
 #include "DriveTrainController.h"
+#include "Aiming.h"
 
 #include <Timer.h>
 
-Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, int argc, float* argv)
-   : m_controllers(ds), m_driveTrain(dt), m_action(act), m_argc(argc), m_argv(argv)
+Action::Action(DriveStation* ds, DriveTrainController* dt, Aiming* aimer, ActionType act, int argc, float* argv)
+   : m_controllers(ds), m_driveTrain(dt), m_aimer(aimer), m_action(act), m_argc(argc), m_argv(argv)
 {
    m_timer = new Timer();
    m_firstTime = true;
+   m_invalid = false;
 
    /* Checks for correct number of arguments. In switch
       statement, omit actions that have no arguments. */
@@ -46,7 +48,7 @@ Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, int a
       }
    if (argn != argc)
       {
-	 m_invalid = false;
+	 m_invalid = true;
 	 printf("Warning: invalid number of arguments "
 		"for action. Expected %d arguments, "
 		"but received %d.\n", argn, argc);
@@ -86,9 +88,14 @@ bool Action::execute(void)
       case ACTION_BRAKE:
 	 // TODO: Make robot brake.
 	 return true;
+      case ACTION_AIM:
+	 if (m_firstTime)
+	    m_aimer->beginAiming();
+	 return m_aimer->getCurrentState() == Aiming::IDLE;
       case NO_ACTION:
          return true;
       }
+   m_firstTime = false;
    return true;
 }
 
