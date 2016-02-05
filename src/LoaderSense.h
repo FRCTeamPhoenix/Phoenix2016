@@ -21,8 +21,7 @@ public:
       IDLE,
       ROTATING,
       APPROACHING,
-      BACKUP,
-      TARGETED
+      BACKUP
    };
 
    LoaderSense(Client*, DriveTrainController*);

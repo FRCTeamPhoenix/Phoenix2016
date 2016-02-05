@@ -60,7 +60,7 @@ int LoaderSense::getCurrentYCenter() {
    return m_currentBallPosition[LoaderSenseConstants::ballCenterY];
 }
 
-// Alter current state of LoaderSense module (possible parameters: IDLE, ROTATING, APPROACHING, BACKUP, TARGETED)
+// Alter current state of LoaderSense module (possible parameters: IDLE, ROTATING, APPROACHING, BACKUP)
 void LoaderSense::setCurrentState(STATE newState) {
    m_currentState = newState;
 }
@@ -101,7 +101,7 @@ void LoaderSense::approach() {
       m_driveTrainController->moveRobotStraight(1, 0.5);
       setCurrentState(ROTATING);
    } else {
-      setCurrentState(TARGETED);
+      setCurrentState(IDLE);
    }
 
 }
@@ -131,10 +131,6 @@ void LoaderSense::run() {
       break;
    case BACKUP:
       backup();
-      break;
-   case TARGETED:
-      // Reset loader alignment state
-      setCurrentState(IDLE);
       break;
    default:
       break;
