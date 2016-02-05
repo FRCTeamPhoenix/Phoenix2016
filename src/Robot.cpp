@@ -40,13 +40,13 @@ class Robot: public SampleRobot
    Encoder m_armEncoder;
    LoaderController m_loaderController;
    ShooterController m_shooterController;
-   RobotController m_robotController;
    Client m_client;
    Aiming m_aiming;
+   RobotController m_robotController;
    
 public:
    Robot() :
-       m_flywheelLeftMotor(PortAssign::flywheelLeftMotor),
+      m_flywheelLeftMotor(PortAssign::flywheelLeftMotor),
       m_flywheelRightMotor(PortAssign::flywheelRightMotor),
       m_flywheel(&m_flywheelLeftMotor, &m_flywheelRightMotor),
       m_joystick(PortAssign::joystick),
@@ -55,9 +55,9 @@ public:
       m_rightWheelEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
       m_driveStation(&m_joystick, &m_gamepad),
       m_driveTrain(PortAssign::frontLeftWheelMotor,
-            PortAssign::rearLeftWheelMotor,
-            PortAssign::frontRightWheelMotor,
-            PortAssign::rearRightWheelMotor),
+		   PortAssign::rearLeftWheelMotor,
+		   PortAssign::frontRightWheelMotor,
+		   PortAssign::rearRightWheelMotor),
       m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder),
       m_armMotorLeft(PortAssign::armMotorLeft),
       m_armMotorRight(PortAssign::armMotorRight),
@@ -69,20 +69,19 @@ public:
       m_armEncoder(PortAssign::armEncoderChannelA, PortAssign::armEncoderChannelB),
       m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder),
       m_shooterController(&m_loaderController, &m_flywheel),
-      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController),
       m_client(),
-      m_aiming(&m_client, &m_driveTrainController)
-
+      m_aiming(&m_client, &m_driveTrainController),
+      m_robotController(&m_driveStation, &m_driveTrainController, &m_shooterController, &m_loaderController, &m_aiming)
    {
       SmartDashboard::init();
 
       cout<<"run init socket function" << endl;
-       m_client.initilizeSocket();
-       if (m_client.m_initGood){
-          cout<<"init good start thread" << endl;
-          std::thread receiveThread(runClient, this, &m_client);
-          receiveThread.detach();
-       }
+      m_client.initilizeSocket();
+      if (m_client.m_initGood){
+	 cout<<"init good start thread" << endl;
+	 std::thread receiveThread(runClient, this, &m_client);
+	 receiveThread.detach();
+      }
    }
 
    void OperatorControl(){
@@ -115,8 +114,8 @@ public:
 };
 
 void runClient(Robot* robot,Client* client)
-   {
-      client->receivePacket();
-   }
+{
+   client->receivePacket();
+}
 
 START_ROBOT_CLASS(Robot);

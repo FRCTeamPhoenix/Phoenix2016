@@ -14,6 +14,7 @@
 #include "DriveTrainController.h"
 #include "ShooterController.h"
 #include "LoaderController.h"
+#include "Aiming.h"
 #include "Action.h"
 
 class RobotController : public BaseController
@@ -24,7 +25,7 @@ class RobotController : public BaseController
       ROBOT_MANUAL
    };
 
-   RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*);
+   RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, Aiming*);
    virtual ~RobotController();
 
    void run();
@@ -39,6 +40,7 @@ class RobotController : public BaseController
    DriveTrainController* m_driveTrainController;
    ShooterController * m_shooterController;
    LoaderController * m_loaderController;
+   Aiming* m_aimer;
 };
 
 #endif /* SRC_ROBOTCONTROLLER_H_ */
