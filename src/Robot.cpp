@@ -16,6 +16,7 @@ using namespace std;
 
 class Robot;
 
+void lidarThread(Robot * robot, LidarHandler * lidarHandler);
 void runClient(Robot* robot, Client* client);
 
 class Robot: public SampleRobot
