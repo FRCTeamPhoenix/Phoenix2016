@@ -1,8 +1,7 @@
 #include "Client.h"
 #define NPACK 1
 #define PORT 31415 //port currently used for testing, can be changed
-#define SRV_IP "10.0.42.25" //change ip address
-
+#define SRV_IP "10.0.42.142" //static ip of pi is 10.0.42.142
 
 
 Client::Client() {
@@ -16,7 +15,7 @@ void Client::initilizeSocket(){
    m_socket=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
    int sendCount=0;
    m_initGood=false;
-   //defcouining and setting socket timeout
+   //defcouininkg and setting socket timeout
    struct timeval timeout;
    timeout.tv_sec=1;
    timeout.tv_usec=0;
@@ -43,7 +42,7 @@ void Client::initilizeSocket(){
    cout<<"start ping loop" << endl;
    char buf[BUFLEN];
 
-   while (!m_initGood && sendCount < 5){
+   while (!m_initGood && sendCount < 25){
       sendCount++;
 
       cout<<"send ping " << sendCount << endl;
@@ -53,9 +52,9 @@ void Client::initilizeSocket(){
       sendto(m_socket,buf,15, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
 
       cout<<"waiting to receive" << endl;
-      Wait(1);
+      Wait(.5);
 
-      if(recvfrom(m_socket,m_receivedData,1024, MSG_TRUNC ,(sockaddr*)&m_si_other, &m_si_other_len)){
+      if(recvfrom(m_socket,m_receivedData,1024, MSG_TRUNC ,(sockaddr*)&m_si_other, &m_si_other_len)>0){
           byteToInt(m_receivedData,m_convertedData);
           cout<<"init good" <<endl;
           m_initGood=true;
@@ -70,6 +69,10 @@ void Client::initilizeSocket(){
 void Client::receivePacket(){
         socklen_t m_si_other_len=sizeof(m_si_other);
 
+        memset(m_convertedData,0,9);
+        memset(m_targetData,0,9);
+        memset(m_ballData,0,9);
+        memset(m_distanceData,0,9);
         while (true){
            cout << "waiting to receive packet in thread" << endl;
            if(recvfrom(m_socket,m_receivedData,BUFLEN, 0 ,(sockaddr*)&m_si_other, &m_si_other_len) < 0) {
