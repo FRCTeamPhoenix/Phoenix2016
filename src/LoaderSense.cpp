@@ -178,14 +178,19 @@ void LoaderSense::run() {
    case IDLE:
       break;
    case FINDING_BALL:
+      updateBallPositionData();
+      findBall();
       break;
    case ROTATING:
+      updateBallPositionData();
       rotate();
       break;
    case APPROACHING:
+      updateBallPositionData();
       approach();
       break;
    case BACKUP:
+      updateBallPositionData();
       backup();
       break;
    default:
