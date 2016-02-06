@@ -106,7 +106,7 @@ public:
 
    void Test(){
       std::thread lidarRunThread(lidarThread, this, &m_lidarHandler);
-      lidarRunThread.join();
+      lidarRunThread.detach();
 
       SmartDashboard::PutString("DB/String 0", " ");
       m_leftWheelEncoder.Reset();
@@ -121,17 +121,19 @@ public:
          outputL << "EncoderL: ";
          outputL << (m_leftWheelEncoder.Get());
          SmartDashboard::PutString("DB/String 1", outputL.str());
+
          std::ostringstream lidar;
          lidar << m_lidarHandler.getDistance();
-         SmartDashboard::PutString("DB/String 5", "Distance: " + lidar.str() + " cm");
+         SmartDashboard::PutString("DB/String 5","Distance: " + lidar.str() + " cm");
       }
+
+      lidarRunThread.join();
    }
 
 };
 
 void lidarThread(Robot * robot, LidarHandler * lidarHandler) {
    while(robot->IsEnabled() && (robot->IsAutonomous() || robot->IsOperatorControl() || robot->IsTest())) {
-      //TODO this might not happen all the time
       lidarHandler->run();
       Wait(0.1);
    }
