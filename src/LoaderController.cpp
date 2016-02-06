@@ -31,9 +31,8 @@ LoaderController::LoaderController(
       m_driveStation(driveStation),
       m_potentiometer(potentiometer)
 {
-   m_goalState = HOMING;
-   m_homingState = LOOKINGFORLOWERLIMIT;
-
+   m_goalState = IDLE;
+   m_homed = false;
 }
 
 LoaderController::~LoaderController() {
@@ -62,48 +61,32 @@ int LoaderController::angleOfArm(){
    return angle;
 }
 
-void LoaderController::homing(){
-   m_armMotorLeft->Set(0.0);
-   m_armMotorRight->Set(0.0);
+bool LoaderController::homed(){
+   return m_homed;
+}
 
-   if (m_homingState == LOOKINGFORLOWERLIMIT){
-      if (m_lowerLimit->Get()){
-         m_homingState = HOMINGCOMPLETE;
-         m_goalState = EMPTY;
-         m_armEncoder->Reset();
-      }
-      else {
-         m_armMotorLeft->Set(homingSpeed);
-         m_armMotorRight->Set(homingSpeed);
-      }
-   }
+bool LoaderController::loaded(){
+   return m_loadedSensor->Get();
 }
 
 void LoaderController::run(){
-   //STATE current = getCurrentState();
-   switch (getGoalState()){
+   switch (getCurrentState()){
    case HOMING:
-      SmartDashboard::PutString("DB/String 5", "HOMING");
-      homing();
+      m_armMotorLeft->Set(homingSpeed);
+      m_armMotorRight->Set(homingSpeed);
+      break;
    case IDLE:
       //set motors to 0 if loading or loaded
-      SmartDashboard::PutString("DB/String 5", "IDLE");
+      m_armMotorLeft->Set(0.0);
+      m_armMotorRight->Set(0.0);
       m_intakeMotor->Set(0);
       m_stationaryMotor->Set(0);
       break;
    case LOADING:
-      SmartDashboard::PutString("DB/String 5", "LOADING");
-//      if (m_loadedSensor->Get()){
-//         SmartDashboard::PutString("DB/String 4", "IN IF LOADING");
-//         m_goalState = LOADED;
-//      }
-//      else{
-         m_intakeMotor->Set(-intakeMotorSpeed);
-         m_stationaryMotor->Set(-stationaryMotorSpeed);
-//      }
+      m_intakeMotor->Set(-intakeMotorSpeed);
+      m_stationaryMotor->Set(-stationaryMotorSpeed);
       break;
    case LOADED:
-      SmartDashboard::PutString("DB/String 5", "LOADED");
       m_intakeMotor->Set(0);
       m_stationaryMotor->Set(0);
       break;
@@ -111,22 +94,48 @@ void LoaderController::run(){
       m_stationaryMotor->Set(-stationaryMotorSpeed);
       break;
    default:
-      SmartDashboard::PutString("DB/String 5", "DEFAULT");
       break;
    }
    moveArm();
 }
 
 LoaderController::STATE LoaderController::getCurrentState() {
-//   if (m_loadedSensor->Get()){
-//      return LOADED;
-//   }
-   if (m_intakeMotor->Get() != 0){
-      return LOADING;
+   switch(m_goalState){
+   case IDLE:
+      return IDLE;
+      break;
+   case HOMING:
+      if(m_lowerLimit->Get()){
+         m_goalState = IDLE;
+         m_homed = true;
+         m_armEncoder->Reset();
+         return IDLE;
+      }
+      return HOMING;
+      break;
+   case LOADING:
+      if (loaded()){
+         m_goalState = IDLE;
+         return IDLE;
+      }
+      break;
+   case SHOOTING:
+      if (!loaded()){
+         m_goalState = IDLE;
+         return IDLE;
+      }
+      break;
+   case LOADED:
+      if (loaded()){
+         m_goalState = IDLE;
+         return IDLE;
+      }
+      else{
+         return LOADED;
+      }
+      break;
    }
-   else {
-      return EMPTY;
-   }
+   return IDLE;
 }
 
 LoaderController::STATE LoaderController::getGoalState(){
@@ -135,7 +144,7 @@ LoaderController::STATE LoaderController::getGoalState(){
 
 void LoaderController::setHoming(){
    m_goalState = HOMING;
-   m_homingState = LOOKINGFORLOWERLIMIT;
+   m_homed = false;
 }
 
 void LoaderController::setLoaded(){

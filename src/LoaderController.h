@@ -19,7 +19,7 @@ static const float armMotorLeft = 1.0f;
 static const float armMotorRight = 1.0f;
 static const float intakeMotorSpeed = 1.0f;
 static const float stationaryMotorSpeed = 1.0f;
-static const float homingSpeed = 0.1f;
+static const float homingSpeed = -0.1f;
 
 class LoaderController : public BaseController{
 private:
@@ -38,10 +38,7 @@ public:
    enum STATE {
       IDLE,
       HOMING,
-      HOMED,
-      EMPTY,
       LOADING,
-      LOADINGTOSHOOTER,
       LOADED,
       SHOOTING
    };
@@ -64,8 +61,6 @@ public:
    int angleOfArm();
    //Moves the arm and has the deadzone included
    void moveArm();
-   //Used for homing the robot at the beginning of the match
-   void homing();
    //Sets the goal state to HOMING
    void setHoming();
    //Sets the goal state to LOADED
@@ -76,6 +71,8 @@ public:
    void setIdle();
    //Starts the loading process
    void startLoading();
+   bool homed();
+   bool loaded();
    virtual ~LoaderController();
 
    //Gets the current state of the robot
@@ -85,11 +82,8 @@ public:
 
 private:
    STATE m_goalState;
+   bool m_homed;
    AnalogPotentiometer* m_potentiometer;
-   enum HOMINGSTATES{
-      LOOKINGFORLOWERLIMIT,
-      HOMINGCOMPLETE
-   }m_homingState;
 };
 
 #endif /* SRC_LOADERCONTROLLER_H_ */

@@ -78,7 +78,7 @@ void DriveStation::snapShot() {
 
 void printToDashboard(unsigned long *pointToString, int space){
    std::ostringstream outputS;
-   outputS << *pointToString;
+   outputS << &pointToString;
    SmartDashboard::PutString("DB/String " + space, outputS.str());
 }
 

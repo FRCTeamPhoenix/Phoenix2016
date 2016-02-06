@@ -67,6 +67,7 @@ public:
       m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder, &m_driveStation, &m_potentiometer),
       m_shooterController(&m_loaderController, &m_flywheel),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController){
+
       SmartDashboard::init();
 
 
@@ -115,11 +116,39 @@ public:
          //Homes robot arm at the beginning of test
          m_loaderController.setHoming();
 
-         //Calls all run functions involved with testing
-         m_driveStation.snapShot();
-         m_driveTrainController.run();
-         m_shooterController.run();
          m_loaderController.run();
+
+         if (m_loaderController.homed()){
+            m_driveStation.snapShot();
+            m_driveTrainController.run();
+            m_shooterController.run();
+         }
+         //Calls all run functions involved with testing
+
+         //Outputs the encoder valuse of the left and right wheels
+         std::ostringstream outputR;
+         outputR << "EncoderR: ";
+         outputR << (m_rightWheelEncoder.Get());
+         SmartDashboard::PutString("DB/String 0", outputR.str());
+         std::ostringstream outputL;
+         outputL << "EncoderL: ";
+         outputL << (m_leftWheelEncoder.Get());
+         SmartDashboard::PutString("DB/String 1", outputL.str());
+
+         //LoaderController
+         std::ostringstream outputLoad;
+         outputLoad << "Loader State: " << (m_loaderController.getGoalState());
+         SmartDashboard::PutString("DB/String 2", outputLoad.str());
+
+         //DriveTrainController
+         std::ostringstream outputDriveTrainController;
+         outputDriveTrainController << "DriveTrainController State: " << (m_driveTrainController.getCurrentState());
+         SmartDashboard::PutString("DB/String 3", outputDriveTrainController.str());
+
+         //ShooterController
+         std::ostringstream outputShooter;
+         outputShooter << "Shooter State: " << (m_shooterController.getGoalState());
+         SmartDashboard::PutString("DB/String 4", outputShooter.str());
 
          //Aiming Robot Clockwise 90 degrees
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
@@ -233,22 +262,11 @@ public:
             m_loaderController.moveArm();
          }
       }
-
-      //Outputs the encoder valuse of the left and right wheels
-      std::ostringstream outputR;
-      outputR << "EncoderR: ";
-      outputR << (m_rightWheelEncoder.Get());
-      SmartDashboard::PutString("DB/String 0", outputR.str());
-      std::ostringstream outputL;
-      outputL << "EncoderL: ";
-      outputL << (m_leftWheelEncoder.Get());
-      SmartDashboard::PutString("DB/String 1", outputL.str());
    }
 
 };
 
-void runClient(Robot* robot,Client* client)
-{
+void runClient(Robot* robot, Client* client){
    client->receivePacket();
 }
 
