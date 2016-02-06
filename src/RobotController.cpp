@@ -10,10 +10,7 @@
 RobotController::RobotController(DriveStation* ds, DriveTrainController* dt, ShooterController* shooter, LoaderController* loader)
    : m_driveStation(ds), m_driveTrainController(dt), m_shooterController(shooter), m_loaderController(loader)
 {
-   m_state = ROBOT_AUTO;
-
-   float args[2] = {1.0f, 0.5f};
-   addAction(ACTION_DRIVE, 2, args);
+   m_state = ROBOT_MANUAL;
 }
 
 RobotController::~RobotController() {}
@@ -24,7 +21,12 @@ void RobotController::run()
       performAction();
    else if (m_state == ROBOT_MANUAL)
       {
-	 // TODO: Set drivetrain state to manual and add button-press handling.
+	 if (m_driveStation->getGamepadButton(2))
+	    {
+	       m_state = ROBOT_AUTO;
+	       float args[2] = {12.0, 0.5};
+	       addAction(ACTION_DRIVE, 2, args);
+	    }
       }
 }
 
