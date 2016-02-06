@@ -69,7 +69,7 @@ public:
       m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder),
       m_shooterController(&m_loaderController, &m_flywheel),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController),
-      m_lidarOnSwitch(1),
+      m_lidarOnSwitch(0),
       m_lidarHandler(&m_lidarOnSwitch, 0, 9){
       SmartDashboard::init();
 
