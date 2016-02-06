@@ -31,12 +31,18 @@ public:
    virtual ~ShooterController();
    void run();
 
+   //Gets the current state of which the shooter is in and the loader
    STATE getCurrentState();
+   //Gets the goal state of the shooter
    STATE getGoalState();
 
+   //Sets the goal state to ARMED
    void setArmed();
+   //Sets the goal state to OFF
    void setOff();
+   //Sets the goal state to OFF
    void stopShooting();
+   //Sets the goal state to SHOOTING
    void setShooting();
 
 private:

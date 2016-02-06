@@ -37,6 +37,7 @@ class Robot: public SampleRobot
    DigitalInput m_lowerLimit;
    DigitalInput m_loadedSensor;
    Encoder m_armEncoder;
+   AnalogPotentiometer m_potentiometer;
    LoaderController m_loaderController;
    ShooterController m_shooterController;
    RobotController m_robotController;
@@ -62,7 +63,8 @@ public:
       m_lowerLimit(PortAssign::lowerLimit),
       m_loadedSensor(PortAssign::loadedSensor),
       m_armEncoder(PortAssign::armEncoderChannelA, PortAssign::armEncoderChannelB),
-      m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder, &m_driveStation),
+      m_potentiometer(PortAssign::potentiometer),
+      m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder, &m_driveStation, &m_potentiometer),
       m_shooterController(&m_loaderController, &m_flywheel),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController){
       SmartDashboard::init();
@@ -91,11 +93,12 @@ public:
    }
 
    void Test(){
-      //Clears the Dashboard
-      SmartDashboard::PutString("DB/String 0", "Entering Test ");
       //Resets the encoders
       m_leftWheelEncoder.Reset();
       m_rightWheelEncoder.Reset();
+
+      //Clears the Dashboard
+      SmartDashboard::PutString("DB/String 0", "Entering Test ");
       SmartDashboard::PutString("DB/String 0", " ");
       SmartDashboard::PutString("DB/String 1", " ");
       SmartDashboard::PutString("DB/String 2", " ");
@@ -108,6 +111,9 @@ public:
       SmartDashboard::PutString("DB/String 9", " ");
 
       while(IsTest() && IsEnabled()){
+
+         //Homes robot arm at the beginning of test
+         m_loaderController.setHoming();
 
          //Calls all run functions involved with testing
          m_driveStation.snapShot();
@@ -194,6 +200,7 @@ public:
             }
          }
 
+         //Stops everything on robot
          if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
             SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
 
@@ -202,11 +209,13 @@ public:
             m_driveTrainController.stopRobot();
          }
 
+         //Tests the loader by running the motors
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonLB)){
             SmartDashboard::PutString("DB/String 6", "Loader Test");
             m_loaderController.startLoading();
          }
 
+         //Tests the shooter by running the flywheels
          if(m_driveStation.getGamepadButton(DriveStationConstants::triggerRT)){
             SmartDashboard::PutString("DB/String 6", "Shooter Test");
 
@@ -217,8 +226,15 @@ public:
                m_shooterController.setArmed();
             }
          }
+
+         //Test the arm motion
+         if (m_driveStation.deadzoneOfGamepadJoystick() != 0){
+            SmartDashboard::PutString("DB/String 6", "Move Arm Test");
+            m_loaderController.moveArm();
+         }
       }
 
+      //Outputs the encoder valuse of the left and right wheels
       std::ostringstream outputR;
       outputR << "EncoderR: ";
       outputR << (m_rightWheelEncoder.Get());

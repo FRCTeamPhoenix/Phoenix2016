@@ -45,13 +45,16 @@ void DriveTrainController::manualDrive(float throttleRatio) {
 
 void DriveTrainController::run() {
    switch (getCurrentState()) {
+   //Goal state with the drivers are driving the robot
    case TELEOP:
       manualDrive(0.6f);
       break;
+   //Goal state of when the robot is not doing anything
    case IDLE:
       m_rightMotorPower = 0.0f;
       m_leftMotorPower = 0.0f;
       break;
+   //Goal state of when the robot is moving by its self
    case ENCODERDRIVE:
       float leftMotorPower = 0.0f;
       float rightMotorPower = 0.0f;
@@ -66,6 +69,7 @@ void DriveTrainController::run() {
    };
 }
 
+//For aiming the robot clockwise, pass in the desired degree and the desired motor speed
 void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
    if (m_goalState == ENCODERDRIVE)
      return;
@@ -89,11 +93,13 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
    }
    m_goalState = ENCODERDRIVE;
 }
-
+//For aiming the robot counter clockwise, pass in the desired degree and the desired motor speed
+//Uses aimRobotClockwise but passes in a negative degree
 void DriveTrainController::aimRobotCounterclockwise(float degree, float motorSpeed) {
    aimRobotClockwise(-degree, motorSpeed);
 }
 
+//Moves the robot a desired distance and at a desired motor speed
 void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
    printf("IN TEST THING/n");
    if (m_goalState == ENCODERDRIVE)
@@ -127,14 +133,18 @@ void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
    m_goalState = ENCODERDRIVE;
 }
 
+//Set the goal state to IDLE
 void DriveTrainController::stopRobot() {
    m_goalState = IDLE;
 }
 
+//Gets the current state of the robot
 DriveTrainController::STATE DriveTrainController::getCurrentState() {
    switch(m_goalState){
+   //Goal state of TELEOP, return TELEOP
    case TELEOP:
       return TELEOP;
+   //Goal state of ENCODERDRIVE, tests if the encoders are where they are supposed to be
    case ENCODERDRIVE:
       if (((m_rightMotorPower < 0) && (m_rightWheelEncoder->Get() <= m_targetTickRight)) ||
           ((m_rightMotorPower >= 0) && (m_rightWheelEncoder->Get() >= m_targetTickRight))){
@@ -156,6 +166,7 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
    }
 }
 
+//Sets the goal state of the robot, used in changing the switch statements
 void DriveTrainController::setGoalState(STATE goal){
    m_goalState = goal;
 }

@@ -18,16 +18,21 @@ public:
    float getJoystickY();
    float getJoystickZ();
    float getJoystickThrottle();
+   //Creates deadzone for joystick in Y direction
    float getYWithDeadzone();
+   //Creates deadzone for twisting the joystick
    float getTwist();
    float GetAngle();
    float getGamepadJoystick();
    float getGamepadJoystickY();
+   //Creates deadzone for the gamepad joystick
    float deadzoneOfGamepadJoystick();
    bool getGamepadButton(int);
    bool getJoystickButton(int);
 
+   //Sets member varibles for all inputs
    void snapShot();
+   //For printing strings to the dashboard
    void printToDashboard(unsigned long *pointToString, int space);
    void gyroTest();
 

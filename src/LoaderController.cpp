@@ -17,7 +17,8 @@ LoaderController::LoaderController(
       DigitalInput* lowerLimit,
       DigitalInput* loadedSensor,
       Encoder* armEncoder,
-      DriveStation* driveStation):
+      DriveStation* driveStation,
+      AnalogPotentiometer* potentiometer):
 
       m_armMotorLeft(armMotorLeft),
       m_armMotorRight(armMotorRight),
@@ -27,7 +28,8 @@ LoaderController::LoaderController(
       m_lowerLimit(lowerLimit),
       m_loadedSensor(loadedSensor),
       m_armEncoder(armEncoder),
-      m_driveStation(driveStation)
+      m_driveStation(driveStation),
+      m_potentiometer(potentiometer)
 {
    m_goalState = HOMING;
    m_homingState = LOOKINGFORLOWERLIMIT;
@@ -55,7 +57,9 @@ void LoaderController::moveArm(){
 }
 
 int LoaderController::angleOfArm(){
-   return 0;
+   float angle = m_potentiometer->Get();
+   angle *= 0.733;
+   return angle;
 }
 
 void LoaderController::homing(){
@@ -113,7 +117,6 @@ void LoaderController::run(){
    moveArm();
 }
 
-
 LoaderController::STATE LoaderController::getCurrentState() {
 //   if (m_loadedSensor->Get()){
 //      return LOADED;
@@ -130,8 +133,9 @@ LoaderController::STATE LoaderController::getGoalState(){
    return m_goalState;
 }
 
-void LoaderController::setHomed(){
-   m_goalState = HOMED;
+void LoaderController::setHoming(){
+   m_goalState = HOMING;
+   m_homingState = LOOKINGFORLOWERLIMIT;
 }
 
 void LoaderController::setLoaded(){
@@ -141,10 +145,12 @@ void LoaderController::setLoaded(){
 void LoaderController::startLoading(){
    m_goalState = LOADING;
 }
+
 void LoaderController::setShooting(){
    m_goalState = SHOOTING;
 }
 
+//Sets the goal state goal to IDLE
 void LoaderController::setIdle(){
    m_goalState = IDLE;
 }

@@ -56,24 +56,36 @@ public:
          DigitalInput* lowerLimit,
          DigitalInput* loadedSensor,
          Encoder* armEncoder,
-         DriveStation* driveStation);
+         DriveStation* driveStation,
+         AnalogPotentiometer* potentiometer);
    void run();
    void armLimitSwitches(float power);
+   //Returns what degree the arm is at
    int angleOfArm();
+   //Moves the arm and has the deadzone included
    void moveArm();
+   //Used for homing the robot at the beginning of the match
    void homing();
-   void setHomed();
+   //Sets the goal state to HOMING
+   void setHoming();
+   //Sets the goal state to LOADED
    void setLoaded();
+   //Sets the goal state to SHOOTING
    void setShooting();
+   //Sets the goal state goal to IDLE
    void setIdle();
+   //Starts the loading process
    void startLoading();
    virtual ~LoaderController();
 
+   //Gets the current state of the robot
    STATE getCurrentState();
+   //Returns the goal state of the loader
    STATE getGoalState();
 
 private:
    STATE m_goalState;
+   AnalogPotentiometer* m_potentiometer;
    enum HOMINGSTATES{
       LOOKINGFORLOWERLIMIT,
       HOMINGCOMPLETE
