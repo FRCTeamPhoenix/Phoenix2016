@@ -15,6 +15,10 @@ struct PortAssign {
    const static uint32_t rightWheelEncoderChannelA = 0;
    const static uint32_t rightWheelEncoderChannelB = 1;
 
+   // Channels for lidar
+   const static uint32_t lidarOnSwitchChannel = 0; //Relay port
+   const static uint32_t lidarDIOChannel = 9;
+
    //Flywheels
    const static uint32_t flywheelLeftMotor = 4; //Both on the same motor controller
    const static uint32_t flywheelRightMotor = 5;
@@ -55,6 +59,10 @@ struct DriveStationConstants {
       joystickRightButton = 12
    };
    const static uint32_t gamepadButtons = 12;
+};
+
+struct LidarConstants {
+   constexpr static double lidarOffset = 0.0;
 };
 
 #endif /* SRC_CONSTANTS_H_ */
