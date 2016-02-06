@@ -12,11 +12,15 @@ LoaderSense::LoaderSense(Client* client, DriveTrainController* driveTrainControl
    m_driveTrainController(driveTrainController)
 {
    setCurrentState(IDLE);
+   m_currentBallPosition[0] = LoaderSenseConstants::loaderFlag;
+   for (int i = 1; i <= LoaderSenseConstants::numBallVals; i++) {
+      m_currentBallPosition[i] = -1;
+   }
 }
 
 // IMPORTANT: Call to this method will implement the Loader's alignment process
 void LoaderSense::beginAligning() {
-   setCurrentState(ROTATING);
+   setCurrentState(FINDING_BALL);
 }
 
 // Refreshes array containing received client data (ball's radius and center coordinates)
@@ -70,26 +74,63 @@ LoaderSense::STATE LoaderSense::getCurrentState() {
    return m_currentState;
 }
 
+// Called upon invocation of LoaderSense aiming mechanism, in order to get ball within field of vision
+void LoaderSense::findBall() {
+   // Rotate while the first coordinate hasn't been found
+      if (m_currentBallPosition[LoaderSenseConstants::ballCenterX] < 0) {
+         m_driveTrainController->aimRobotClockwise(5, 0.5);
+
+         std::ostringstream LSenseStatus;
+         LSenseStatus << "Looking for ball";
+         SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+      }
+
+      else {
+         setCurrentState(ROTATING);
+      }
+}
+
 // Called to re-center whenever the ball is too far left or right
 // IMPORTANT NOTE: will not rotate until ball is a safe distance away
 void LoaderSense::rotate() {
 
    if (m_currentBallPosition[LoaderSenseConstants::ballCenterX] < LoaderSenseConstants::minGoodCenterX) {
+
       if (m_currentBallPosition[LoaderSenseConstants::ballRadius] > LoaderSenseConstants::maxSafeRotationRadius) {
+
          setCurrentState(BACKUP);
+
       } else {
+
          //Robot will rotate clockwise 1 degree, at motor speed 0.5
          m_driveTrainController->aimRobotClockwise(1, 0.5);
+
+         std::ostringstream LSenseStatus;
+         LSenseStatus << "Rotating clockwise";
+         SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+
       }
-   } else if (m_currentBallPosition[LoaderSenseConstants::ballCenterY] > LoaderSenseConstants::maxGoodCenterX) {
+
+   } else if (m_currentBallPosition[LoaderSenseConstants::ballCenterX] > LoaderSenseConstants::maxGoodCenterX) {
+
       if(m_currentBallPosition[LoaderSenseConstants::ballRadius] > LoaderSenseConstants::maxSafeRotationRadius) {
+
          setCurrentState(BACKUP);
+
       } else {
+
          //Robot will rotate counterclockwise 1 degree, at motor speed 0.5
          m_driveTrainController->aimRobotCounterclockwise(1, 0.5);
+
+         std::ostringstream LSenseStatus;
+         LSenseStatus << "Rotating counterclockwise";
+         SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
       }
+
    } else {
+
       setCurrentState(APPROACHING);
+
    }
 }
 
@@ -99,6 +140,11 @@ void LoaderSense::approach() {
    if (m_currentBallPosition[LoaderSenseConstants::ballRadius] < LoaderSenseConstants::minGoodRadius) {
       //Robot will move forward an inch, at motor speed 0.5
       m_driveTrainController->moveRobotStraight(1, 0.5);
+
+      std::ostringstream LSenseStatus;
+      LSenseStatus << "Moving forwards";
+      SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+
       setCurrentState(ROTATING);
    } else {
       setCurrentState(IDLE);
@@ -110,9 +156,17 @@ void LoaderSense::approach() {
 void LoaderSense::backup() {
 
    if(m_currentBallPosition[LoaderSenseConstants::ballRadius] < LoaderSenseConstants::maxSafeRotationRadius) {
+
       setCurrentState(ROTATING);
+
    } else {
+
       m_driveTrainController->moveRobotStraight(-1, 0.5);
+
+      std::ostringstream LSenseStatus;
+      LSenseStatus << "Backing up";
+      SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+
    }
 
 }
@@ -122,6 +176,8 @@ void LoaderSense::run() {
 
    switch(m_currentState) {
    case IDLE:
+      break;
+   case FINDING_BALL:
       break;
    case ROTATING:
       rotate();

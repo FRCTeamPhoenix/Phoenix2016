@@ -19,6 +19,7 @@ public:
 
    enum STATE {
       IDLE,
+      FINDING_BALL,
       ROTATING,
       APPROACHING,
       BACKUP
@@ -32,6 +33,7 @@ public:
    int getCurrentYCenter();
    void setCurrentState(STATE);
    STATE getCurrentState();
+   void findBall();
    void rotate();
    void approach();
    void backup();

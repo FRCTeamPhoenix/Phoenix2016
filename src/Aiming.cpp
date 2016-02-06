@@ -19,6 +19,10 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController) :
    m_driveTrainController(driveTrainController)
 {
    setCurrentState(IDLE);
+   m_currentTargetCoordinates[0] = AimingConstants::targetFlag;
+   for (int i = 1; i <= AimingConstants::numTargetVals; i++) {
+      m_currentTargetCoordinates[i] = -1;
+   }
 }
 
 // IMPORTANT: Call this method to begin aiming process - same as manually setting state to first
@@ -53,6 +57,10 @@ void Aiming::findTarget() {
    // Rotate while the first coordinate hasn't been found
    if (m_currentTargetCoordinates[AimingConstants::yUL] < 0) {
       m_driveTrainController->aimRobotClockwise(5, 0.5);
+
+      std::ostringstream aimingStatus;
+      aimingStatus << "Looking for target";
+      SmartDashboard::PutString("DB/String 8", aimingStatus.str());
    }
 
    else {
@@ -71,6 +79,11 @@ void Aiming::rotate() {
                m_currentTargetCoordinates[AimingConstants::yLR]) > 20) {
 
       m_driveTrainController->aimRobotClockwise(1, 0.5);
+
+
+      std::ostringstream aimingStatus;
+      aimingStatus << "Rotating clockwise";
+      SmartDashboard::PutString("DB/String 8", aimingStatus.str());
    }
 
    // Left side of robot is tilted too far forwards
@@ -79,7 +92,11 @@ void Aiming::rotate() {
          (m_currentTargetCoordinates[AimingConstants::yLR] -
                m_currentTargetCoordinates[AimingConstants::yLL]) > 20) {
 
-      m_driveTrainController->aimRobotClockwise(1, 0.5);
+      m_driveTrainController->aimRobotCounterclockwise(1, 0.5);
+
+      std::ostringstream aimingStatus;
+      aimingStatus << "Rotating counterclockwise";
+      SmartDashboard::PutString("DB/String 8", aimingStatus.str());
    }
 
    else if (((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
@@ -89,6 +106,9 @@ void Aiming::rotate() {
    }
 
    else {
+      std::ostringstream aimingStatus;
+      aimingStatus << "Done aiming!";
+      SmartDashboard::PutString("DB/String 8", aimingStatus.str());
       setCurrentState(IDLE);
    }
 }
@@ -97,11 +117,19 @@ void Aiming::approachTarget() {
    if ((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
          < AimingConstants::minTargetWidth) {
       m_driveTrainController->moveRobotStraight(1, 0.5);
+
+      std::ostringstream aimingStatus;
+      aimingStatus << "Moving forwards";
+      SmartDashboard::PutString("DB/String 8", aimingStatus.str());
    }
 
    else if ((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
-         < AimingConstants::minTargetWidth) {
+         > AimingConstants::maxTargetWidth) {
       m_driveTrainController->moveRobotStraight(-1, 0.5);
+
+      std::ostringstream aimingStatus;
+      aimingStatus << "Moving backwards";
+      SmartDashboard::PutString("DB/String 8", aimingStatus.str());
    }
 
    else {
