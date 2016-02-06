@@ -7,6 +7,7 @@
 #include "ShooterController.h"
 #include "Flywheel.h"
 #include "Client.h"
+#include "LidarHandler.h"
 #include <thread>
 #include <iostream>
 #include <fstream>
@@ -41,6 +42,8 @@ class Robot: public SampleRobot
    RobotController m_robotController;
    USBCamera m_driveCamera;
    Client m_client;
+   Relay m_lidarOnSwitch;
+   LidarHandler m_lidarHandler;
 
 public:
    Robot() :
@@ -64,10 +67,11 @@ public:
       m_loaderController(&m_verticalMotor, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder),
       m_shooterController(&m_loaderController, &m_flywheel),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController),
-      m_driveCamera("cam0",false)
-
+      m_driveCamera("cam0",false),
+      m_lidarOnSwitch(PortAssign::lidarOnSwitchChannel),
+      m_lidarHandler(&m_lidarOnSwitch, LidarConstants::lidarOffset, PortAssign::lidarDIOChannel)
    {
-
+      SmartDashboard::init();
       // cout << "call init socket" << endl;
       // client.initilizeSocket();
       // if (client.m_initGood){
@@ -100,6 +104,9 @@ public:
    }
 
    void Test(){
+      std::thread lidarRunThread(lidarThread, this, &m_lidarHandler);
+      lidarRunThread.join();
+
       SmartDashboard::PutString("DB/String 0", " ");
       m_leftWheelEncoder.Reset();
       m_rightWheelEncoder.Reset();
@@ -113,10 +120,21 @@ public:
          outputL << "EncoderL: ";
          outputL << (m_leftWheelEncoder.Get());
          SmartDashboard::PutString("DB/String 1", outputL.str());
+         std::ostringstream lidar;
+         lidar << m_lidarHandler.getDistance();
+         SmartDashboard::PutString("DB/String 5", "Distance: " + lidar.str() + " cm");
       }
    }
 
 };
+
+void lidarThread(Robot * robot, LidarHandler * lidarHandler) {
+   while(robot->IsEnabled() && (robot->IsAutonomous() || robot->IsOperatorControl() || robot->IsTest())) {
+      //TODO this might not happen all the time
+      lidarHandler->run();
+      Wait(0.1);
+   }
+}
 
 void runClient(Robot* robot,Client* client)
 {
