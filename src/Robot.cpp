@@ -6,6 +6,7 @@
 #include "LoaderController.h"
 #include "ShooterController.h"
 #include "Flywheel.h"
+#include "LidarHandler.h"
 #include "Client.h"
 #include <thread>
 #include <iostream>
@@ -16,6 +17,7 @@ using namespace std;
 class Robot;
 
 void runClient(Robot* robot, Client* client);
+void lidarThread(Robot * robot, LidarHandler * lidarHandler);
 
 class Robot: public SampleRobot
 {
@@ -41,6 +43,8 @@ class Robot: public SampleRobot
    ShooterController m_shooterController;
    RobotController m_robotController;
    Client client;
+   Relay m_lidarOnSwitch;
+   LidarHandler m_lidarHandler;
 
 public:
    Robot() :
@@ -64,9 +68,10 @@ public:
       m_armEncoder(PortAssign::armEncoderChannelA, PortAssign::armEncoderChannelB),
       m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder),
       m_shooterController(&m_loaderController, &m_flywheel),
-      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController){
+      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController),
+      m_lidarOnSwitch(1),
+      m_lidarHandler(&m_lidarOnSwitch, 0, 9){
       SmartDashboard::init();
-
 
 //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
 //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true);
@@ -91,6 +96,9 @@ public:
    }
 
    void Test(){
+      std::thread lidarThreadInstance(lidarThread, this, &m_lidarHandler);
+      lidarThreadInstance.join();
+
       SmartDashboard::PutString("DB/String 0", "Entering Test ");
       m_leftWheelEncoder.Reset();
       m_rightWheelEncoder.Reset();
@@ -219,6 +227,17 @@ public:
    }
 
 };
+
+void lidarThread(Robot * robot, LidarHandler * lidarHandler) {
+   while(robot->IsEnabled() && (robot->IsAutonomous() || robot->IsOperatorControl() || robot->IsTest())) {
+      //TODO this might not happen all the time
+      lidarHandler->run();
+      std::stringstream ssaa;
+      ssaa<<lidarHandler->getDistance();
+      SmartDashboard::PutString("DB/String 3", "Distance: " + ssaa.str());
+      Wait(0.1);
+   }
+}
 
 void runClient(Robot* robot,Client* client)
 {
