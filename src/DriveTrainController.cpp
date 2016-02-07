@@ -45,6 +45,7 @@ void DriveTrainController::manualDrive(float throttleRatio) {
 
 void DriveTrainController::run() {
    switch (getCurrentState()) {
+
    //Goal state with the drivers are driving the robot
    case TELEOP:
       manualDrive(0.6f);

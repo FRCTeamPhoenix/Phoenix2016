@@ -35,6 +35,7 @@ public:
    void stopRobot();
 
    STATE getCurrentState();
+
    void setGoalState(STATE currentState);
    void setDriveConstants(float, float);
 
