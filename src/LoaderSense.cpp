@@ -17,6 +17,13 @@ LoaderSense::LoaderSense(Client* client, DriveTrainController* driveTrainControl
    for (int i = 1; i <= LoaderSenseConstants::numBallVals; i++) {
       m_currentBallPosition[i] = 0;
    }
+
+   lastArrayWasNull = true;
+
+   //Keeps track of the number of blank data sets sent over to Client
+   //This represents the number of action cycles for which the ball has not been seen
+   nullArraysInARow = 0;
+
 }
 
 // IMPORTANT: Call to this method will implement the Loader's alignment process
@@ -40,7 +47,13 @@ void LoaderSense::updateBallPositionData() {
 
          }
 
+      if(m_currentBallPosition[LoaderSenseConstants::ballRadius] == 0) {
+         lastArrayWasNull = true;
+      } else {
+         lastArrayWasNull = false;
       }
+
+   }
 
 }
 
@@ -86,60 +99,91 @@ void LoaderSense::findBall() {
 // IMPORTANT NOTE: will not rotate until ball is a safe distance away
 void LoaderSense::rotate() {
 
-   if (m_currentBallPosition[LoaderSenseConstants::ballCenterX] < LoaderSenseConstants::minGoodCenterX) {
+   if (lastArrayWasNull) {
+      nullArraysInARow++;
+      //Goes back to trying to find the ball, if three cycles in a row yield no data
+      if (nullArraysInARow >= 3) {
+         nullArraysInARow = 0;
+         setCurrentState(FINDING_BALL);
+      }
+   }
 
-      if (m_currentBallPosition[LoaderSenseConstants::ballRadius] > LoaderSenseConstants::maxSafeRotationRadius) {
+   else {
 
-         setCurrentState(BACKUP);
+      nullArraysInARow = 0;
+
+      if (m_currentBallPosition[LoaderSenseConstants::ballCenterX] < LoaderSenseConstants::minGoodCenterX) {
+
+         if (m_currentBallPosition[LoaderSenseConstants::ballRadius] > LoaderSenseConstants::maxSafeRotationRadius) {
+
+            setCurrentState(BACKUP);
+
+         } else {
+
+            //Robot will rotate clockwise 1 degree, at motor speed 0.5
+            m_driveTrainController->aimRobotClockwise(1, 0.5);
+
+            std::ostringstream LSenseStatus;
+            LSenseStatus << "Rotating clockwise";
+            SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+
+         }
+
+      } else if (m_currentBallPosition[LoaderSenseConstants::ballCenterX] > LoaderSenseConstants::maxGoodCenterX) {
+
+         if(m_currentBallPosition[LoaderSenseConstants::ballRadius] > LoaderSenseConstants::maxSafeRotationRadius) {
+
+            setCurrentState(BACKUP);
+
+         } else {
+
+            //Robot will rotate counterclockwise 1 degree, at motor speed 0.5
+            m_driveTrainController->aimRobotCounterclockwise(1, 0.5);
+
+            std::ostringstream LSenseStatus;
+            LSenseStatus << "Rotating counterclockwise";
+            SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+         }
 
       } else {
 
-         //Robot will rotate clockwise 1 degree, at motor speed 0.5
-         m_driveTrainController->aimRobotClockwise(1, 0.5);
-
-         std::ostringstream LSenseStatus;
-         LSenseStatus << "Rotating clockwise";
-         SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+         setCurrentState(APPROACHING);
 
       }
-
-   } else if (m_currentBallPosition[LoaderSenseConstants::ballCenterX] > LoaderSenseConstants::maxGoodCenterX) {
-
-      if(m_currentBallPosition[LoaderSenseConstants::ballRadius] > LoaderSenseConstants::maxSafeRotationRadius) {
-
-         setCurrentState(BACKUP);
-
-      } else {
-
-         //Robot will rotate counterclockwise 1 degree, at motor speed 0.5
-         m_driveTrainController->aimRobotCounterclockwise(1, 0.5);
-
-         std::ostringstream LSenseStatus;
-         LSenseStatus << "Rotating counterclockwise";
-         SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
-      }
-
-   } else {
-
-      setCurrentState(APPROACHING);
 
    }
+
 }
 
 // Approach ball until it is close enough to be loaded
 void LoaderSense::approach() {
 
-   if (m_currentBallPosition[LoaderSenseConstants::ballRadius] < LoaderSenseConstants::minGoodRadius) {
-      //Robot will move forward an inch, at motor speed 0.5
-      m_driveTrainController->moveRobotStraight(1, 0.5);
+   if (lastArrayWasNull) {
+         nullArraysInARow++;
+         //Goes back to trying to find the ball, if three cycles in a row yield no data
+         if (nullArraysInARow >= 3) {
+            nullArraysInARow = 0;
+            setCurrentState(FINDING_BALL);
+         }
+      }
 
-      std::ostringstream LSenseStatus;
-      LSenseStatus << "Moving forwards";
-      SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+   else {
 
-      setCurrentState(ROTATING);
-   } else {
-      setCurrentState(IDLE);
+      nullArraysInARow = 0;
+
+      if (m_currentBallPosition[LoaderSenseConstants::ballRadius] < LoaderSenseConstants::minGoodRadius) {
+         //Robot will move forward an inch, at motor speed 0.5
+         m_driveTrainController->moveRobotStraight(1, 0.5);
+
+         std::ostringstream LSenseStatus;
+         LSenseStatus << "Moving forwards";
+         SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+
+         setCurrentState(ROTATING);
+      } else {
+         setCurrentState(IDLE);
+      }
+
    }
 
 }
@@ -147,17 +191,32 @@ void LoaderSense::approach() {
 // Back up until rotation can be safely completed
 void LoaderSense::backup() {
 
-   if(m_currentBallPosition[LoaderSenseConstants::ballRadius] < LoaderSenseConstants::maxSafeRotationRadius) {
+   if (lastArrayWasNull) {
+         nullArraysInARow++;
+         //Goes back to trying to find the ball, if three cycles in a row yield no data
+         if (nullArraysInARow >= 3) {
+            nullArraysInARow = 0;
+            setCurrentState(FINDING_BALL);
+         }
+      }
 
-      setCurrentState(ROTATING);
+   else {
 
-   } else {
+      nullArraysInARow = 0;
 
-      m_driveTrainController->moveRobotStraight(-1, 0.5);
+      if(m_currentBallPosition[LoaderSenseConstants::ballRadius] < LoaderSenseConstants::maxSafeRotationRadius) {
 
-      std::ostringstream LSenseStatus;
-      LSenseStatus << "Backing up";
-      SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+         setCurrentState(ROTATING);
+
+      } else {
+
+         m_driveTrainController->moveRobotStraight(-1, 0.5);
+
+         std::ostringstream LSenseStatus;
+         LSenseStatus << "Backing up";
+         SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+
+      }
 
    }
 
@@ -165,6 +224,10 @@ void LoaderSense::backup() {
 
 // Called to implement all LoaderSense mechanisms
 void LoaderSense::run() {
+
+   if(m_driveStation->getGamepadButton(1)) {
+      setCurrentState(IDLE);
+   }
 
    switch(m_currentState) {
    case IDLE:

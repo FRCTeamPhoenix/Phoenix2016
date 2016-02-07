@@ -48,6 +48,8 @@ private:
 
    int m_currentBallPosition[4];
    STATE m_currentState;
+   bool lastArrayWasNull;
+   int nullArraysInARow;
 
 };
 
