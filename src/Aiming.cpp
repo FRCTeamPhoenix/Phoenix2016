@@ -206,7 +206,7 @@ void Aiming::printCurrentCoordinates() {
 // Called to implement all aiming mechanisms
 void Aiming::run() {
 
-   if(m_driveStation->getGamepadButton(1)) {
+   if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonA)) {
          setCurrentState(IDLE);
    }
 

@@ -225,7 +225,7 @@ void LoaderSense::backup() {
 // Called to implement all LoaderSense mechanisms
 void LoaderSense::run() {
 
-   if(m_driveStation->getGamepadButton(1)) {
+   if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonA)) {
       setCurrentState(IDLE);
    }
 
