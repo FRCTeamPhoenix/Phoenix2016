@@ -120,17 +120,20 @@ void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
 
    m_initalEncoderValueRight = m_rightWheelEncoder->Get();
    m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
+
    //will have to find the diameter of the wheel
    //the 6 is the diameter of the wheel
    float ticks = distance * (M_PI* 6);
    m_targetTickRight = m_initalEncoderValueRight + ticks;
+   m_targetTickLeft = m_initalEncoderValueLeft + ticks;
+
    std::ostringstream outputTR;
    outputTR << "T-Right " << m_targetTickRight;
    SmartDashboard::PutString("DB/String 2", outputTR.str());
-   m_targetTickLeft = m_initalEncoderValueLeft + ticks;
    std::ostringstream outputTL;
    outputTL << "T-Left " << m_targetTickLeft;
    SmartDashboard::PutString("DB/String 3", outputTL.str());
+
    m_rightEncoderComplete = false;
    m_leftEncoderComplete = false;
 
