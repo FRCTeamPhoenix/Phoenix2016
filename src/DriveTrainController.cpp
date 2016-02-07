@@ -37,10 +37,8 @@ void DriveTrainController::manualDrive(float throttleRatio) {
    float twist = m_driveStation->getTwist();
    float twistRatio = 1 - throttleRatio;
 
-   float leftPower = (throttle * throttleRatio) + (twist * twistRatio);
-   float rightPower = (throttle * throttleRatio) - (twist * twistRatio);
-
-   m_driveTrain->TankDrive(leftPower, rightPower);
+   m_leftMotorPower = (throttle * throttleRatio) + (twist * twistRatio);
+   m_rightMotorPower = (throttle * throttleRatio) - (twist * twistRatio);
 }
 
 void DriveTrainController::run() {
@@ -57,9 +55,6 @@ void DriveTrainController::run() {
       break;
       //Goal state of when the robot is moving by its self
    case ENCODERDRIVE:
-      float rightMotorPower = m_rightMotorPower;
-      float leftMotorPower = m_leftMotorPower;
-
       if (m_rightEncoderComplete){
          m_goalState = IDLE;
 
@@ -68,9 +63,9 @@ void DriveTrainController::run() {
          m_goalState = IDLE;
 
       }
-      m_driveTrain->TankDrive(leftMotorPower, rightMotorPower);
       break;
    };
+   m_driveTrain->TankDrive(m_leftMotorPower, m_rightMotorPower);
 }
 
 //For aiming the robot clockwise, pass in the desired degree and the desired motor speed
