@@ -30,6 +30,7 @@ Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, int a
 {
    m_timer = new Timer();
    m_firstTime = true;
+   m_invalid = false;
 
    /* Checks for correct number of arguments. In switch
       statement, omit actions that have no arguments. */
@@ -46,7 +47,7 @@ Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, int a
       }
    if (argn != argc)
       {
-	 m_invalid = false;
+	 m_invalid = true;
 	 printf("Warning: invalid number of arguments "
 		"for action. Expected %d arguments, "
 		"but received %d.\n", argn, argc);
