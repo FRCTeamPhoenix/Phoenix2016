@@ -25,7 +25,7 @@ public:
       BACKUP
    };
 
-   LoaderSense(Client*, DriveTrainController*);
+   LoaderSense(Client*, DriveTrainController*, DriveStation*);
    void beginAligning();
    void updateBallPositionData();
    int getCurrentRadius();
@@ -44,6 +44,7 @@ private:
 
    Client* m_client;
    DriveTrainController* m_driveTrainController;
+   DriveStation* m_driveStation;
 
    int m_currentBallPosition[4];
    STATE m_currentState;

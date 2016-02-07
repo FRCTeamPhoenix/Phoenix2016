@@ -14,15 +14,22 @@
 
 #include <Aiming.h>
 
-Aiming::Aiming(Client* client, DriveTrainController* driveTrainController) :
+Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, DriveStation* driveStation) :
    m_client(client),
-   m_driveTrainController(driveTrainController)
+   m_driveTrainController(driveTrainController),
+   m_driveStation(driveStation)
 {
    setCurrentState(IDLE);
    m_currentTargetCoordinates[0] = AimingConstants::targetFlag;
    for (int i = 1; i <= AimingConstants::numTargetVals; i++) {
-      m_currentTargetCoordinates[i] = -1;
+      m_currentTargetCoordinates[i] = 0;
    }
+
+   lastArrayWasNull = true;
+
+   //Keeps track of the number of blank data sets sent over to Client
+   //This represents the number of action cycles for which the target has not been seen
+   nullArraysInARow = 0;
 }
 
 // IMPORTANT: Call this method to begin aiming process - same as manually setting state to first
@@ -35,27 +42,28 @@ void Aiming::beginAiming() {
 void Aiming::getNewImageData() {
 
    //Check for fresh data
-   if(m_client->m_unreadData) {
-
-      //Tests for shooter data
-      if(m_client->getData(0) == AimingConstants::targetFlag) {
+   if(m_client->m_unreadTargetData) {
 
          // Updates array of current coordinates with data received by client
          for(int i = 1; i <= AimingConstants::numTargetVals; i++) {
-            m_currentTargetCoordinates[i - 1] = m_client->getData(i);
+            m_currentTargetCoordinates[i - 1] = m_client->getTargetData(i);
          }
-      } else {
-         // Ensures that a non-applicable fresh packet won't be ignored by LoaderSense
-         m_client->setPacketStatus(true);
+
+         if(m_currentTargetCoordinates[AimingConstants::yUL] == 0) {
+            lastArrayWasNull = true;
+         } else {
+            lastArrayWasNull = false;
+         }
+
       }
-   }
+
 }
 
 
 void Aiming::findTarget() {
 
    // Rotate while the first coordinate hasn't been found
-   if (m_currentTargetCoordinates[AimingConstants::yUL] < 0) {
+   if (lastArrayWasNull) {
       m_driveTrainController->aimRobotClockwise(5, 0.5);
 
       std::ostringstream aimingStatus;
@@ -72,8 +80,17 @@ void Aiming::findTarget() {
 // Turns robot to line up with target, once target is within field of vision
 void Aiming::rotate() {
 
+   if (lastArrayWasNull) {
+      nullArraysInARow++;
+      // If no target data has been received for three cycles, start looking for the ball again
+      if (nullArraysInARow >= 3) {
+         nullArraysInARow = 0;
+         setCurrentState(FINDING_TARGET);
+      }
+   }
+
    // Right side of robot is tilted too far forwards
-   if ((m_currentTargetCoordinates[AimingConstants::yUR] -
+   else if ((m_currentTargetCoordinates[AimingConstants::yUR] -
          m_currentTargetCoordinates[AimingConstants::yUL]) > 20 &&
          (m_currentTargetCoordinates[AimingConstants::yLL] -
                m_currentTargetCoordinates[AimingConstants::yLR]) > 20) {
@@ -114,7 +131,16 @@ void Aiming::rotate() {
 }
 
 void Aiming::approachTarget() {
-   if ((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
+
+   if (lastArrayWasNull) {
+      nullArraysInARow++;
+      if (nullArraysInARow >= 3) {
+         nullArraysInARow = 0;
+         setCurrentState(FINDING_TARGET);
+      }
+   }
+
+   else if ((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
          < AimingConstants::minTargetWidth) {
       m_driveTrainController->moveRobotStraight(1, 0.5);
 

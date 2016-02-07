@@ -73,8 +73,8 @@ public:
       m_shooterController(&m_loaderController, &m_flywheel),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController),
       m_driveCamera("cam0",false),
-      m_aiming(&m_client, &m_driveTrainController),
-      m_loaderSense(&m_client, &m_driveTrainController){
+      m_aiming(&m_client, &m_driveTrainController, &m_driveStation),
+      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation){
 
       SmartDashboard::init();
 

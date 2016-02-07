@@ -30,7 +30,7 @@ public:
          APPROACHING
       };
 
-   Aiming(Client*, DriveTrainController*);
+   Aiming(Client*, DriveTrainController*, DriveStation*);
    void getNewImageData();
    void beginAiming();
    void findTarget();
@@ -47,8 +47,11 @@ private:
 
    Client* m_client;
    DriveTrainController* m_driveTrainController;
-   int m_currentTargetCoordinates[8];
+   DriveStation* m_driveStation;
+   int m_currentTargetCoordinates[9];
    STATE m_currentState;
+   bool lastArrayWasNull;
+   int nullArraysInARow;
 
 };
 
