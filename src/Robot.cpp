@@ -7,6 +7,8 @@
 #include "ShooterController.h"
 #include "Flywheel.h"
 #include "Client.h"
+#include "Aiming.h"
+#include "LoaderSense.h"
 #include <thread>
 #include <iostream>
 #include <fstream>
@@ -43,6 +45,8 @@ class Robot: public SampleRobot
    RobotController m_robotController;
    USBCamera m_driveCamera;
    Client m_client;
+   Aiming m_aiming;
+   LoaderSense m_loaderSense;
 
 public:
    Robot() :
@@ -68,7 +72,9 @@ public:
       m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder, &m_driveStation, &m_potentiometer),
       m_shooterController(&m_loaderController, &m_flywheel),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController),
-      m_driveCamera("cam0",false){
+      m_driveCamera("cam0",false),
+      m_aiming(&m_client, &m_driveTrainController),
+      m_loaderSense(&m_client, &m_driveTrainController){
 
       SmartDashboard::init();
 

@@ -69,5 +69,62 @@ struct DriveStationConstants {
    const static uint32_t gamepadButtons = 12;
 };
 
+// TARGET VALUES (SHOOTER)
+struct AimingConstants {
+
+   // Detected corners of target
+   enum targetPositionData {
+         xUL, // upper left x-coordinate
+         yUL, // upper left y-coordinate
+         xUR, // upper right x-coordinate
+         yUR, // upper right y-coordinate
+         xLL, // lower left x-coordinate
+         yLL, // lower left y-coordinate
+         xLR, // lower right x-coordinate
+         yLR, // lower right y-coordinate
+      };
+
+   const static int numTargetVals = 8;
+
+   // These are all educated guesses and may need to be changed,
+   // depending upon the chosen coordinate system
+   const static int leftTargetVisionBoundary = 30;
+   const static int rightTargetVisionBoundary = 290;
+   const static int maxTiltingFactor = 20;
+   const static int minTargetWidth = 250;
+   const static int maxTargetWidth = 350;
+
+   // First array element passed in a target data array
+   const static int targetFlag = 1;
+
+};
+
+
+// BALL VALUES (LOADER)
+struct LoaderSenseConstants {
+
+   enum ballPositionData {
+         ballRadius,
+         ballCenterX,
+         ballCenterY
+      };
+
+   const static int numBallVals = 3;
+
+   // All of these are basically placeholder values (educated guesses)
+
+   const static int minGoodCenterX = 100;
+   const static int maxGoodCenterX = 220;
+
+   const static int minGoodRadius = 90;
+   const static int maxGoodRadius = 120;
+
+   const static int maxSafeRotationRadius = 50;
+
+   // First array element passed in a loader data array
+   const static int loaderFlag = 2;
+
+};
+
 #endif /* SRC_CONSTANTS_H_ */
 
