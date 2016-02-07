@@ -111,6 +111,8 @@ public:
          m_driveTrainController.run();
          m_shooterController.run();
          m_loaderController.run();
+         m_aiming.run();
+         m_loaderSense.run();
       }
    }
 

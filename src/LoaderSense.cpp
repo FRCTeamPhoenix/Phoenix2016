@@ -231,6 +231,9 @@ void LoaderSense::run() {
 
    switch(m_currentState) {
    case IDLE:
+      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonBack)) {
+            setCurrentState(FINDING_BALL);
+      }
       break;
    case FINDING_BALL:
       updateBallPositionData();

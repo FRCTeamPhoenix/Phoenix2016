@@ -212,6 +212,9 @@ void Aiming::run() {
 
    switch(m_currentState) {
    case IDLE:
+      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonStart)) {
+            setCurrentState(FINDING_TARGET);
+      }
       break;
    case FINDING_TARGET:
       getNewImageData();
