@@ -86,11 +86,11 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
 
    std::ostringstream outputTR;
    outputTR << "Target Right Tick " << m_targetTickRight;
-   SmartDashboard::PutString("DB/String 3", outputTR.str());
+   SmartDashboard::PutString("DB/String 8", outputTR.str());
 
    std::ostringstream outputTL;
    outputTL << "Target Left Tick " << m_targetTickLeft;
-   SmartDashboard::PutString("DB/String 4", outputTL.str());
+   SmartDashboard::PutString("DB/String 9", outputTL.str());
 
    if (degree > 0) {
       m_rightMotorPower = -motorSpeed;

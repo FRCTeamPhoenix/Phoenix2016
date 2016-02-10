@@ -84,7 +84,7 @@ public:
    }
    void RobotInit() override{
        cout<<"run init socket function" << endl;
-       m_client.initilizeSocket();
+       //m_client.initilizeSocket();
        if (m_client.m_initGood){
           cout<<"init good start thread" << endl;
           std::thread receiveThread(runClient, this, &m_client);
