@@ -19,6 +19,7 @@ void runClient(Robot* robot, Client* client);
 
 class Robot: public SampleRobot
 {
+   AnalogGyro m_gyro;
    Talon m_flywheelLeftMotor;
    Talon m_flywheelRightMotor;
    Flywheel m_flywheel;
@@ -46,6 +47,7 @@ class Robot: public SampleRobot
 
 public:
    Robot() :
+      m_gyro(PortAssign::gyroscope),
       m_flywheelLeftMotor(PortAssign::flywheelLeftMotor),
       m_flywheelRightMotor(PortAssign::flywheelRightMotor),
       m_flywheel(&m_flywheelLeftMotor, &m_flywheelRightMotor),
@@ -55,7 +57,7 @@ public:
       m_rightWheelEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
       m_driveStation(&m_joystick, &m_gamepad),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
-      m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder),
+      m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro),
       m_armMotorLeft(PortAssign::armMotorLeft),
       m_armMotorRight(PortAssign::armMotorRight),
       m_intakeMotor(PortAssign::intakeMotor),
@@ -71,6 +73,7 @@ public:
       m_driveCamera("cam0",false){
 
       SmartDashboard::init();
+      m_gyro.Calibrate();
 
 
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
@@ -127,6 +130,10 @@ public:
       SmartDashboard::PutString("DB/String 9", " ");
 
       while(IsTest() && IsEnabled()){
+         std::ostringstream outputG;
+         outputG << "Gyro: ";
+         outputG << (m_gyro.GetAngle());
+         SmartDashboard::PutString("DB/String 9", outputG.str());
 
          //Homes robot arm at the beginning of test
 //         m_loaderController.setHoming();

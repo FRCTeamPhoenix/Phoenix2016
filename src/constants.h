@@ -44,10 +44,11 @@ struct PortAssign {
 };
 
 struct RobotConstants {
-   constexpr static float wheelEncoderTicksPerDegree = 9.0f;
+   constexpr static float wheelEncoderTicksPerDegree = 4.5f;
    // 384ticks per wheel rev. three rev. for 360 degrees.
    // (384 *3) / 360 = 3.2
    constexpr static float flywheelMotorSpeed = 1.0f;
+   constexpr static bool gyro = true;
 };
 
 struct DriveStationConstants {

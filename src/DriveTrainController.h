@@ -19,13 +19,14 @@ public:
    enum STATE {
       IDLE,
       TELEOP,
-      ENCODERDRIVE
-      //CAMERADRIVE
+      ENCODERDRIVE,
+      GYROTURN
    };
    DriveTrainController(RobotDrive* m_driveTrain,
          DriveStation* m_driveStation,
          Encoder* leftWheelEncoder,
-         Encoder* rightWheelEncoder);
+         Encoder* rightWheelEncoder,
+         AnalogGyro* gyro);
    virtual ~DriveTrainController();
    void run();
    void manualDrive(float throttleRatio);
@@ -45,6 +46,7 @@ private:
    DriveStation * m_driveStation;
    Encoder* m_leftWheelEncoder;
    Encoder* m_rightWheelEncoder;
+   AnalogGyro* m_gyro;
    int32_t m_initalEncoderValueLeft;
    int32_t m_initalEncoderValueRight;
    int32_t m_targetTickRight;
@@ -53,6 +55,8 @@ private:
    float m_leftMotorPower;
    bool m_rightEncoderComplete;
    bool m_leftEncoderComplete;
+   bool turn;
+   float m_gyroTargetDegree;
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */
