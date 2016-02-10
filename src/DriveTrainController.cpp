@@ -28,7 +28,7 @@ DriveTrainController::DriveTrainController(
    m_rightEncoderComplete = true;
    m_leftEncoderComplete = true;
    m_gyroTargetDegree = 0.0f;
-   turn = false;
+   clockwise = false;
 }
 
 DriveTrainController::~DriveTrainController() {
@@ -69,7 +69,7 @@ void DriveTrainController::run() {
       }
       break;
    case GYROTURN:
-      if (turn){
+      if (clockwise){
          if(m_gyroTargetDegree <= m_gyro->GetAngle())
             m_goalState = IDLE;
       }
@@ -90,12 +90,12 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
       m_gyroTargetDegree = m_gyro->GetAngle() + degree;
 
       if (degree > 0) {
-         turn = true;
+         clockwise = true;
          m_rightMotorPower = -motorSpeed;
          m_leftMotorPower = motorSpeed;
       }
       else {
-         turn = false;
+         clockwise = false;
          m_rightMotorPower = motorSpeed;
          m_leftMotorPower = -motorSpeed;
       }

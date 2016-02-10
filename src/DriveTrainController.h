@@ -55,7 +55,7 @@ private:
    float m_leftMotorPower;
    bool m_rightEncoderComplete;
    bool m_leftEncoderComplete;
-   bool turn;
+   bool clockwise;
    float m_gyroTargetDegree;
 };
 
