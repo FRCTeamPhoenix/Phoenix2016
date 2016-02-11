@@ -6,6 +6,7 @@
  */
 
 #include "DriveTrainController.h"
+#include <sstream>
 
 DriveTrainController::DriveTrainController(
       RobotDrive* robotDrive,
