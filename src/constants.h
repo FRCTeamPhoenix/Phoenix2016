@@ -4,8 +4,8 @@
 
 struct PortAssign {
    // Channels for wheels
-   const static uint32_t frontLeftWheelMotor = 1;
    const static uint32_t rearLeftWheelMotor = 0;
+   const static uint32_t frontLeftWheelMotor = 1;
    const static uint32_t frontRightWheelMotor = 2;
    const static uint32_t rearRightWheelMotor = 3;
 
@@ -16,15 +16,16 @@ struct PortAssign {
    const static uint32_t rightWheelEncoderChannelB = 3;
 
    //Flywheels
-   const static uint32_t flywheelLeftMotor = 6; //Both on the same motor controller
    const static uint32_t flywheelRightMotor = 5;
+   const static uint32_t flywheelLeftMotor = 6; //Both on the same motor controller
+
 
    //Loader
    //Redo lifter motors
    const static uint32_t armMotorRight = 8;
    const static uint32_t armMotorLeft = 7;
-   const static uint32_t intakeMotor = 9;
-   const static uint32_t stationaryMotor = 4;
+   const static uint32_t intakeMotor = 4;
+   const static uint32_t stationaryMotor = 9;
    const static uint32_t upperLimit = 4;
    const static uint32_t lowerLimit = 5;
    const static uint32_t loadedSensor = 6;
@@ -35,13 +36,18 @@ struct PortAssign {
    const static uint32_t joystick = 0;
    const static uint32_t gamepad = 1;
 
+   //Analog
+   const static uint32_t gyroscope = 0;
+   const static uint32_t potentiometer = 1;
+
+
 };
 
 struct RobotConstants {
    constexpr static float wheelEncoderTicksPerDegree = 3.2f;
-  // 384ticks per wheel rev. three rev. for 360 degrees.
+   // 384ticks per wheel rev. three rev. for 360 degrees.
    // (384 *3) / 360 = 3.2
-   constexpr static float flywheelMotorSpeed = 0.4f;
+   constexpr static float flywheelMotorSpeed = 1.0f;
 };
 
 struct DriveStationConstants {
@@ -58,6 +64,7 @@ struct DriveStationConstants {
       buttonStart = 9,
       joystickLeftButton = 10,
       joystickRightButton = 11
+
    };
    const static uint32_t gamepadButtons = 12;
 };

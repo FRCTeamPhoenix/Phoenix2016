@@ -4,13 +4,19 @@
  * The ActionType enum inside Action.h is the list of all
  * possible actions. The execute method executes the action
  * that this current object contains.
- * 
+ *
  * The handling of the actions is put in the execute method,
  * where there is a switch case for every action. You can
  * add action handling here. If the action is done, then you
  * return true. Otherwise, you return false. The action
  * queue will discard the current action as soon as the
  * action returns true.
+ *
+ * The constructor takes in an array of floats for arguments.
+ * You will also pass in the length of the array for safety
+ * reasons. If the number of arguments is incorrect, the
+ * action will immediately prompt to be removed from the
+ * queue and print a warning message.
  */
 
 #include "Action.h"
@@ -19,11 +25,33 @@
 
 #include <Timer.h>
 
-Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, float pow, float seconds, float turn)
-   : controllers(ds), drive_t(dt), action(act), power(pow), twist(turn), time(seconds)
+Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, int argc, float* argv)
+   : m_controllers(ds), m_driveTrain(dt), m_action(act), m_argc(argc), m_argv(argv)
 {
-   timer = new Timer();
-   firstTime = true;
+   m_timer = new Timer();
+   m_firstTime = true;
+   m_invalid = false;
+
+   /* Checks for correct number of arguments. In switch
+      statement, omit actions that have no arguments. */
+   int argn;
+   switch (m_action)
+      {
+      case ACTION_DRIVE:
+      case ACTION_TURN:
+	 argn = 2;
+	 break;
+      default:
+	 argn = 0;
+	 break;
+      }
+   if (argn != argc)
+      {
+	 m_invalid = true;
+	 printf("Warning: invalid number of arguments "
+		"for action. Expected %d arguments, "
+		"but received %d.\n", argn, argc);
+      }
 }
 
 /*
@@ -32,7 +60,11 @@ Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, float
  */
 bool Action::execute(void)
 {
-   switch (action)
+   /* If action is invalid, immediately remove from queue. */
+   if (m_invalid)
+      return true;
+   /* Performs action. */
+   switch (m_action)
       {
       case ACTION_A:
          return waitUntil(2);
@@ -41,33 +73,24 @@ bool Action::execute(void)
       case ACTION_X:
          return waitUntil(1);
       case ACTION_DRIVE:
-	 return drive();
+	 if (m_firstTime)
+	    m_driveTrain->moveRobotStraight(m_argv[0], m_argv[1]);
+	 if (m_driveTrain->getCurrentState() == DriveTrainController::ENCODERDRIVE)
+	    return true;
+	 return false;
+      case ACTION_TURN:
+	 if (m_firstTime)
+	    m_driveTrain->aimRobotClockwise(m_argv[0], m_argv[1]);
+	 if (m_driveTrain->getCurrentState() == DriveTrainController::ENCODERDRIVE)
+	    return true;
+	 return false;
       case ACTION_BRAKE:
-	 //drive_t->setCurrentState(DriveTrainController::IDLE);
+	 // TODO: Make robot brake.
 	 return true;
       case NO_ACTION:
          return true;
       }
    return true;
-}
-
-/*
- * Drives with specified power and time in milliseconds.
- */
-bool Action::drive(void)
-{
-   if (firstTime)
-      {
-	 firstTime = false;
-	 timer->Start();
-         //drive_t->setCurrentState(DriveTrainController::AUTOTEST);
-	 //drive_t->setDriveConstants(power, twist);
-      }
-   float currentTime = timer->Get();
-   printf("%f\n", currentTime);
-   if (currentTime >= time)
-      return true;
-   return false;
 }
 
 /*
@@ -77,7 +100,7 @@ bool Action::drive(void)
  */
 bool Action::waitUntil(int buttonCode)
 {
-   return controllers->getGamepadButton(buttonCode);
+   return m_controllers->getGamepadButton(buttonCode);
 }
 
 /*
@@ -85,5 +108,5 @@ bool Action::waitUntil(int buttonCode)
  */
 ActionType Action::getAction()
 {
-   return action;
+   return m_action;
 }

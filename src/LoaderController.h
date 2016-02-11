@@ -11,14 +11,15 @@
 #include "BaseController.h"
 #include "WPILib.h"
 #include "constants.h"
+#include "DriveStation.h"
 
 
 //Values for the motor speeds might need to be changed
-static const float armMotorLeft = 1.0;
-static const float armMotorRight = 1.0;
-static const float intakeMotorSpeed = 1.0;
-static const float stationaryMotorSpeed = 1.0;
-static const float homingSpeed = 0.1;
+static const float armMotorLeft = 1.0f;
+static const float armMotorRight = 1.0f;
+static const float intakeMotorSpeed = 1.0f;
+static const float stationaryMotorSpeed = 1.0f;
+static const float homingSpeed = -0.1f;
 
 class LoaderController : public BaseController{
 private:
@@ -30,15 +31,14 @@ private:
    DigitalInput* m_lowerLimit;
    DigitalInput* m_loadedSensor;
    Encoder* m_armEncoder;
+   DriveStation* m_driveStation;
 
 
 public:
    enum STATE {
+      IDLE,
       HOMING,
-      HOMED,
-      EMPTY,
       LOADING,
-      LOADINGTOSHOOTER,
       LOADED,
       SHOOTING
    };
@@ -52,26 +52,38 @@ public:
          DigitalInput* uppterLimit,
          DigitalInput* lowerLimit,
          DigitalInput* loadedSensor,
-         Encoder* armEncoder);
+         Encoder* armEncoder,
+         DriveStation* driveStation,
+         AnalogPotentiometer* potentiometer);
    void run();
+   void armLimitSwitches(float power);
+   //Returns what degree the arm is at
+   int angleOfArm();
+   //Moves the arm and has the deadzone included
    void moveArm();
-   void angleOfArm();
-   void homing();
-   void setHomed();
+   //Sets the goal state to HOMING
+   void setHoming();
+   //Sets the goal state to LOADED
    void setLoaded();
+   //Sets the goal state to SHOOTING
    void setShooting();
+   //Sets the goal state goal to IDLE
    void setIdle();
+   //Starts the loading process
+   void startLoading();
+   bool homed();
+   bool loaded();
    virtual ~LoaderController();
 
+   //Gets the current state of the robot
    STATE getCurrentState();
+   //Returns the goal state of the loader
    STATE getGoalState();
 
 private:
    STATE m_goalState;
-   enum HOMINGSTATES{
-      LOOKINGFORLOWERLIMIT,
-      HOMINGCOMPLETE
-   }m_homingState;
+   bool m_homed;
+   AnalogPotentiometer* m_potentiometer;
 };
 
 #endif /* SRC_LOADERCONTROLLER_H_ */

@@ -6,6 +6,7 @@
  */
 
 #include "DriveStation.h"
+#include <sstream>
 
 DriveStation::DriveStation(Joystick* joystick, Joystick* gamepad) :
       m_joystick(joystick), m_gamepad(gamepad) {
@@ -22,6 +23,20 @@ float DriveStation::getJoystickZ() {
 
 float DriveStation::getJoystickThrottle() {
    return m_joystickThrottle;
+}
+
+float DriveStation::getGamepadJoystick(){
+   return m_gamepadJoystick;
+}
+
+float DriveStation::deadzoneOfGamepadJoystick(){
+   float power = getGamepadJoystick();
+   if (fabs(power) < 0.05f){
+          power = 0;
+   }
+   else{
+      return power;
+   }
 }
 
 float DriveStation::getYWithDeadzone() {
@@ -58,14 +73,16 @@ void DriveStation::snapShot() {
    m_joystickY = m_joystick->GetY();
    m_joystickZ = m_joystick->GetZ();
    m_joystickZ = m_joystick->GetThrottle();
+   m_gamepadJoystickY = m_gamepad->GetY();
 
 }
 
-void printToDashboard(unsigned long *pointToString, int space){
+void DriveStation::printToDashboard(unsigned long *pointToString, int space){
    std::ostringstream outputS;
-   outputS << *pointToString;
+   outputS << &pointToString;
    SmartDashboard::PutString("DB/String " + space, outputS.str());
 }
+
 
 DriveStation::~DriveStation() {
 }

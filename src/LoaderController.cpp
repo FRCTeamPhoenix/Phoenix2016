@@ -16,7 +16,9 @@ LoaderController::LoaderController(
       DigitalInput* upperLimit,
       DigitalInput* lowerLimit,
       DigitalInput* loadedSensor,
-      Encoder* armEncoder):
+      Encoder* armEncoder,
+      DriveStation* driveStation,
+      AnalogPotentiometer* potentiometer):
 
       m_armMotorLeft(armMotorLeft),
       m_armMotorRight(armMotorRight),
@@ -25,11 +27,12 @@ LoaderController::LoaderController(
       m_upperLimit(upperLimit),
       m_lowerLimit(lowerLimit),
       m_loadedSensor(loadedSensor),
-      m_armEncoder(armEncoder)
+      m_armEncoder(armEncoder),
+      m_driveStation(driveStation),
+      m_potentiometer(potentiometer)
 {
-   m_goalState = HOMING;
-   m_homingState = LOOKINGFORLOWERLIMIT;
-
+   m_goalState = IDLE;
+   m_homed = false;
 }
 
 LoaderController::~LoaderController() {
@@ -39,60 +42,56 @@ void LoaderController::moveArm(){
    bool atUpperLimit = m_upperLimit->Get();
    bool atLowerLimit = m_lowerLimit->Get();
 
-   if (atUpperLimit /*&& Add direction of the arm*/){
-      m_armMotorLeft->Set(0);
-      m_armMotorRight->Set(0);
+   float power = m_driveStation->deadzoneOfGamepadJoystick();
+
+   if (atUpperLimit && (power > 0.0)){
+      power = 0;
    }
-   else if (atLowerLimit /*&& Add direction of the arm*/){
-      m_armMotorLeft->Set(0);
-      m_armMotorRight->Set(0);
+   if (atLowerLimit && (power < 0.0)){
+      power = 0;
    }
+
+   m_armMotorLeft->Set(power / 2);
+   m_armMotorRight->Set(power / 2);
 }
 
-void LoaderController::angleOfArm(){
-
+int LoaderController::angleOfArm(){
+   float angle = m_potentiometer->Get();
+   angle *= 0.733;
+   return angle;
 }
 
-void LoaderController::homing(){
-   m_armMotorLeft->Set(0.0);
-   m_armMotorRight->Set(0.0);
+bool LoaderController::homed(){
+   return m_homed;
+}
 
-   if (m_homingState == LOOKINGFORLOWERLIMIT){
-      if (m_lowerLimit->Get()){
-         m_homingState = HOMINGCOMPLETE;
-         m_goalState = EMPTY;
-         m_armEncoder->Reset();
-      }
-      else {
-         m_armMotorLeft->Set(homingSpeed);
-         m_armMotorRight->Set(homingSpeed);
-      }
-   }
+bool LoaderController::loaded(){
+   return m_loadedSensor->Get();
 }
 
 void LoaderController::run(){
-   STATE current = getCurrentState();
-   switch (getGoalState()){
+   switch (getCurrentState()){
    case HOMING:
-      homing();
-   case EMPTY:
+      m_armMotorLeft->Set(homingSpeed);
+      m_armMotorRight->Set(homingSpeed);
+      break;
+   case IDLE:
       //set motors to 0 if loading or loaded
-      if (current == LOADING || current == LOADED){
-         m_intakeMotor->Set(0);
-         m_stationaryMotor->Set(0);
-      }
+      m_armMotorLeft->Set(0.0);
+      m_armMotorRight->Set(0.0);
+      m_intakeMotor->Set(0);
+      m_stationaryMotor->Set(0);
+      break;
+   case LOADING:
+      m_intakeMotor->Set(-intakeMotorSpeed);
+      m_stationaryMotor->Set(-stationaryMotorSpeed);
       break;
    case LOADED:
-      //if empty turn on motors
-      if (current == EMPTY){
-         m_intakeMotor->Set(intakeMotorSpeed);
-         m_stationaryMotor->Set(stationaryMotorSpeed);
-      }
-      //if loaded turn off motors
-      else if (current == LOADED){
-         m_intakeMotor->Set(0);
-         m_stationaryMotor->Set(0);
-      }
+      m_intakeMotor->Set(0);
+      m_stationaryMotor->Set(0);
+      break;
+   case SHOOTING:
+      m_stationaryMotor->Set(-stationaryMotorSpeed);
       break;
    default:
       break;
@@ -100,38 +99,67 @@ void LoaderController::run(){
    moveArm();
 }
 
-
 LoaderController::STATE LoaderController::getCurrentState() {
-   if (m_loadedSensor->Get()){
-      return LOADED;
+   switch(m_goalState){
+   case IDLE:
+      return IDLE;
+      break;
+   case HOMING:
+      if(m_lowerLimit->Get()){
+         m_goalState = IDLE;
+         m_homed = true;
+         m_armEncoder->Reset();
+         return IDLE;
+      }
+      return HOMING;
+      break;
+   case LOADING:
+      if (loaded()){
+         m_goalState = IDLE;
+         return IDLE;
+      }
+      break;
+   case SHOOTING:
+      if (!loaded()){
+         m_goalState = IDLE;
+         return IDLE;
+      }
+      break;
+   case LOADED:
+      if (loaded()){
+         m_goalState = IDLE;
+         return IDLE;
+      }
+      else{
+         return LOADED;
+      }
+      break;
    }
-   if (m_intakeMotor->Get() != 0){
-      return LOADING;
-   }
-   else {
-      return EMPTY;
-   }
+   return IDLE;
 }
 
 LoaderController::STATE LoaderController::getGoalState(){
    return m_goalState;
 }
 
-void LoaderController::setHomed(){
-   m_goalState = HOMED;
+void LoaderController::setHoming(){
+   m_goalState = HOMING;
+   m_homed = false;
 }
 
 void LoaderController::setLoaded(){
    m_goalState = LOADED;
 }
 
+void LoaderController::startLoading(){
+   m_goalState = LOADING;
+}
+
 void LoaderController::setShooting(){
    m_goalState = SHOOTING;
 }
 
+//Sets the goal state goal to IDLE
 void LoaderController::setIdle(){
-   m_intakeMotor->Set(0);
-   m_stationaryMotor->Set(0);
-   //Need to fix LoaderController class.
-
+   m_goalState = IDLE;
 }
