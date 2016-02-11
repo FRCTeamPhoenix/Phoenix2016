@@ -44,6 +44,7 @@ class Robot: public SampleRobot
    RobotController m_robotController;
    Client client;
    Relay m_lidarOnSwitch;
+   DigitalOutput m_lidarDIOSwitch;
    LidarHandler m_lidarHandler;
 
 public:
@@ -70,6 +71,7 @@ public:
       m_shooterController(&m_loaderController, &m_flywheel),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController),
       m_lidarOnSwitch(0),
+      m_lidarDIOSwitch(8),
       m_lidarHandler(&m_lidarOnSwitch, 0, 9){
       SmartDashboard::init();
 
@@ -97,7 +99,7 @@ public:
 
    void Test(){
       std::thread lidarThreadInstance(lidarThread, this, &m_lidarHandler);
-      lidarThreadInstance.join();
+      lidarThreadInstance.detach();
 
       SmartDashboard::PutString("DB/String 0", "Entering Test ");
       m_leftWheelEncoder.Reset();
@@ -119,6 +121,14 @@ public:
          m_driveTrainController.run();
          m_shooterController.run();
          m_loaderController.run();
+         SmartDashboard::PutString("DB/String 6", "in");
+         if(m_joystick.GetRawButton(1)) {
+            m_lidarDIOSwitch.Set(0);
+            SmartDashboard::PutString("DB/String 7", "on");
+         } else {
+            m_lidarDIOSwitch.Set(1);
+            SmartDashboard::PutString("DB/String 7", "off");
+         }
 
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
             SmartDashboard::PutString("DB/String 6", ":) Aiming Robot Clockwise 90 Test");
