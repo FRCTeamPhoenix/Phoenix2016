@@ -85,9 +85,7 @@ void LoaderSense::findBall() {
       if (m_currentBallPosition[LoaderSenseConstants::ballCenterX] == 0) {
          m_driveTrainController->aimRobotClockwise(5, 0.5);
 
-         std::ostringstream LSenseStatus;
-         LSenseStatus << "Looking for ball";
-         SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+         SmartDashboard::PutString("DB/String 9", "Looking for ball");
       }
 
       else {
@@ -123,9 +121,7 @@ void LoaderSense::rotate() {
             //Robot will rotate clockwise 1 degree, at motor speed 0.5
             m_driveTrainController->aimRobotClockwise(1, 0.5);
 
-            std::ostringstream LSenseStatus;
-            LSenseStatus << "Rotating clockwise";
-            SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+            SmartDashboard::PutString("DB/String 9", "Rotating clockwise");
 
          }
 
@@ -140,9 +136,7 @@ void LoaderSense::rotate() {
             //Robot will rotate counterclockwise 1 degree, at motor speed 0.5
             m_driveTrainController->aimRobotCounterclockwise(1, 0.5);
 
-            std::ostringstream LSenseStatus;
-            LSenseStatus << "Rotating counterclockwise";
-            SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+            SmartDashboard::PutString("DB/String 9", "Rotating counterclockwise");
          }
 
       } else {
@@ -175,9 +169,7 @@ void LoaderSense::approach() {
          //Robot will move forward an inch, at motor speed 0.5
          m_driveTrainController->moveRobotStraight(1, 0.5);
 
-         std::ostringstream LSenseStatus;
-         LSenseStatus << "Moving forwards";
-         SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+         SmartDashboard::PutString("DB/String 9", "Moving forwards");
 
          setCurrentState(ROTATING);
       } else {
@@ -212,9 +204,7 @@ void LoaderSense::backup() {
 
          m_driveTrainController->moveRobotStraight(-1, 0.5);
 
-         std::ostringstream LSenseStatus;
-         LSenseStatus << "Backing up";
-         SmartDashboard::PutString("DB/String 9", LSenseStatus.str());
+         SmartDashboard::PutString("DB/String 9", "Backing up");
 
       }
 
