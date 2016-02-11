@@ -45,19 +45,7 @@ public:
 
    void Test(){
 
-      SmartDashboard::PutString("DB/String 0", " ");
-      m_driveTrainController.setCurrentState(DriveTrainController::DRIVETRAIN_TEST);
 
-      while(IsTest() && IsEnabled()){
-         std::ostringstream output;
-         output << "Throttle: ";
-         output << (-m_DriveStation.getJoystickThrottle() + 1) / 2;
-         SmartDashboard::PutString("DB/String 0", output.str());
-         m_driveTrainController.run();
-      }
-
-      m_driveTrainController.setCurrentState(DriveTrainController::DRIVETRAIN_NORMAL);
-      SmartDashboard::PutString("DB/String 0", " ");
 
    }
 };
