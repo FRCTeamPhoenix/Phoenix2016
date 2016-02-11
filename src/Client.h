@@ -43,11 +43,11 @@ public:
 
     void byteToInt(char *byteArray,int *intArray);
 
-    int getTargetData();
+    int getTargetData(int element);
 
     void sendPacket();
 
-    int getBallData();
+    int getBallData(int element);
 
     int getDistanceData();
 

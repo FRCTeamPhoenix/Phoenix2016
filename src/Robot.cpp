@@ -7,6 +7,8 @@
 #include "ShooterController.h"
 #include "Flywheel.h"
 #include "Client.h"
+#include "Aiming.h"
+#include "LoaderSense.h"
 #include <thread>
 #include <iostream>
 #include <fstream>
@@ -19,6 +21,7 @@ void runClient(Robot* robot, Client* client);
 
 class Robot: public SampleRobot
 {
+   AnalogGyro m_gyro;
    Talon m_flywheelLeftMotor;
    Talon m_flywheelRightMotor;
    Flywheel m_flywheel;
@@ -43,9 +46,12 @@ class Robot: public SampleRobot
    RobotController m_robotController;
    USBCamera m_driveCamera;
    Client m_client;
+   Aiming m_aiming;
+   LoaderSense m_loaderSense;
 
 public:
    Robot() :
+      m_gyro(PortAssign::gyroscope),
       m_flywheelLeftMotor(PortAssign::flywheelLeftMotor),
       m_flywheelRightMotor(PortAssign::flywheelRightMotor),
       m_flywheel(&m_flywheelLeftMotor, &m_flywheelRightMotor),
@@ -55,7 +61,7 @@ public:
       m_rightWheelEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
       m_driveStation(&m_joystick, &m_gamepad),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
-      m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder),
+      m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro),
       m_armMotorLeft(PortAssign::armMotorLeft),
       m_armMotorRight(PortAssign::armMotorRight),
       m_intakeMotor(PortAssign::intakeMotor),
@@ -68,9 +74,12 @@ public:
       m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder, &m_driveStation, &m_potentiometer),
       m_shooterController(&m_loaderController, &m_flywheel),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController),
-      m_driveCamera("cam0",false){
+      m_driveCamera("cam0",false),
+      m_aiming(&m_client, &m_driveTrainController, &m_driveStation),
+      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation){
 
       SmartDashboard::init();
+      m_gyro.Calibrate();
 
 
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
@@ -84,7 +93,7 @@ public:
    }
    void RobotInit() override{
        cout<<"run init socket function" << endl;
-       m_client.initilizeSocket();
+       //m_client.initilizeSocket();
        if (m_client.m_initGood){
           cout<<"init good start thread" << endl;
           std::thread receiveThread(runClient, this, &m_client);
@@ -105,6 +114,8 @@ public:
          m_driveTrainController.run();
          m_shooterController.run();
          m_loaderController.run();
+         m_aiming.run();
+         m_loaderSense.run();
       }
    }
 
@@ -127,6 +138,10 @@ public:
       SmartDashboard::PutString("DB/String 9", " ");
 
       while(IsTest() && IsEnabled()){
+         std::ostringstream outputG;
+         outputG << "Gyro: ";
+         outputG << (m_gyro.GetAngle());
+         SmartDashboard::PutString("DB/String 9", outputG.str());
 
          //Homes robot arm at the beginning of test
 //         m_loaderController.setHoming();

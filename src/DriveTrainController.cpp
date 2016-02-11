@@ -12,11 +12,13 @@ DriveTrainController::DriveTrainController(
       RobotDrive* robotDrive,
       DriveStation* driveStation,
       Encoder* leftWheelEncoder,
-      Encoder* rightWheelEncoder) :
+      Encoder* rightWheelEncoder,
+      AnalogGyro* gyro) :
       m_driveTrain(robotDrive),
       m_driveStation(driveStation),
       m_leftWheelEncoder(leftWheelEncoder),
-      m_rightWheelEncoder(rightWheelEncoder) {
+      m_rightWheelEncoder(rightWheelEncoder),
+      m_gyro(gyro){
    m_initalEncoderValueLeft = 0;
    m_initalEncoderValueRight = 0;
    m_targetTickRight = 0;
@@ -26,6 +28,8 @@ DriveTrainController::DriveTrainController(
    m_leftMotorPower = 0.0f;
    m_rightEncoderComplete = true;
    m_leftEncoderComplete = true;
+   m_gyroTargetDegree = 0.0f;
+   clockwise = false;
 }
 
 DriveTrainController::~DriveTrainController() {
@@ -65,15 +69,42 @@ void DriveTrainController::run() {
 
       }
       break;
+   case GYROTURN:
+      if (clockwise){
+         if(m_gyroTargetDegree <= m_gyro->GetAngle())
+            m_goalState = IDLE;
+      }
+      else{
+         if(m_gyroTargetDegree >= m_gyro->GetAngle())
+                     m_goalState = IDLE;
+      }
    };
    m_driveTrain->TankDrive(m_leftMotorPower, m_rightMotorPower);
 }
 
 //For aiming the robot clockwise, pass in the desired degree and the desired motor speed
 void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
-   if (m_goalState == ENCODERDRIVE){
+   if (m_goalState == ENCODERDRIVE || m_goalState == GYROTURN){
       return;
    }
+   if (RobotConstants::gyro){
+      m_gyroTargetDegree = m_gyro->GetAngle() + degree;
+
+      if (degree > 0) {
+         clockwise = true;
+         m_rightMotorPower = -motorSpeed;
+         m_leftMotorPower = motorSpeed;
+      }
+      else {
+         clockwise = false;
+         m_rightMotorPower = motorSpeed;
+         m_leftMotorPower = -motorSpeed;
+      }
+      m_goalState = GYROTURN;
+
+   }
+   else{
+
 
    m_initalEncoderValueRight = m_rightWheelEncoder->Get();
    m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
@@ -87,11 +118,11 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
 
    std::ostringstream outputTR;
    outputTR << "Target Right Tick " << m_targetTickRight;
-   SmartDashboard::PutString("DB/String 3", outputTR.str());
+   SmartDashboard::PutString("DB/String 8", outputTR.str());
 
    std::ostringstream outputTL;
    outputTL << "Target Left Tick " << m_targetTickLeft;
-   SmartDashboard::PutString("DB/String 4", outputTL.str());
+   SmartDashboard::PutString("DB/String 9", outputTL.str());
 
    if (degree > 0) {
       m_rightMotorPower = -motorSpeed;
@@ -102,6 +133,8 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
       m_leftMotorPower = -motorSpeed;
    }
    m_goalState = ENCODERDRIVE;
+
+   }
 }
 //For aiming the robot counter clockwise, pass in the desired degree and the desired motor speed
 //Uses aimRobotClockwise but passes in a negative degree
@@ -174,6 +207,9 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
          m_goalState = ENCODERDRIVE;
          return ENCODERDRIVE;
       }
+   case GYROTURN:
+
+      return GYROTURN;
    default:
       return IDLE;
    }
