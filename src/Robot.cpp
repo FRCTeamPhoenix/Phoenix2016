@@ -138,7 +138,9 @@ public:
 
       while(IsTest() && IsEnabled()){
 
-         SmartDashboard::PutString("DB/String 6", "in");
+         std::ostringstream ssaa;
+         ssaa<<m_lidarHandler.getDistance();
+         SmartDashboard::PutString("DB/String 4", "Distance: " + ssaa.str());
          if(m_joystick.GetRawButton(1)) {
             m_lidarDIOSwitch.Set(0);
             SmartDashboard::PutString("DB/String 7", "on");
@@ -306,7 +308,6 @@ void lidarThread(Robot * robot, LidarHandler * lidarHandler) {
       lidarHandler->run();
       std::stringstream ssaa;
       ssaa<<lidarHandler->getDistance();
-      SmartDashboard::PutString("DB/String 3", "Distance: " + ssaa.str());
       Wait(0.1);
    }
 }
