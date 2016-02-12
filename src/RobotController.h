@@ -28,7 +28,6 @@ class RobotController : public BaseController
    virtual ~RobotController();
 
    void run();
-   void addAction(ActionType, int, float*);
    void performAction(void);
  private:
    STATE m_state;
@@ -36,7 +35,7 @@ class RobotController : public BaseController
    std::vector<Action*> m_queue;
 
    DriveStation* m_driveStation;
-   DriveTrainController* m_driveTrainController;
+   DriveTrainController* m_driveTrain;
    ShooterController * m_shooterController;
    LoaderController * m_loaderController;
 };
