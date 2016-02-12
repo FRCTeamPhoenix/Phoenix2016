@@ -1,4 +1,5 @@
 #include "ActionDrive.h"
+#include "DriveTrainController.h"
 
 ActionDrive::ActionDrive(DriveTrainController* dt, float distance, float power)
    : Action(), m_driveTrain(dt), m_distance(distance), m_power(power)

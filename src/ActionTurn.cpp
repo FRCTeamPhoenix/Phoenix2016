@@ -1,4 +1,5 @@
 #include "ActionTurn.h"
+#include "DriveTrainController.h"
 
 ActionTurn::ActionTurn(DriveTrainController* dt, float angle, float power)
    : Action(), m_driveTrain(dt), m_angle(angle), m_power(power)
@@ -8,7 +9,7 @@ ActionTurn::ActionTurn(DriveTrainController* dt, float angle, float power)
 void
 ActionTurn::init(void)
 {
-   m_driveTrain->aimRobotClockwise(m_distance, m_power);
+   m_driveTrain->aimRobotClockwise(m_angle, m_power);
    m_initialized = true;
 }
 
