@@ -49,6 +49,7 @@ struct RobotConstants {
    // (384 *3) / 360 = 3.2
    constexpr static float flywheelMotorSpeed = 1.0f;
    constexpr static bool gyro = true;
+   constexpr static int lidarErrorRange = 4;
 };
 
 struct DriveStationConstants {

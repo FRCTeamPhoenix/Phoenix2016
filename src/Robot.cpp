@@ -31,6 +31,9 @@ class Robot: public SampleRobot
    Encoder m_rightWheelEncoder;
    DriveStation m_driveStation;
    RobotDrive m_driveTrain;
+   Relay m_lidarOnSwitch;
+   DigitalOutput m_lidarDIOSwitch;
+   LidarHandler m_lidarHandler;
    DriveTrainController m_driveTrainController;
    Talon m_armMotorLeft;
    Talon m_armMotorRight;
@@ -44,9 +47,6 @@ class Robot: public SampleRobot
    LoaderController m_loaderController;
    ShooterController m_shooterController;
    RobotController m_robotController;
-   Relay m_lidarOnSwitch;
-   DigitalOutput m_lidarDIOSwitch;
-   LidarHandler m_lidarHandler;
    USBCamera m_driveCamera;
    Client m_client;
 
@@ -62,7 +62,10 @@ public:
       m_rightWheelEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
       m_driveStation(&m_joystick, &m_gamepad),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
-      m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro),
+      m_lidarOnSwitch(0),
+      m_lidarDIOSwitch(8),
+      m_lidarHandler(&m_lidarOnSwitch, 0, 9),
+      m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_lidarHandler),
       m_armMotorLeft(PortAssign::armMotorLeft),
       m_armMotorRight(PortAssign::armMotorRight),
       m_intakeMotor(PortAssign::intakeMotor),
@@ -75,10 +78,8 @@ public:
       m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder, &m_driveStation, &m_potentiometer),
       m_shooterController(&m_loaderController, &m_flywheel),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController),
-      m_lidarOnSwitch(0),
-      m_lidarDIOSwitch(8),
-      m_lidarHandler(&m_lidarOnSwitch, 0, 9),
-      m_driveCamera("cam0",false){
+      m_driveCamera("cam0",false)
+      {
       SmartDashboard::init();
       m_gyro.Calibrate();
 
@@ -194,6 +195,9 @@ public:
 //            SmartDashboard::PutString("DB/String 6", ":) Aiming Robot Clockwise 90 Test");
 //            m_driveTrainController.aimRobotClockwise(90, 0.6);
 //         }
+                  if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
+                     m_driveTrainController.driveLidar(36,0.5);
+                  }
 
          //Aiming Robot Counter Clockwise 90 degrees
 //         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
