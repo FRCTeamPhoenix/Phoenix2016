@@ -6,6 +6,7 @@
 #include "LoaderController.h"
 #include "ShooterController.h"
 #include "Flywheel.h"
+#include "LidarHandler.h"
 #include "Client.h"
 #include <thread>
 #include <iostream>
@@ -16,6 +17,7 @@ using namespace std;
 class Robot;
 
 void runClient(Robot* robot, Client* client);
+void lidarThread(Robot * robot, LidarHandler * lidarHandler);
 
 class Robot: public SampleRobot
 {
@@ -42,6 +44,9 @@ class Robot: public SampleRobot
    LoaderController m_loaderController;
    ShooterController m_shooterController;
    RobotController m_robotController;
+   Relay m_lidarOnSwitch;
+   DigitalOutput m_lidarDIOSwitch;
+   LidarHandler m_lidarHandler;
    USBCamera m_driveCamera;
    Client m_client;
 
@@ -70,11 +75,12 @@ public:
       m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder, &m_driveStation, &m_potentiometer),
       m_shooterController(&m_loaderController, &m_flywheel),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController),
+      m_lidarOnSwitch(0),
+      m_lidarDIOSwitch(8),
+      m_lidarHandler(&m_lidarOnSwitch, 0, 9),
       m_driveCamera("cam0",false){
-
       SmartDashboard::init();
       m_gyro.Calibrate();
-
 
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true);
@@ -111,6 +117,10 @@ public:
    }
 
    void Test(){
+      std::thread lidarThreadInstance(lidarThread, this, &m_lidarHandler);
+      lidarThreadInstance.detach();
+
+      SmartDashboard::PutString("DB/String 0", "Entering Test ");
       //Resets the encoders
       m_leftWheelEncoder.Reset();
       m_rightWheelEncoder.Reset();
@@ -133,6 +143,14 @@ public:
          outputG << "Gyro: ";
          outputG << (m_gyro.GetAngle());
          SmartDashboard::PutString("DB/String 9", outputG.str());
+         SmartDashboard::PutString("DB/String 6", "in");
+         if(m_joystick.GetRawButton(1)) {
+            m_lidarDIOSwitch.Set(0);
+            SmartDashboard::PutString("DB/String 7", "on");
+         } else {
+            m_lidarDIOSwitch.Set(1);
+            SmartDashboard::PutString("DB/String 7", "off");
+         }
 
          //Homes robot arm at the beginning of test
 //         m_loaderController.setHoming();
@@ -286,6 +304,17 @@ public:
    }
 
 };
+
+void lidarThread(Robot * robot, LidarHandler * lidarHandler) {
+   while(robot->IsEnabled() && (robot->IsAutonomous() || robot->IsOperatorControl() || robot->IsTest())) {
+      //TODO this might not happen all the time
+      lidarHandler->run();
+      std::stringstream ssaa;
+      ssaa<<lidarHandler->getDistance();
+      SmartDashboard::PutString("DB/String 3", "Distance: " + ssaa.str());
+      Wait(0.1);
+   }
+}
 
 void runClient(Robot* robot, Client* client){
    client->receivePacket();

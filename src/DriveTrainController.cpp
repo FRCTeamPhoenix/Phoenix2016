@@ -85,8 +85,8 @@ void DriveTrainController::run() {
 //      {
 //         m_goalState = IDLE;
 //      }
-
-   };
+      break;
+   }
    m_driveTrain->TankDrive(m_leftMotorPower, m_rightMotorPower);
 }
 
