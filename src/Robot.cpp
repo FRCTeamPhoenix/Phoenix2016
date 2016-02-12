@@ -101,11 +101,10 @@ public:
 
    }
    void OperatorControl(){
-      m_driveTrainController.setGoalState(DriveTrainController::TELEOP);
+      //m_driveTrainController.setGoalState(DriveTrainController::TELEOP);
       while(IsOperatorControl() && IsEnabled()){
          m_driveStation.snapShot();
          m_robotController.run();
-         m_driveTrainController.run();
          m_shooterController.run();
          m_loaderController.run();
       }
@@ -163,9 +162,9 @@ public:
 //         SmartDashboard::PutString("DB/String 2", outputLoad.str());
 
          //DriveTrainController
-         std::ostringstream outputDriveTrainController;
-         outputDriveTrainController << "DriveTrainController State: " << (m_driveTrainController.getCurrentState());
-         SmartDashboard::PutString("DB/String 3", outputDriveTrainController.str());
+//         std::ostringstream outputDriveTrainController;
+//         outputDriveTrainController << "DriveTrainController State: " << (m_driveTrainController.getCurrentState());
+//         SmartDashboard::PutString("DB/String 3", outputDriveTrainController.str());
 
 //         //ShooterController
 //         std::ostringstream outputShooter;
@@ -173,22 +172,22 @@ public:
 //         SmartDashboard::PutString("DB/String 4", outputShooter.str());
 
          //Aiming Robot Clockwise 90 degrees
-         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
-            SmartDashboard::PutString("DB/String 6", ":) Aiming Robot Clockwise 90 Test");
-            m_driveTrainController.aimRobotClockwise(90, 0.6);
-         }
+//         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
+//            SmartDashboard::PutString("DB/String 6", ":) Aiming Robot Clockwise 90 Test");
+//            m_driveTrainController.aimRobotClockwise(90, 0.6);
+//         }
 
          //Aiming Robot Counter Clockwise 90 degrees
-         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
-            SmartDashboard::PutString("DB/String 6", ":) Aiming Robot CounterClockwise 90 Test");
-            m_driveTrainController.aimRobotCounterclockwise(90, 0.6);
-         }
+//         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
+//            SmartDashboard::PutString("DB/String 6", ":) Aiming Robot CounterClockwise 90 Test");
+//            m_driveTrainController.aimRobotCounterclockwise(90, 0.6);
+//         }
 
          //Robot drives straight
-         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonY)){
-            SmartDashboard::PutString("DB/String 6", ":) Moving Robot Straight Test");
-            m_driveTrainController.moveRobotStraight(45, 0.5);
-         }
+//         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonY)){
+//            SmartDashboard::PutString("DB/String 6", ":) Moving Robot Straight Test");
+//            m_driveTrainController.moveRobotStraight(45, 0.5);
+//         }
          //test drivetrain repeatability by running forwards and backward five times.
 //         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonX)){
 //            SmartDashboard::PutString("DB/String 6", "Repeatability Test Straight");

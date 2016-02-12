@@ -20,7 +20,8 @@ public:
       IDLE,
       TELEOP,
       ENCODERDRIVE,
-      GYROTURN
+      GYROTURN,
+      LIDARDRIVE
    };
    DriveTrainController(RobotDrive* m_driveTrain,
          DriveStation* m_driveStation,
@@ -34,6 +35,7 @@ public:
    void aimRobotCounterclockwise(float degree, float motorSpeed);
    void moveRobotStraight(float distance, float motorSpeed);
    void stopRobot();
+   void driveLidar(float meters, float motorSpeed);
 
    STATE getCurrentState();
 
@@ -57,6 +59,7 @@ private:
    bool m_leftEncoderComplete;
    bool clockwise;
    float m_gyroTargetDegree;
+   float lidarMeters;
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */

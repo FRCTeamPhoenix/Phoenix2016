@@ -30,6 +30,7 @@ DriveTrainController::DriveTrainController(
    m_leftEncoderComplete = true;
    m_gyroTargetDegree = 0.0f;
    clockwise = false;
+   lidarMeters = 0.0f;
 }
 
 DriveTrainController::~DriveTrainController() {
@@ -51,7 +52,7 @@ void DriveTrainController::run() {
 
    //Goal state with the drivers are driving the robot
    case TELEOP:
-      manualDrive(0.6f);
+      //manualDrive(0.6f);
       break;
       //Goal state of when the robot is not doing anything
    case IDLE:
@@ -78,6 +79,13 @@ void DriveTrainController::run() {
          if(m_gyroTargetDegree >= m_gyro->GetAngle())
                      m_goalState = IDLE;
       }
+      break;
+   case LIDARDRIVE:
+//      if(lidarMeters > //The get function )
+//      {
+//         m_goalState = IDLE;
+//      }
+
    };
    m_driveTrain->TankDrive(m_leftMotorPower, m_rightMotorPower);
 }
@@ -208,12 +216,22 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
          return ENCODERDRIVE;
       }
    case GYROTURN:
-
       return GYROTURN;
+      break;
+   case LIDARDRIVE:
+      return LIDARDRIVE;
    default:
       return IDLE;
    }
 }
+
+void DriveTrainController::driveLidar(float meters, float motorSpeed)
+{
+   lidarMeters = meters;
+   m_rightMotorPower = motorSpeed;
+   m_leftMotorPower = motorSpeed;
+}
+
 
 //Sets the goal state of the robot, used in changing the switch statements
 void DriveTrainController::setGoalState(STATE goal){

@@ -38,9 +38,12 @@ Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, int a
    switch (m_action)
       {
       case ACTION_DRIVE:
-      case ACTION_TURN:
+      case ACTION_CLOCKWISE:
 	 argn = 2;
 	 break;
+      case ACTION_COUNTERCLOCKWISE:
+         argn = 3;
+      break;
       default:
 	 argn = 0;
 	 break;
@@ -60,6 +63,7 @@ Action::Action(DriveStation* ds, DriveTrainController* dt, ActionType act, int a
  */
 bool Action::execute(void)
 {
+   SmartDashboard::PutString("DB/String 5", "Execute");
    /* If action is invalid, immediately remove from queue. */
    if (m_invalid)
       return true;
@@ -74,16 +78,26 @@ bool Action::execute(void)
          return waitUntil(1);
       case ACTION_DRIVE:
 	 if (m_firstTime)
+	    SmartDashboard::PutString("DB/String 5", "Execute FIRST");
 	    m_driveTrain->moveRobotStraight(m_argv[0], m_argv[1]);
-	 if (m_driveTrain->getCurrentState() == DriveTrainController::ENCODERDRIVE)
-	    return true;
+	    m_firstTime = false;
+	 if (m_driveTrain->getCurrentState() == DriveTrainController::IDLE)
+	    return false;//true;
 	 return false;
-      case ACTION_TURN:
+      case ACTION_CLOCKWISE:
 	 if (m_firstTime)
 	    m_driveTrain->aimRobotClockwise(m_argv[0], m_argv[1]);
-	 if (m_driveTrain->getCurrentState() == DriveTrainController::ENCODERDRIVE)
+	 if (m_driveTrain->getCurrentState() == DriveTrainController::IDLE)
 	    return true;
 	 return false;
+      case ACTION_COUNTERCLOCKWISE:
+         if (m_firstTime){
+            m_driveTrain->aimRobotCounterclockwise(m_argv[0], m_argv[1]);
+         }
+         if (m_driveTrain->getCurrentState() == DriveTrainController::IDLE){
+            return true;
+         }
+         return false;
       case ACTION_BRAKE:
 	 // TODO: Make robot brake.
 	 return true;
