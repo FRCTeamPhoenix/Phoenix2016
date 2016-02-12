@@ -13,3 +13,9 @@ Action::Action(void)
 {
    m_initialized = false;
 }
+
+bool
+Action::isInitialized(void) const
+{
+   return m_initialized;
+}

@@ -17,8 +17,9 @@ class Action
 {
  public:
    Action(void);
-   void init(void) = 0;
-   bool execute(void) = 0;
+   virtual void init(void) = 0;
+   virtual bool execute(void) = 0;
+   bool isInitialized(void) const;
  protected:
    bool m_initialized;
 };
