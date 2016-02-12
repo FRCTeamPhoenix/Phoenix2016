@@ -33,7 +33,7 @@ void RobotController::performAction(void)
 {
    if (m_queue.size() == 0)
       {
-	 //m_driveTrain->setCurrentState(DriveTrainController::NORMAL);
+	 m_state = ROBOT_MANUAL;
 	 return;
       }
    Action *currentAction = m_queue.back();
