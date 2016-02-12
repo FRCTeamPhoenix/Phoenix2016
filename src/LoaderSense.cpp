@@ -27,7 +27,7 @@ LoaderSense::LoaderSense(Client* client, DriveTrainController* driveTrainControl
 }
 
 // IMPORTANT: Call to this method will implement the Loader's alignment process
-void LoaderSense::beginAligning() {
+void LoaderSense::beginAiming() {
    setCurrentState(FINDING_BALL);
 }
 

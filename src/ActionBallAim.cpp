@@ -9,7 +9,7 @@ ActionBallAim::ActionBallAim(LoaderSense* ls)
 void
 ActionBallAim::init(void)
 {
-   m_loaderSense->beginAligning();
+   m_loaderSense->beginAiming();
    m_initialized = true;
 }
 
