@@ -6,6 +6,7 @@
  */
 
 #include "RobotController.h"
+#include "constants.h"
 
 RobotController::RobotController(DriveStation* ds, DriveTrainController* dt, ShooterController* shooter, LoaderController* loader)
    : m_driveStation(ds), m_driveTrain(dt), m_shooterController(shooter), m_loaderController(loader)
@@ -18,10 +19,19 @@ RobotController::~RobotController() {}
 void RobotController::run()
 {
    if (m_state == ROBOT_AUTO)
-      performAction();
+      {
+	 // Y button cancels autonomous mode, resetting it to manual controls.
+	 if (m_driveStation->getGamepadButton(DriveStationConstants::buttonY))
+	    {
+	       m_queue.clear();
+	       m_state = ROBOT_MANUAL;
+	       return;
+	    }
+	 performAction();
+      }
    else if (m_state == ROBOT_MANUAL)
       {
-	 if (m_driveStation->getGamepadButton(2))
+	if (m_driveStation->getGamepadButton(DriveSTationConstants::buttonA))
 	    {
 	       m_state = ROBOT_AUTO;
 	       m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, 12.0f, 0.5f));
