@@ -2,7 +2,7 @@
 #include "DriveTrainController.h"
 
 ActionTurn::ActionTurn(DriveTrainController* dt, float angle, float power)
-   : Action(), m_driveTrain(dt), m_angle(angle), m_power(power)
+: Action(), m_driveTrain(dt), m_angle(angle), m_power(power)
 {
 }
 

@@ -51,7 +51,7 @@ void DriveTrainController::run() {
 
    //Goal state with the drivers are driving the robot
    case TELEOP:
-      manualDrive(0.6f);
+      //manualDrive(0.6f);
       break;
       //Goal state of when the robot is not doing anything
    case IDLE:
@@ -87,7 +87,7 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
    if (m_goalState == ENCODERDRIVE || m_goalState == GYROTURN){
       return;
    }
-   if (RobotConstants::gyro){
+   if (!RobotConstants::gyro){
       m_gyroTargetDegree = m_gyro->GetAngle() + degree;
 
       if (degree > 0) {
