@@ -38,12 +38,18 @@ DriveTrainController::~DriveTrainController() {
 
 // ThrottleRatio .8 is too high :(
 void DriveTrainController::manualDrive(float throttleRatio) {
-   float throttle = m_driveStation->getJoystickThrottle();
-   float twist = m_driveStation->getTwist();
+   float throttle = m_driveStation->getYWithDeadzone();
+   float twist = m_driveStation->getZWithDeadzone();
    float twistRatio = 1 - throttleRatio;
 
-   m_leftMotorPower = (throttle * throttleRatio) + (twist * twistRatio);
-   m_rightMotorPower = (throttle * throttleRatio) - (twist * twistRatio);
+   if (fabs(throttle) > 0.01){
+      m_leftMotorPower = (throttle * throttleRatio) + (twist * twistRatio);
+      m_rightMotorPower = (throttle * throttleRatio) - (twist * twistRatio);
+   }
+   else{
+      m_leftMotorPower = twist * throttleRatio;
+      m_rightMotorPower = -twist * throttleRatio;
+   }
 }
 
 void DriveTrainController::run() {
@@ -51,7 +57,7 @@ void DriveTrainController::run() {
 
    //Goal state with the drivers are driving the robot
    case TELEOP:
-      //manualDrive(0.6f);
+      manualDrive(0.6f);
       break;
       //Goal state of when the robot is not doing anything
    case IDLE:
@@ -76,7 +82,7 @@ void DriveTrainController::run() {
       }
       else{
          if(m_gyroTargetDegree >= m_gyro->GetAngle())
-                     m_goalState = IDLE;
+            m_goalState = IDLE;
       }
    };
    m_driveTrain->TankDrive(m_leftMotorPower, m_rightMotorPower);
@@ -106,33 +112,33 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
    else{
 
 
-   m_initalEncoderValueRight = m_rightWheelEncoder->Get();
-   m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
-   float ticks = degree * RobotConstants::wheelEncoderTicksPerDegree;
+      m_initalEncoderValueRight = m_rightWheelEncoder->Get();
+      m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
+      float ticks = degree * RobotConstants::wheelEncoderTicksPerDegree;
 
 
-   m_targetTickRight = m_initalEncoderValueRight - ticks;
-   m_targetTickLeft = m_initalEncoderValueLeft + ticks;
-   m_rightEncoderComplete = false;
-   m_leftEncoderComplete = false;
+      m_targetTickRight = m_initalEncoderValueRight - ticks;
+      m_targetTickLeft = m_initalEncoderValueLeft + ticks;
+      m_rightEncoderComplete = false;
+      m_leftEncoderComplete = false;
 
-   std::ostringstream outputTR;
-   outputTR << "Target Right Tick " << m_targetTickRight;
-   SmartDashboard::PutString("DB/String 8", outputTR.str());
+      std::ostringstream outputTR;
+      outputTR << "Target Right Tick " << m_targetTickRight;
+      SmartDashboard::PutString("DB/String 8", outputTR.str());
 
-   std::ostringstream outputTL;
-   outputTL << "Target Left Tick " << m_targetTickLeft;
-   SmartDashboard::PutString("DB/String 9", outputTL.str());
+      std::ostringstream outputTL;
+      outputTL << "Target Left Tick " << m_targetTickLeft;
+      SmartDashboard::PutString("DB/String 9", outputTL.str());
 
-   if (degree > 0) {
-      m_rightMotorPower = -motorSpeed;
-      m_leftMotorPower = motorSpeed;
-   }
-   else {
-      m_rightMotorPower = motorSpeed;
-      m_leftMotorPower = -motorSpeed;
-   }
-   m_goalState = ENCODERDRIVE;
+      if (degree > 0) {
+         m_rightMotorPower = -motorSpeed;
+         m_leftMotorPower = motorSpeed;
+      }
+      else {
+         m_rightMotorPower = motorSpeed;
+         m_leftMotorPower = -motorSpeed;
+      }
+      m_goalState = ENCODERDRIVE;
 
    }
 }
@@ -192,11 +198,11 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
       //Goal state of ENCODERDRIVE, tests if the encoders are where they are supposed to be
    case ENCODERDRIVE:
       if (((m_rightMotorPower < 0) && (m_rightWheelEncoder->Get() <= m_targetTickRight)) ||
-          ((m_rightMotorPower >= 0) && (m_rightWheelEncoder->Get() >= m_targetTickRight))){
+            ((m_rightMotorPower >= 0) && (m_rightWheelEncoder->Get() >= m_targetTickRight))){
          m_rightEncoderComplete = true;
       }
       if (((m_leftMotorPower < 0) && (m_leftWheelEncoder->Get() <= m_targetTickLeft)) ||
-          ((m_leftMotorPower >= 0) && (m_leftWheelEncoder->Get() >= m_targetTickLeft))){
+            ((m_leftMotorPower >= 0) && (m_leftWheelEncoder->Get() >= m_targetTickLeft))){
          m_leftEncoderComplete = true;
       }
       if (m_rightEncoderComplete || m_leftEncoderComplete){

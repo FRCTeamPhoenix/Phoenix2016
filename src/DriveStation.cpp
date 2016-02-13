@@ -9,7 +9,7 @@
 #include <sstream>
 
 DriveStation::DriveStation(Joystick* joystick, Joystick* gamepad) :
-      m_joystick(joystick), m_gamepad(gamepad) {
+m_joystick(joystick), m_gamepad(gamepad) {
    snapShot();
 }
 
@@ -32,7 +32,7 @@ float DriveStation::getGamepadJoystick(){
 float DriveStation::deadzoneOfGamepadJoystick(){
    float power = getGamepadJoystick();
    if (fabs(power) < 0.05f){
-          power = 0;
+      power = 0;
    }
    else{
       return power;
@@ -42,16 +42,16 @@ float DriveStation::deadzoneOfGamepadJoystick(){
 float DriveStation::getYWithDeadzone() {
    float throttle = -getJoystickY();
    if (fabs(throttle) < 0.05f) //This makes a deadzone
-         {
+   {
       throttle = 0;
    }
    return throttle;
 }
 
-float DriveStation::getTwist() {
+float DriveStation::getZWithDeadzone() {
    float twist = getJoystickZ();
    if (fabs(twist) < 0.05f) //This also makes a deadzone
-         {
+   {
       twist = 0;
    }
    return twist;
@@ -72,7 +72,7 @@ void DriveStation::snapShot() {
 
    m_joystickY = m_joystick->GetY();
    m_joystickZ = m_joystick->GetZ();
-   m_joystickZ = m_joystick->GetThrottle();
+   m_joystickThrottle = m_joystick->GetThrottle();
    m_gamepadJoystickY = m_gamepad->GetY();
 
 }
