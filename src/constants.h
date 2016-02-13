@@ -51,7 +51,7 @@ struct RobotConstants {
    constexpr static bool gyro = true;
 };
 
-struct DriveStationConstants {
+namespace DriveStationConstants {
    enum buttonNames {
       buttonX = 0,
       buttonA = 1,
@@ -67,6 +67,30 @@ struct DriveStationConstants {
       joystickRightButton = 11
 
    };
+   const static std::string dashButtonNames[6] = {
+            "New Name",
+            "DB/Button 1",
+            "DB/Button 2",
+            "DB/Button 3",
+            "Get Value",
+            "Set Value"
+      };
+
+      const static std::string textBoxNames[13] = {
+            "DB/String 0",
+            "DB/String 1",
+            "DB/String 2",
+            "DB/String 3",
+            "DB/String 4",
+            "DB/String 5",
+            "DB/String 6",
+            "DB/String 7",
+            "DB/String 8",
+            "DB/String 9",
+            "Key Name",
+            "Key Value",
+            "New Value"
+      };
    const static uint32_t gamepadButtons = 12;
 };
 
@@ -125,6 +149,25 @@ struct LoaderSenseConstants {
    // First array element passed in a loader data array
    const static int loaderFlag = 2;
 
+};
+namespace ConfigVariables {
+const static int numberOfVars = 6;
+   const static std::string variables[numberOfVars] = {
+         "teamNumber",
+         "wheelEncoderTicksPerDegree",
+         "numXYVals",
+         "leftVisionBoundary",
+         "rightVisionBoundary",
+         "maxTiltingFactor"
+   };
+   const static std::string types[numberOfVars] = {
+         "int",
+         "float",
+         "int",
+         "int",
+         "int",
+         "int"
+   };
 };
 
 #endif /* SRC_CONSTANTS_H_ */
