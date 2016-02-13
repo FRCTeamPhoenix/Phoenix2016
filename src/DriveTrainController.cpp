@@ -13,14 +13,12 @@ DriveTrainController::DriveTrainController(
       DriveStation* driveStation,
       Encoder* leftWheelEncoder,
       Encoder* rightWheelEncoder,
-      AnalogGyro* gyro,
-      LidarHandler* lidar) :
+      AnalogGyro* gyro) :
       m_driveTrain(robotDrive),
       m_driveStation(driveStation),
       m_leftWheelEncoder(leftWheelEncoder),
       m_rightWheelEncoder(rightWheelEncoder),
-      m_gyro(gyro),
-      m_lidar(lidar){
+      m_gyro(gyro){
    m_initalEncoderValueLeft = 0;
    m_initalEncoderValueRight = 0;
    m_targetTickRight = 0;
@@ -32,7 +30,6 @@ DriveTrainController::DriveTrainController(
    m_leftEncoderComplete = true;
    m_gyroTargetDegree = 0.0f;
    clockwise = false;
-   lidarInches = 0.0f;
 }
 
 DriveTrainController::~DriveTrainController() {
@@ -54,7 +51,7 @@ void DriveTrainController::run() {
 
    //Goal state with the drivers are driving the robot
    case TELEOP:
-      //manualDrive(0.6f);
+      manualDrive(0.6f);
       break;
       //Goal state of when the robot is not doing anything
    case IDLE:
@@ -79,30 +76,9 @@ void DriveTrainController::run() {
       }
       else{
          if(m_gyroTargetDegree >= m_gyro->GetAngle())
-            m_goalState = IDLE;
+                     m_goalState = IDLE;
       }
-      break;
-   case LIDARDRIVE:
-      if(lidarInches >= (m_lidar->getDistance() *2.54 + RobotConstants::lidarErrorRange))
-      {
-         if(m_leftMotorPower<0){
-            m_leftMotorPower *= -1;
-            m_rightMotorPower *= -1;
-         }
-
-      }
-      else if (lidarInches <= (m_lidar->getDistance() *2.54 - RobotConstants::lidarErrorRange))
-      {
-         if(m_leftMotorPower>0){
-            m_leftMotorPower *= -1;
-            m_rightMotorPower *= -1;
-         }
-      }
-      else{
-         m_goalState = IDLE;
-      }
-      break;
-   }
+   };
    m_driveTrain->TankDrive(m_leftMotorPower, m_rightMotorPower);
 }
 
@@ -130,33 +106,33 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
    else{
 
 
-      m_initalEncoderValueRight = m_rightWheelEncoder->Get();
-      m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
-      float ticks = degree * RobotConstants::wheelEncoderTicksPerDegree;
+   m_initalEncoderValueRight = m_rightWheelEncoder->Get();
+   m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
+   float ticks = degree * RobotConstants::wheelEncoderTicksPerDegree;
 
 
-      m_targetTickRight = m_initalEncoderValueRight - ticks;
-      m_targetTickLeft = m_initalEncoderValueLeft + ticks;
-      m_rightEncoderComplete = false;
-      m_leftEncoderComplete = false;
+   m_targetTickRight = m_initalEncoderValueRight - ticks;
+   m_targetTickLeft = m_initalEncoderValueLeft + ticks;
+   m_rightEncoderComplete = false;
+   m_leftEncoderComplete = false;
 
-      std::ostringstream outputTR;
-      outputTR << "Target Right Tick " << m_targetTickRight;
-      SmartDashboard::PutString("DB/String 8", outputTR.str());
+   std::ostringstream outputTR;
+   outputTR << "Target Right Tick " << m_targetTickRight;
+   SmartDashboard::PutString("DB/String 8", outputTR.str());
 
-      std::ostringstream outputTL;
-      outputTL << "Target Left Tick " << m_targetTickLeft;
-      SmartDashboard::PutString("DB/String 9", outputTL.str());
+   std::ostringstream outputTL;
+   outputTL << "Target Left Tick " << m_targetTickLeft;
+   SmartDashboard::PutString("DB/String 9", outputTL.str());
 
-      if (degree > 0) {
-         m_rightMotorPower = -motorSpeed;
-         m_leftMotorPower = motorSpeed;
-      }
-      else {
-         m_rightMotorPower = motorSpeed;
-         m_leftMotorPower = -motorSpeed;
-      }
-      m_goalState = ENCODERDRIVE;
+   if (degree > 0) {
+      m_rightMotorPower = -motorSpeed;
+      m_leftMotorPower = motorSpeed;
+   }
+   else {
+      m_rightMotorPower = motorSpeed;
+      m_leftMotorPower = -motorSpeed;
+   }
+   m_goalState = ENCODERDRIVE;
 
    }
 }
@@ -216,11 +192,11 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
       //Goal state of ENCODERDRIVE, tests if the encoders are where they are supposed to be
    case ENCODERDRIVE:
       if (((m_rightMotorPower < 0) && (m_rightWheelEncoder->Get() <= m_targetTickRight)) ||
-            ((m_rightMotorPower >= 0) && (m_rightWheelEncoder->Get() >= m_targetTickRight))){
+          ((m_rightMotorPower >= 0) && (m_rightWheelEncoder->Get() >= m_targetTickRight))){
          m_rightEncoderComplete = true;
       }
       if (((m_leftMotorPower < 0) && (m_leftWheelEncoder->Get() <= m_targetTickLeft)) ||
-            ((m_leftMotorPower >= 0) && (m_leftWheelEncoder->Get() >= m_targetTickLeft))){
+          ((m_leftMotorPower >= 0) && (m_leftWheelEncoder->Get() >= m_targetTickLeft))){
          m_leftEncoderComplete = true;
       }
       if (m_rightEncoderComplete || m_leftEncoderComplete){
@@ -232,23 +208,12 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
          return ENCODERDRIVE;
       }
    case GYROTURN:
+
       return GYROTURN;
-      break;
-   case LIDARDRIVE:
-      return LIDARDRIVE;
    default:
       return IDLE;
    }
 }
-
-void DriveTrainController::driveLidar(float inches, float motorSpeed)
-{
-   m_goalState = LIDARDRIVE;
-   lidarInches = inches;
-   m_rightMotorPower = motorSpeed;
-   m_leftMotorPower = motorSpeed;
-}
-
 
 //Sets the goal state of the robot, used in changing the switch statements
 void DriveTrainController::setGoalState(STATE goal){
