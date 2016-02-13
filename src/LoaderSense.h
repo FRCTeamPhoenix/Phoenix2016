@@ -26,7 +26,7 @@ public:
    };
 
    LoaderSense(Client*, DriveTrainController*, DriveStation*);
-   void beginAligning();
+   void beginAiming();
    void updateBallPositionData();
    int getCurrentRadius();
    int getCurrentXCenter();
