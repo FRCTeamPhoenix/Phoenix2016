@@ -10,6 +10,8 @@
 
 #include "WPILib.h"
 
+#include "constants.h"
+
 #define HIGH 1
 #define LOW 0
 
@@ -24,11 +26,26 @@ class LidarHandler {
    //current lidar distance
    double m_distance;
 
+   //current lidar distance - smooted out average
+   double m_avDistance;
+
+   //slow, medium, fast averages
+   double slowAverage;
+   double mediumAverage;
+   double fastAverage;
+
+
+   //previous stored distances
+   double m_storedDistances[LidarConstants::numberStoredValues];
+
    //robot specific offset
    double m_offset;
 
    //number of resets since start
    int m_resetCount;
+
+   //counter for distance number
+   int m_storedCounter;
 
 public:
    /**
@@ -51,6 +68,11 @@ public:
     * Return the lidar reset count
     */
    int getResetCount();
+
+   /**
+    * Return the array of previous distances
+    */
+   double* getDistances();
 
    virtual ~LidarHandler();
 };

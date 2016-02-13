@@ -14,6 +14,10 @@ LidarHandler::LidarHandler(Relay * onSwitch, double offset, uint32_t lidarPort):
    m_onSwitch->Set(Relay::kOn);
    m_counter.SetSemiPeriodMode(true);
    m_resetCount = 0;
+   m_storedCounter = 0;
+
+   for(int i=0;i<LidarConstants::numberStoredValues;i++)
+      m_storedDistances[i] = 0;
 }
 
 void LidarHandler::run() {
@@ -30,8 +34,14 @@ void LidarHandler::run() {
        Wait(0.3);
        SmartDashboard::PutString("DB/String 1", " ");
        m_onSwitch->Set(Relay::kOn);
-    } else
+    } else {
        m_distance = distance;
+
+       m_storedDistances[m_storedCounter % LidarConstants::numberStoredValues] = distance;
+       m_storedCounter++;
+
+       m_avDistance = (4 * m_avDistance + m_distance) / 5;
+    }
 }
 
 double LidarHandler::getDistance() {
@@ -40,6 +50,10 @@ double LidarHandler::getDistance() {
 
 int LidarHandler::getResetCount() {
    return m_resetCount;
+}
+
+double* LidarHandler::getDistances() {
+   return m_storedDistances;
 }
 
 LidarHandler::~LidarHandler() {

@@ -50,6 +50,10 @@ struct RobotConstants {
    constexpr static float flywheelMotorSpeed = 1.0f;
 };
 
+struct LidarConstants {
+   const static int numberStoredValues = 100;
+};
+
 struct DriveStationConstants {
    enum buttonNames {
       buttonX = 0,
