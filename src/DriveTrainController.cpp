@@ -159,7 +159,8 @@ void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
 
    //will have to find the diameter of the wheel
    //the 6 is the diameter of the wheel
-   float ticks = distance * (M_PI* 6);
+ //  float ticks = distance * (M_PI* 6);
+   float ticks = distance * RobotConstants::ticksPerInch;
    m_targetTickRight = m_initalEncoderValueRight + ticks;
    m_targetTickLeft = m_initalEncoderValueLeft + ticks;
 

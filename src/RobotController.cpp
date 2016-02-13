@@ -33,11 +33,12 @@ void RobotController::run()
    else if (m_state == ROBOT_MANUAL)
    {
       if (m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
+         SmartDashboard::PutString("DB/String 5", "Adding to queue ");
          m_state = ROBOT_AUTO;
-         m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, 12.0f, 0.6f));
-         m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, 90.0f, 0.6f));
-         m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, -90.0f, 0.6f));
-         m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, -12.0f, 0.6f));
+         m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, 36.0f, 0.6f));
+        // m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, 180.0f, 0.6f));
+        // m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, -180.0f, 0.6f));
+         //m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, -18.0f, 0.6f));
       }
    }
 }
