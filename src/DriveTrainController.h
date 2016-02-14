@@ -12,7 +12,9 @@
 #include "WPILib.h"
 #include "constants.h"
 #include "DriveStation.h"
-#include <math.h>
+#include "ConfigEditor.h"
+#include "Math.h"
+#include "LidarHandler.h"
 
 class DriveTrainController: public BaseController {
 public:
@@ -20,13 +22,16 @@ public:
       IDLE,
       TELEOP,
       ENCODERDRIVE,
-      GYROTURN
+      GYROTURN,
+      LIDARDRIVE
    };
    DriveTrainController(RobotDrive* m_driveTrain,
          DriveStation* m_driveStation,
          Encoder* leftWheelEncoder,
          Encoder* rightWheelEncoder,
-         AnalogGyro* gyro);
+         AnalogGyro* gyro,
+         ConfigEditor* configEditor,
+         LidarHandler* lidar);
    virtual ~DriveTrainController();
    void run();
    void manualDrive(float throttleRatio);
@@ -34,6 +39,7 @@ public:
    void aimRobotCounterclockwise(float degree, float motorSpeed);
    void moveRobotStraight(float distance, float motorSpeed);
    void stopRobot();
+   void driveLidar(float meters, float motorSpeed);
 
    STATE getCurrentState();
 
@@ -47,6 +53,8 @@ private:
    Encoder* m_leftWheelEncoder;
    Encoder* m_rightWheelEncoder;
    AnalogGyro* m_gyro;
+   ConfigEditor* m_configEditor;
+   LidarHandler* m_lidar;
    int32_t m_initalEncoderValueLeft;
    int32_t m_initalEncoderValueRight;
    int32_t m_targetTickRight;
@@ -57,6 +65,8 @@ private:
    bool m_leftEncoderComplete;
    bool clockwise;
    float m_gyroTargetDegree;
+   float lidarInches;
+
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */

@@ -9,7 +9,7 @@
 #include <sstream>
 
 DriveStation::DriveStation(Joystick* joystick, Joystick* gamepad) :
-      m_joystick(joystick), m_gamepad(gamepad) {
+m_joystick(joystick), m_gamepad(gamepad) {
    //can't do this in constructor because drive station hasn't been initialized yet.
    //a call is now in robot.cpp constructor.
    //snapShot();
@@ -44,16 +44,16 @@ float DriveStation::deadzoneOfGamepadJoystick(){
 float DriveStation::getYWithDeadzone() {
    float throttle = -getJoystickY();
    if (fabs(throttle) < 0.05f) //This makes a deadzone
-         {
+   {
       throttle = 0;
    }
    return throttle;
 }
 
-float DriveStation::getTwist() {
+float DriveStation::getZWithDeadzone() {
    float twist = getJoystickZ();
    if (fabs(twist) < 0.05f) //This also makes a deadzone
-         {
+   {
       twist = 0;
    }
    return twist;
@@ -65,6 +65,27 @@ bool DriveStation::getGamepadButton(int buttonCode) {
 
 bool DriveStation::getJoystickButton(int buttonCode) {
    return m_joystick->GetRawButton(buttonCode);
+}
+
+void DriveStation::snapShot() {
+   for(int i=0; i<12; i++){
+      m_buttons[i]=m_gamepad->GetRawButton(i+1);
+   }
+
+   for(int j=0; j<13; j++){
+      m_stringInputs[j]=SmartDashboard::GetString(DriveStationConstants::textBoxNames[j],"");
+   }
+
+
+   for(int k=0;k<6;k++){
+      m_buttonInputs[k]=SmartDashboard::GetBoolean(DriveStationConstants::dashButtonNames[k],false);
+   }
+
+   m_joystickY = m_joystick->GetY();
+   m_joystickZ = m_joystick->GetZ();
+   m_joystickThrottle = m_joystick->GetThrottle();
+   m_gamepadJoystickY = m_gamepad->GetY();
+
 }
 
 void DriveStation::printToDashboard(unsigned long *pointToString, int space){
@@ -89,28 +110,6 @@ void DriveStation::setButton(int buttonNumber, bool value) {
    SmartDashboard::PutBoolean(DriveStationConstants::dashButtonNames[buttonNumber], value);
 
 }
-
-void DriveStation::snapShot(){
-   for(int i=0; i<12; i++){
-   m_buttons[i]=m_gamepad->GetRawButton(i+1);
-   }
-
-   for(int j=0; j<13; j++){
-      m_stringInputs[j]=SmartDashboard::GetString(DriveStationConstants::textBoxNames[j],"");
-   }
-
-
-   for(int k=0;k<6;k++){
-      m_buttonInputs[k]=SmartDashboard::GetBoolean(DriveStationConstants::dashButtonNames[k],false);
-   }
-
-   m_joystickY = m_joystick->GetY();
-   m_joystickZ = m_joystick->GetZ();
-   m_joystickZ = m_joystick->GetThrottle();
-   m_gamepadJoystickY = m_gamepad->GetY();
-}
-
-
 
 DriveStation::~DriveStation() {
 }

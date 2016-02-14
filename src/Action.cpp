@@ -1,5 +1,4 @@
 #include "Action.h"
-
 /*
  * Default constructor.
  * In initializer list for derived classes, do the following:

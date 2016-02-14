@@ -21,7 +21,7 @@ public:
    //Creates deadzone for joystick in Y direction
    float getYWithDeadzone();
    //Creates deadzone for twisting the joystick
-   float getTwist();
+   float getZWithDeadzone();
    float GetAngle();
    float getGamepadJoystick();
    float getGamepadJoystickY();
