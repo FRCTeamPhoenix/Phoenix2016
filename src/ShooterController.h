@@ -13,6 +13,7 @@
 #include "constants.h"
 #include "LoaderController.h"
 #include "Flywheel.h"
+#include"ConfigEditor.h"
 
 
 
@@ -27,7 +28,7 @@ public:
       SHOOTING
    };
 
-   ShooterController(LoaderController * loader, Flywheel * flywheel);
+   ShooterController(LoaderController * loader, Flywheel * flywheel, ConfigEditor * configEditor);
    virtual ~ShooterController();
    void run();
 
@@ -48,6 +49,7 @@ public:
 private:
    LoaderController * m_loaderController;
    Flywheel * m_flywheel;
+   ConfigEditor * m_configEditor;
    STATE m_goalState;
    void firing(); //Not Implemented
 };

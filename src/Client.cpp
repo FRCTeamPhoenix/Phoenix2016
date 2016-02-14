@@ -118,15 +118,15 @@ void Client::sendPacket() {
     sendto(m_socket,m_sendData,BUFLEN, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
 }
 
-int Client::getBallData(){
+int Client::getBallData(int element){
     m_unreadBallData=false;
-    return *m_ballData;
+    return m_ballData[element];
 
 }
 
-int Client::getTargetData(){
+int Client::getTargetData(int element){
     m_unreadTargetData=false;
-    return *m_targetData;
+    return m_targetData[element];
 
 }
 
@@ -138,12 +138,12 @@ int Client::getDistanceData(){
 
 void Client::copyArray(int *array1, int *array2){
    if (sizeof(array1)>=sizeof(array2)){
-      for (int i =0;i<sizeof(array2);i++){
+      for (unsigned int i =0;i<sizeof(array2);i++){
          array2[i]=array1[i];
       }
    }
    else {
-      for (int i =0;i<sizeof(array1);i++){
+      for (unsigned int i =0;i<sizeof(array1);i++){
             array2[i]=array1[i];
       }
    }
@@ -152,4 +152,3 @@ void Client::copyArray(int *array1, int *array2){
 Client::~Client() {
 
 }
-

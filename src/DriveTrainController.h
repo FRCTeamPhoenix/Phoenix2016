@@ -12,6 +12,7 @@
 #include "WPILib.h"
 #include "constants.h"
 #include "DriveStation.h"
+#include "ConfigEditor.h"
 #include <math.h>
 
 class DriveTrainController: public BaseController {
@@ -19,13 +20,15 @@ public:
    enum STATE {
       IDLE,
       TELEOP,
-      ENCODERDRIVE
-      //CAMERADRIVE
+      ENCODERDRIVE,
+      GYROTURN
    };
    DriveTrainController(RobotDrive* m_driveTrain,
          DriveStation* m_driveStation,
          Encoder* leftWheelEncoder,
-         Encoder* rightWheelEncoder);
+         Encoder* rightWheelEncoder,
+         AnalogGyro* gyro,
+         ConfigEditor* configEditor);
    virtual ~DriveTrainController();
    void run();
    void manualDrive(float throttleRatio);
@@ -45,6 +48,8 @@ private:
    DriveStation * m_driveStation;
    Encoder* m_leftWheelEncoder;
    Encoder* m_rightWheelEncoder;
+   AnalogGyro* m_gyro;
+   ConfigEditor* m_configEditor;
    int32_t m_initalEncoderValueLeft;
    int32_t m_initalEncoderValueRight;
    int32_t m_targetTickRight;
@@ -53,6 +58,8 @@ private:
    float m_leftMotorPower;
    bool m_rightEncoderComplete;
    bool m_leftEncoderComplete;
+   bool clockwise;
+   float m_gyroTargetDegree;
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */

@@ -18,7 +18,8 @@ LoaderController::LoaderController(
       DigitalInput* loadedSensor,
       Encoder* armEncoder,
       DriveStation* driveStation,
-      AnalogPotentiometer* potentiometer):
+      AnalogPotentiometer* potentiometer,
+      ConfigEditor* configEditor):
 
       m_armMotorLeft(armMotorLeft),
       m_armMotorRight(armMotorRight),
@@ -29,7 +30,8 @@ LoaderController::LoaderController(
       m_loadedSensor(loadedSensor),
       m_armEncoder(armEncoder),
       m_driveStation(driveStation),
-      m_potentiometer(potentiometer)
+      m_potentiometer(potentiometer),
+      m_configEditor(configEditor)
 {
    m_goalState = IDLE;
    m_homed = false;
@@ -72,8 +74,8 @@ bool LoaderController::loaded(){
 void LoaderController::run(){
    switch (getCurrentState()){
    case HOMING:
-      m_armMotorLeft->Set(homingSpeed);
-      m_armMotorRight->Set(homingSpeed);
+      m_armMotorLeft->Set(m_configEditor->getFloat("homingPower"));
+      m_armMotorRight->Set(m_configEditor->getFloat("homingPower"));
       break;
    case IDLE:
       //set motors to 0 if loading or loaded
@@ -83,15 +85,15 @@ void LoaderController::run(){
       m_stationaryMotor->Set(0);
       break;
    case LOADING:
-      m_intakeMotor->Set(-intakeMotorSpeed);
-      m_stationaryMotor->Set(-stationaryMotorSpeed);
+      m_intakeMotor->Set(-(m_configEditor->getFloat("outerIntakeMotorPower")));
+      m_stationaryMotor->Set(-(m_configEditor->getFloat("innerIntakeMotorPower")));
       break;
    case LOADED:
       m_intakeMotor->Set(0);
       m_stationaryMotor->Set(0);
       break;
    case SHOOTING:
-      m_stationaryMotor->Set(-stationaryMotorSpeed);
+      m_stationaryMotor->Set(-(m_configEditor->getFloat("innerIntakeMotorPower")));
       break;
    default:
       break;

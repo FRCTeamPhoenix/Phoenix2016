@@ -9,8 +9,10 @@
 #include <sstream>
 
 DriveStation::DriveStation(Joystick* joystick, Joystick* gamepad) :
-      m_joystick(joystick), m_gamepad(gamepad) {
-   snapShot();
+m_joystick(joystick), m_gamepad(gamepad) {
+   //can't do this in constructor because drive station hasn't been initialized yet.
+   //a call is now in robot.cpp constructor.
+   //snapShot();
 }
 
 float DriveStation::getJoystickY() {
@@ -32,7 +34,7 @@ float DriveStation::getGamepadJoystick(){
 float DriveStation::deadzoneOfGamepadJoystick(){
    float power = getGamepadJoystick();
    if (fabs(power) < 0.05f){
-          power = 0;
+      return 0;
    }
    else{
       return power;
@@ -42,16 +44,16 @@ float DriveStation::deadzoneOfGamepadJoystick(){
 float DriveStation::getYWithDeadzone() {
    float throttle = -getJoystickY();
    if (fabs(throttle) < 0.05f) //This makes a deadzone
-         {
+   {
       throttle = 0;
    }
    return throttle;
 }
 
-float DriveStation::getTwist() {
+float DriveStation::getZWithDeadzone() {
    float twist = getJoystickZ();
    if (fabs(twist) < 0.05f) //This also makes a deadzone
-         {
+   {
       twist = 0;
    }
    return twist;
@@ -66,13 +68,22 @@ bool DriveStation::getJoystickButton(int buttonCode) {
 }
 
 void DriveStation::snapShot() {
-   for (int i = 0; i < 12; i++) {
-      m_buttons[i] = m_gamepad->GetRawButton(i + 1);
+   for(int i=0; i<12; i++){
+      m_buttons[i]=m_gamepad->GetRawButton(i+1);
+   }
+
+   for(int j=0; j<13; j++){
+      m_stringInputs[j]=SmartDashboard::GetString(DriveStationConstants::textBoxNames[j],"");
+   }
+
+
+   for(int k=0;k<6;k++){
+      m_buttonInputs[k]=SmartDashboard::GetBoolean(DriveStationConstants::dashButtonNames[k],false);
    }
 
    m_joystickY = m_joystick->GetY();
    m_joystickZ = m_joystick->GetZ();
-   m_joystickZ = m_joystick->GetThrottle();
+   m_joystickThrottle = m_joystick->GetThrottle();
    m_gamepadJoystickY = m_gamepad->GetY();
 
 }
@@ -82,7 +93,23 @@ void DriveStation::printToDashboard(unsigned long *pointToString, int space){
    outputS << &pointToString;
    SmartDashboard::PutString("DB/String " + space, outputS.str());
 }
+std::string DriveStation::getStringInput(int inputCode) {
+   return m_stringInputs[inputCode];
+}
 
+bool DriveStation::getButtonInput(int buttonCode) {
+   return m_buttonInputs[buttonCode];
+}
+
+void DriveStation::setString(int stringNumber, std::string value) {
+   SmartDashboard::PutString(DriveStationConstants::textBoxNames[stringNumber], value);
+
+}
+
+void DriveStation::setButton(int buttonNumber, bool value) {
+   SmartDashboard::PutBoolean(DriveStationConstants::dashButtonNames[buttonNumber], value);
+
+}
 
 DriveStation::~DriveStation() {
 }

@@ -7,9 +7,10 @@
 
 #include <ShooterController.h>
 
-ShooterController::ShooterController(LoaderController* loader, Flywheel * flywheel):
+ShooterController::ShooterController(LoaderController* loader, Flywheel * flywheel, ConfigEditor* configEditor):
 m_loaderController(loader),
-m_flywheel(flywheel)
+m_flywheel(flywheel),
+m_configEditor(configEditor)
 {
    m_goalState = OFF;
 }
@@ -24,12 +25,12 @@ void ShooterController::run(){
       m_loaderController->setIdle();
       break;
    case ARMED:
-      m_flywheel->startMotors(0.6);
+      m_flywheel->startMotors(m_configEditor->getFloat("flywheelMotorPower"));
       break;
    case SHOOTING:
       if (m_loaderController->getCurrentState() == LoaderController::STATE::LOADED) {
          m_loaderController->setShooting();
-         m_flywheel->startMotors(0.6);
+         m_flywheel->startMotors(m_configEditor->getFloat("flywheelMotorPower"));
       }
       else {
          setOff();
