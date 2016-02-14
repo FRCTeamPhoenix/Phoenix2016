@@ -31,7 +31,6 @@ class LidarHandler {
    double m_mediumAverage;
    double m_fastAverage;
 
-
    //previous stored distances
    double m_storedDistances[LidarConstants::numberStoredValues];
 
@@ -70,6 +69,13 @@ public:
     * Return the array of previous distances
     */
    double* getDistances();
+
+   /**
+    * Return fast, medium, and slow averages
+    */
+   double getFastAverage();
+   double getMediumAverage();
+   double getSlowAverage();
 
    virtual ~LidarHandler();
 };

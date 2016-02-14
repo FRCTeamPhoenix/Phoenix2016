@@ -16,8 +16,24 @@ LidarHandler::LidarHandler(Relay * onSwitch, double offset, uint32_t lidarPort):
    m_resetCount = 0;
    m_storedCounter = 0;
 
+   m_fastAverage = 0;
+   m_mediumAverage = 0;
+   m_slowAverage = 0;
+
    for(int i=0;i<LidarConstants::numberStoredValues;i++)
       m_storedDistances[i] = 0;
+}
+
+double LidarHandler::getFastAverage() {
+   return m_fastAverage;
+}
+
+double LidarHandler::getMediumAverage() {
+   return m_mediumAverage;
+}
+
+double LidarHandler::getSlowAverage() {
+   return m_slowAverage;
 }
 
 void LidarHandler::run() {
