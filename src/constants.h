@@ -154,22 +154,31 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-const static int numberOfVars = 6;
+const static int numberOfVars = 10;
    const static std::string variables[numberOfVars] = {
-         "teamNumber",
-         "wheelEncoderTicksPerDegree",
-         "numXYVals",
-         "leftVisionBoundary",
-         "rightVisionBoundary",
-         "maxTiltingFactor"
+         "motorPower",
+         "degree",
+         "distance",
+         "leftDistancePerPulse",
+         "rightDistancePerPulse",
+         "armMotorPower",
+         "homingPower",
+         "outerIntakeMotorPower",
+         "innnerIntakeMotorPower",
+         "flywheelMotorPower",
+
    };
    const static std::string types[numberOfVars] = {
-         "int",
-         "float",
-         "int",
-         "int",
-         "int",
-         "int"
+         "float", //motorPower
+         "float", //degree
+         "float", //distance
+         "double", //leftDistancePerPulse
+         "double", //rightDistancePerPulse
+         "float", //armMotorPower
+         "float", //homingPower
+         "float", //outerIntakeMotorPower
+         "float", //innerIntakeMotorPower
+         "float", //flywheelMotorPower
    };
 };
 
