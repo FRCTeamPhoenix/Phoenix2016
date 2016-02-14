@@ -51,7 +51,7 @@ void LidarHandler::run() {
        SmartDashboard::PutString("DB/String 1", " ");
        m_onSwitch->Set(Relay::kOn);
     } else {
-       m_distance = distance;
+       m_distance = distance - m_offset;
 
        m_storedDistances[m_storedCounter % LidarConstants::numberStoredValues] = distance;
        m_storedCounter++;
@@ -63,15 +63,11 @@ void LidarHandler::run() {
 }
 
 double LidarHandler::getDistance() {
-   return m_distance - m_offset;
+   return m_distance;
 }
 
 int LidarHandler::getResetCount() {
    return m_resetCount;
-}
-
-double* LidarHandler::getDistances() {
-   return m_storedDistances;
 }
 
 LidarHandler::~LidarHandler() {

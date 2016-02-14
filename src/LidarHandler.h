@@ -66,11 +66,6 @@ public:
    int getResetCount();
 
    /**
-    * Return the array of previous distances
-    */
-   double* getDistances();
-
-   /**
     * Return fast, medium, and slow averages
     */
    double getFastAverage();
