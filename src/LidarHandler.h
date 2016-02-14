@@ -26,13 +26,10 @@ class LidarHandler {
    //current lidar distance
    double m_distance;
 
-   //current lidar distance - smooted out average
-   double m_avDistance;
-
    //slow, medium, fast averages
-   double slowAverage;
-   double mediumAverage;
-   double fastAverage;
+   double m_slowAverage;
+   double m_mediumAverage;
+   double m_fastAverage;
 
 
    //previous stored distances

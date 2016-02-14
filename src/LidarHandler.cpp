@@ -40,7 +40,9 @@ void LidarHandler::run() {
        m_storedDistances[m_storedCounter % LidarConstants::numberStoredValues] = distance;
        m_storedCounter++;
 
-       m_avDistance = (4 * m_avDistance + m_distance) / 5;
+       m_fastAverage = (4 * m_fastAverage + m_distance) / 5.0;
+       m_mediumAverage = (10 * m_mediumAverage + m_distance) / 11.0;
+       m_slowAverage = (25 * m_slowAverage + m_distance) / 26.0;
     }
 }
 
