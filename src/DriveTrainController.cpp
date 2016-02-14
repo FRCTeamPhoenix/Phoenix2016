@@ -13,12 +13,14 @@ DriveTrainController::DriveTrainController(
       DriveStation* driveStation,
       Encoder* leftWheelEncoder,
       Encoder* rightWheelEncoder,
-      AnalogGyro* gyro) :
+      AnalogGyro* gyro,
+      ConfigEditor* configEditor):
       m_driveTrain(robotDrive),
       m_driveStation(driveStation),
       m_leftWheelEncoder(leftWheelEncoder),
       m_rightWheelEncoder(rightWheelEncoder),
-      m_gyro(gyro){
+      m_gyro(gyro),
+      m_configEditor(configEditor){
    m_initalEncoderValueLeft = 0;
    m_initalEncoderValueRight = 0;
    m_targetTickRight = 0;
@@ -57,7 +59,7 @@ void DriveTrainController::run() {
 
    //Goal state with the drivers are driving the robot
    case TELEOP:
-      manualDrive(0.6f);
+      manualDrive(m_configEditor->getFloat("motorPower"));
       break;
       //Goal state of when the robot is not doing anything
    case IDLE:
@@ -98,13 +100,13 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
 
       if (degree > 0) {
          clockwise = true;
-         m_rightMotorPower = -motorSpeed;
-         m_leftMotorPower = motorSpeed;
+         m_rightMotorPower = -(m_configEditor->getFloat("motorPower"));
+         m_leftMotorPower = m_configEditor->getFloat("motorPower");
       }
       else {
          clockwise = false;
-         m_rightMotorPower = motorSpeed;
-         m_leftMotorPower = -motorSpeed;
+         m_rightMotorPower = m_configEditor->getFloat("motorPower");
+         m_leftMotorPower = -(m_configEditor->getFloat("motorPower"));
       }
       m_goalState = GYROTURN;
 
@@ -131,12 +133,12 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
       SmartDashboard::PutString("DB/String 9", outputTL.str());
 
       if (degree > 0) {
-         m_rightMotorPower = -motorSpeed;
-         m_leftMotorPower = motorSpeed;
+         m_rightMotorPower = -(m_configEditor->getFloat("motorPower"));
+         m_leftMotorPower = m_configEditor->getFloat("motorPower");
       }
       else {
-         m_rightMotorPower = motorSpeed;
-         m_leftMotorPower = -motorSpeed;
+         m_rightMotorPower = m_configEditor->getFloat("motorPower");
+         m_leftMotorPower = -(m_configEditor->getFloat("motorPower"));
       }
       m_goalState = ENCODERDRIVE;
 
@@ -176,12 +178,12 @@ void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
    m_leftEncoderComplete = false;
 
    if (distance > 0){
-      m_rightMotorPower = motorSpeed;
-      m_leftMotorPower = motorSpeed;
+      m_rightMotorPower = m_configEditor->getFloat("motorPower");
+      m_leftMotorPower = m_configEditor->getFloat("motorPower");
    }
    else {
-      m_rightMotorPower = -motorSpeed;
-      m_leftMotorPower = -motorSpeed;
+      m_rightMotorPower = -(m_configEditor->getFloat("motorPower"));
+      m_leftMotorPower = -(m_configEditor->getFloat("motorPower"));
    }
    m_goalState = ENCODERDRIVE;
 }

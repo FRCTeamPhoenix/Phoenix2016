@@ -12,7 +12,7 @@
 #include "WPILib.h"
 #include "constants.h"
 #include "DriveStation.h"
-
+#include "ConfigEditor.h"
 
 //Values for the motor speeds might need to be changed
 static const float armMotorLeft = 1.0f;
@@ -32,6 +32,8 @@ private:
    DigitalInput* m_loadedSensor;
    Encoder* m_armEncoder;
    DriveStation* m_driveStation;
+   AnalogPotentiometer* m_potentiometer;
+   ConfigEditor* m_configEditor;
 
 
 public:
@@ -54,7 +56,8 @@ public:
          DigitalInput* loadedSensor,
          Encoder* armEncoder,
          DriveStation* driveStation,
-         AnalogPotentiometer* potentiometer);
+         AnalogPotentiometer* potentiometer,
+         ConfigEditor* configEditor);
    void run();
    void armLimitSwitches(float power);
    //Returns what degree the arm is at
@@ -83,7 +86,6 @@ public:
 private:
    STATE m_goalState;
    bool m_homed;
-   AnalogPotentiometer* m_potentiometer;
 };
 
 #endif /* SRC_LOADERCONTROLLER_H_ */

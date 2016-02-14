@@ -23,6 +23,7 @@ void runClient(Robot* robot, Client* client);
 class Robot: public SampleRobot
 {
    AnalogGyro m_gyro;
+   ConfigEditor m_configEditor;
    Talon m_flywheelLeftMotor;
    Talon m_flywheelRightMotor;
    Flywheel m_flywheel;
@@ -49,11 +50,11 @@ class Robot: public SampleRobot
    Client m_client;
    Aiming m_aiming;
    LoaderSense m_loaderSense;
-   ConfigEditor m_ConfigEditor;
 
 public:
    Robot() :
       m_gyro(PortAssign::gyroscope),
+      m_configEditor(&m_driveStation),
       m_flywheelLeftMotor(PortAssign::flywheelLeftMotor),
       m_flywheelRightMotor(PortAssign::flywheelRightMotor),
       m_flywheel(&m_flywheelLeftMotor, &m_flywheelRightMotor),
@@ -63,7 +64,7 @@ public:
       m_rightWheelEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
       m_driveStation(&m_joystick, &m_gamepad),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
-      m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro),
+      m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor),
       m_armMotorLeft(PortAssign::armMotorLeft),
       m_armMotorRight(PortAssign::armMotorRight),
       m_intakeMotor(PortAssign::intakeMotor),
@@ -73,19 +74,18 @@ public:
       m_loadedSensor(PortAssign::loadedSensor),
       m_armEncoder(PortAssign::armEncoderChannelA, PortAssign::armEncoderChannelB),
       m_potentiometer(PortAssign::potentiometer),
-      m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder, &m_driveStation, &m_potentiometer),
-      m_shooterController(&m_loaderController, &m_flywheel),
-      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController),
+      m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder, &m_driveStation, &m_potentiometer, &m_configEditor),
+      m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
+      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_configEditor),
       m_driveCamera("cam0",false),
       m_aiming(&m_client, &m_driveTrainController, &m_driveStation),
-      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
-      m_ConfigEditor(&m_driveStation){
+      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation){
 
       SmartDashboard::init();
       m_gyro.Calibrate();
       m_leftWheelEncoder.SetDistancePerPulse(RobotConstants::leftDistancePerPulse);
       m_rightWheelEncoder.SetDistancePerPulse(RobotConstants::rightDistancePerPulse);
-      m_ConfigEditor.showAllKeys();
+      m_configEditor.showAllKeys();
 
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true);
@@ -186,19 +186,19 @@ public:
          //Aiming Robot Clockwise 90 degrees
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
             SmartDashboard::PutString("DB/String 6", ":) Aiming Robot Clockwise 90 Test");
-            m_driveTrainController.aimRobotClockwise(90, 0.6);
+            m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
          }
 
          //Aiming Robot Counter Clockwise 90 degrees
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
             SmartDashboard::PutString("DB/String 6", ":) Aiming Robot CounterClockwise 90 Test");
-            m_driveTrainController.aimRobotCounterclockwise(90, 0.6);
+            m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
          }
 
          //Robot drives straight
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonY)){
             SmartDashboard::PutString("DB/String 6", ":) Moving Robot Straight Test");
-            m_driveTrainController.moveRobotStraight(45, 0.6);
+            m_driveTrainController.moveRobotStraight(45, m_configEditor.getFloat("motorPower"));
          }
          //test drivetrain repeatability by running forwards and backward five times.
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonX)){
@@ -220,11 +220,11 @@ public:
                if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
                   loop++;
                   if(changeDirection){
-                     m_driveTrainController.moveRobotStraight(20, 0.5);
+                     m_driveTrainController.moveRobotStraight(m_configEditor.getFloat("distance"), m_configEditor.getFloat("motorPower"));
                      changeDirection = false;
                   }
                   else {
-                     m_driveTrainController.moveRobotStraight(-20, 0.5);
+                     m_driveTrainController.moveRobotStraight(m_configEditor.getFloat("distance"), m_configEditor.getFloat("motorPower"));
                      changeDirection = true;
                   }
                }
@@ -251,11 +251,11 @@ public:
                if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
                   loop++;
                   if(changeRotation){
-                     m_driveTrainController.aimRobotClockwise(90, 0.6);
+                     m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
                      changeRotation = false;
                   }
                   else{
-                     m_driveTrainController.aimRobotCounterclockwise(90, 0.6);
+                     m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
                      changeRotation = true;
                   }
                }
@@ -294,7 +294,7 @@ public:
             SmartDashboard::PutString("DB/String 6", "Move Arm Test");
             m_loaderController.moveArm();
          }
-         m_ConfigEditor.update();
+         m_configEditor.update();
       }
    }
 

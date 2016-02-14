@@ -111,25 +111,5 @@ void DriveStation::setButton(int buttonNumber, bool value) {
 
 }
 
-void DriveStation::snapShot(){
-   for(int i=0; i<12; i++){
-      m_buttons[i]=m_gamepad->GetRawButton(i+1);
-   }
-
-   for(int j=0; j<13; j++){
-      m_stringInputs[j]=SmartDashboard::GetString(DriveStationConstants::textBoxNames[j],"");
-   }
-
-
-   for(int k=0;k<6;k++){
-      m_buttonInputs[k]=SmartDashboard::GetBoolean(DriveStationConstants::dashButtonNames[k],false);
-   }
-
-   m_joystickY = m_joystick->GetY();
-   m_joystickZ = m_joystick->GetZ();
-   m_joystickZ = m_joystick->GetThrottle();
-   m_gamepadJoystickY = m_gamepad->GetY();
-}
-
 DriveStation::~DriveStation() {
 }
