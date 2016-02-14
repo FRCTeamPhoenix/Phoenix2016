@@ -89,6 +89,7 @@ void DriveTrainController::run() {
          if(m_gyroTargetDegree >= m_gyro->GetAngle())
             m_goalState = IDLE;
       }
+      break;
    case LIDARDRIVE:
       if(lidarInches >= (m_lidar->getDistance() *2.54 + RobotConstants::lidarErrorRange))
       {
@@ -172,7 +173,12 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
 void DriveTrainController::aimRobotCounterclockwise(float degree, float motorSpeed) {
    aimRobotClockwise(-degree, motorSpeed);
 }
-
+void DriveTrainController::continuousDrive(float motorSpeed){
+   m_continuousDriveTimer.Reset();
+   m_rightMotorPower = m_configEditor->getFloat("motorPower");
+   m_leftMotorPower = m_configEditor->getFloat("motorPower");
+   m_goalState = CONTINUOUSDRIVE;
+}
 //Moves the robot a desired distance and at a desired motor speed
 void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
    printf("IN TEST THING/n");
@@ -243,7 +249,12 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
    case GYROTURN:
       return GYROTURN;
    case LIDARDRIVE:
-        return LIDARDRIVE;
+      return LIDARDRIVE;
+   case CONTINUOUSDRIVE:
+      if(m_continuousDriveTimer.HasPeriodPassed(.1)){
+         return IDLE;
+      }
+      break;
    default:
       return IDLE;
    }
