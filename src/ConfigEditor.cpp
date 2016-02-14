@@ -51,6 +51,22 @@ void ConfigEditor::getConfig() {
    }
 }
 
+int ConfigEditor::getInt(std::string key) {
+   return Preferences::GetInstance()->GetInt(key,0);
+}
+
+float ConfigEditor::getFloat(std::string key) {
+   return Preferences::GetInstance()->GetFloat(key,0.0f);
+}
+
+double ConfigEditor::getDouble(std::string key) {
+   return Preferences::GetInstance()->GetDouble(key,0.0);
+}
+
+std::string ConfigEditor::getString(std::string key) {
+   return Preferences::GetInstance()->GetString(key,"");
+}
+
 void ConfigEditor::saveConfig() {
    std::string keyName = m_DriveStation->getStringInput(10);
    std::string newValue = m_DriveStation->getStringInput(12);
