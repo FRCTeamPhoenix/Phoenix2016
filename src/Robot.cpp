@@ -300,6 +300,13 @@ public:
 
 };
 
+void lidarThread(Robot * robot, LidarHandler * lidarHandler) {
+   while(robot->IsEnabled() && (robot->IsAutonomous() || robot->IsOperatorControl() || robot->IsTest())) {
+      lidarHandler->run();
+      Wait(0.1);
+   }
+}
+
 void runClient(Robot* robot, Client* client){
    client->receivePacket();
 }

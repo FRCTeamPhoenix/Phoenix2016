@@ -55,6 +55,10 @@ struct RobotConstants {
    constexpr static double leftDistancePerPulse = 2475/66;
 };
 
+struct LidarConstants {
+   const static int numberStoredValues = 100;
+};
+
 namespace DriveStationConstants {
    enum buttonNames {
       buttonX = 0,
