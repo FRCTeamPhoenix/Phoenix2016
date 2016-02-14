@@ -16,7 +16,5 @@ ActionTurn::init(void)
 bool
 ActionTurn::execute(void)
 {
-   if (m_driveTrain->getCurrentState() == DriveTrainController::IDLE)
-      return true;
-   return false;
+   return m_driveTrain->getCurrentState() == DriveTrainController::IDLE;
 }
