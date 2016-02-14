@@ -19,6 +19,11 @@ public:
    void getConfig();
    bool isType(std::string str, std::string type);
    void showAllKeys();
+
+   int getInt(std::string key);
+   float getFloat(std::string key);
+   double getDouble(std::string key);
+   std::string getString(std::string key);
 private:
    DriveStation* m_DriveStation;
 };

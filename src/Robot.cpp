@@ -83,6 +83,7 @@ public:
 
       SmartDashboard::init();
       m_gyro.Calibrate();
+      m_ConfigEditor.showAllKeys();
 
 
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
