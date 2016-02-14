@@ -14,13 +14,15 @@ DriveTrainController::DriveTrainController(
       Encoder* leftWheelEncoder,
       Encoder* rightWheelEncoder,
       AnalogGyro* gyro,
-      ConfigEditor* configEditor):
+      ConfigEditor* configEditor,
+      LidarHandler* lidar):
       m_driveTrain(robotDrive),
       m_driveStation(driveStation),
       m_leftWheelEncoder(leftWheelEncoder),
       m_rightWheelEncoder(rightWheelEncoder),
       m_gyro(gyro),
-      m_configEditor(configEditor){
+      m_configEditor(configEditor),
+      m_lidar(lidar){
    m_initalEncoderValueLeft = 0;
    m_initalEncoderValueRight = 0;
    m_targetTickRight = 0;
@@ -32,6 +34,7 @@ DriveTrainController::DriveTrainController(
    m_leftEncoderComplete = true;
    m_gyroTargetDegree = 0.0f;
    clockwise = false;
+   lidarInches = 0.0f;
 }
 
 DriveTrainController::~DriveTrainController() {
@@ -86,6 +89,26 @@ void DriveTrainController::run() {
          if(m_gyroTargetDegree >= m_gyro->GetAngle())
             m_goalState = IDLE;
       }
+   case LIDARDRIVE:
+      if(lidarInches >= (m_lidar->getDistance() *2.54 + RobotConstants::lidarErrorRange))
+      {
+         if(m_leftMotorPower<0){
+            m_leftMotorPower *= -1;
+            m_rightMotorPower *= -1;
+         }
+
+      }
+      else if (lidarInches <= (m_lidar->getDistance() *2.54 - RobotConstants::lidarErrorRange))
+      {
+         if(m_leftMotorPower>0){
+            m_leftMotorPower *= -1;
+            m_rightMotorPower *= -1;
+         }
+      }
+      else{
+         m_goalState = IDLE;
+      }
+      break;
    };
    m_driveTrain->TankDrive(m_leftMotorPower, m_rightMotorPower);
 }
@@ -156,14 +179,14 @@ void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
    if (m_goalState == ENCODERDRIVE)
       return;
 
-//   m_initalEncoderValueRight = m_rightWheelEncoder->Get();
-//   m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
+   //   m_initalEncoderValueRight = m_rightWheelEncoder->Get();
+   //   m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
    m_initalEncoderValueRight = m_rightWheelEncoder->GetDistance();
    m_initalEncoderValueLeft = m_leftWheelEncoder->GetDistance();
    //will have to find the diameter of the wheel
    //the 6 is the diameter of the wheel
- //  float ticks = distance * (M_PI* 6);
-  // float ticks = distance * RobotConstants::ticksPerInch;
+   //  float ticks = distance * (M_PI* 6);
+   // float ticks = distance * RobotConstants::ticksPerInch;
    m_targetTickRight = m_initalEncoderValueRight + distance;
    m_targetTickLeft = m_initalEncoderValueLeft + distance;
 
@@ -218,12 +241,21 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
          return ENCODERDRIVE;
       }
    case GYROTURN:
-
       return GYROTURN;
+   case LIDARDRIVE:
+        return LIDARDRIVE;
    default:
       return IDLE;
    }
 }
+void DriveTrainController::driveLidar(float inches, float motorSpeed)
+{
+   m_goalState = LIDARDRIVE;
+   lidarInches = inches;
+   m_rightMotorPower = motorSpeed;
+   m_leftMotorPower = motorSpeed;
+}
+
 
 //Sets the goal state of the robot, used in changing the switch statements
 void DriveTrainController::setGoalState(STATE goal){

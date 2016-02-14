@@ -53,6 +53,7 @@ struct RobotConstants {
 
    constexpr static double rightDistancePerPulse = 1720/66;
    constexpr static double leftDistancePerPulse = 2475/66;
+   constexpr static int lidarErrorRange = 4;
 };
 
 struct LidarConstants {
