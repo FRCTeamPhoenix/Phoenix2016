@@ -17,43 +17,45 @@ RobotController::RobotController(DriveStation* ds, DriveTrainController* dt, Sho
 
 RobotController::~RobotController() {}
 
-void RobotController::run()
-{
-   if (m_state == ROBOT_AUTO)
-   {
+void RobotController::run(){
+   if (m_state == ROBOT_AUTO){
       // Y button cancels autonomous mode, resetting it to manual controls.
-      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonY))
-      {
+      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonY)){
          m_queue.clear();
          m_state = ROBOT_MANUAL;
          return;
+      }
+      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
+         SmartDashboard::PutString("DB/String 5", "Adding to queue ");
+         m_state = ROBOT_AUTO;
+         m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, 36.0f, 0.6f));
+         // m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, 180.0f, 0.6f));
+         // m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, -180.0f, 0.6f));
+         //m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, -18.0f, 0.6f));
+      }
+      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonB)){
+         SmartDashboard::PutString("DB/String 5", "Adding to queue ");
+         m_state = ROBOT_AUTO;
+         m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, 24.0f, 0.6f));
+         m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, 90.0f, 0.6f));
+         m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, 24.0f, 0.6f));
+         m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, 90.0f, 0.6f));
+         m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, 24.0f, 0.6f));
+         m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, 90.0f, 0.6f));
+         m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, 24.0f, 0.6f));
+         m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, 90.0f, 0.6f));
       }
       performAction();
    }
    else if (m_state == ROBOT_MANUAL)
    {
-      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
-         SmartDashboard::PutString("DB/String 5", "Adding to queue ");
-         m_state = ROBOT_AUTO;
-         m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, 36.0f, 0.6f));
-        // m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, 180.0f, 0.6f));
-        // m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, -180.0f, 0.6f));
-         //m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, -18.0f, 0.6f));
-      }
-      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonB)){
-               SmartDashboard::PutString("DB/String 5", "Adding to queue ");
-               m_state = ROBOT_AUTO;
-               m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, 24.0f, 0.6f));
-               m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, 90.0f, 0.6f));
-               m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, 24.0f, 0.6f));
-               m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, 90.0f, 0.6f));
-               m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, 24.0f, 0.6f));
-               m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, 90.0f, 0.6f));
-               m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, 24.0f, 0.6f));
-               m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, 90.0f, 0.6f));
-            }
+      m_queue.clear();
+      m_state = ROBOT_MANUAL;
+      return;
    }
+   performAction();
 }
+
 
 void RobotController::performAction(void)
 {
