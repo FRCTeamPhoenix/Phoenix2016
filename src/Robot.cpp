@@ -74,6 +74,8 @@ public:
 
       SmartDashboard::init();
       m_gyro.Calibrate();
+      m_leftWheelEncoder.SetDistancePerPulse(RobotConstants::leftDistancePerPulse);
+      m_rightWheelEncoder.SetDistancePerPulse(RobotConstants::rightDistancePerPulse);
 
 
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
