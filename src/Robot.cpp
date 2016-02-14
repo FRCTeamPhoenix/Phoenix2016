@@ -85,7 +85,7 @@ public:
       m_gyro.Calibrate();
       m_leftWheelEncoder.SetDistancePerPulse(RobotConstants::leftDistancePerPulse);
       m_rightWheelEncoder.SetDistancePerPulse(RobotConstants::rightDistancePerPulse);
-
+      m_ConfigEditor.showAllKeys();
 
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true);
