@@ -29,6 +29,13 @@ public:
    float deadzoneOfGamepadJoystick();
    bool getGamepadButton(int);
    bool getJoystickButton(int);
+   std::string getStringInput(int);
+      bool getButtonInput(int);
+
+      void setString(int, std::string);
+
+      void setButton(int, bool);
+
 
    //Sets member varibles for all inputs
    void snapShot();
@@ -48,6 +55,8 @@ private:
    float m_gyroAngle;
    float m_gamepadJoystick;
    float m_gamepadJoystickY;
+   bool m_buttonInputs[6];
+     std::string m_stringInputs[13];
 };
 
 

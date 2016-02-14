@@ -13,6 +13,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <ConfigEditor.h>
 using namespace std;
 
 class Robot;
@@ -48,6 +49,7 @@ class Robot: public SampleRobot
    Client m_client;
    Aiming m_aiming;
    LoaderSense m_loaderSense;
+   ConfigEditor m_ConfigEditor;
 
 public:
    Robot() :
@@ -76,7 +78,8 @@ public:
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController),
       m_driveCamera("cam0",false),
       m_aiming(&m_client, &m_driveTrainController, &m_driveStation),
-      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation){
+      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
+      m_ConfigEditor(&m_driveStation){
 
       SmartDashboard::init();
       m_gyro.Calibrate();
@@ -291,6 +294,7 @@ public:
 //            SmartDashboard::PutString("DB/String 6", "Move Arm Test");
 //            m_loaderController.moveArm();
 //         }
+         m_ConfigEditor.update();
       }
    }
 
