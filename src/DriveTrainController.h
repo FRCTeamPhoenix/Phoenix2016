@@ -50,10 +50,10 @@ private:
    Encoder* m_rightWheelEncoder;
    AnalogGyro* m_gyro;
    ConfigEditor* m_configEditor;
-   int32_t m_initalEncoderValueLeft;
-   int32_t m_initalEncoderValueRight;
-   int32_t m_targetTickRight;
-   int32_t m_targetTickLeft;
+   int32_t m_initalDistanceLeft;
+   int32_t m_initalDistanceRight;
+   int32_t m_targetDistanceRight;
+   int32_t m_targetDistanceLeft;
    float m_rightMotorPower;
    float m_leftMotorPower;
    bool m_rightEncoderComplete;

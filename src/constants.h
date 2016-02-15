@@ -53,6 +53,7 @@ struct RobotConstants {
 
    constexpr static double rightDistancePerPulse = 1720/66;
    constexpr static double leftDistancePerPulse = 2475/66;
+   constexpr static double distancePerDegree = 0.2093;
 };
 
 namespace DriveStationConstants {
@@ -154,7 +155,7 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-const static int numberOfVars = 10;
+const static int numberOfVars = 11;
    const static std::string variables[numberOfVars] = {
          "motorPower",
          "degree",
@@ -166,6 +167,7 @@ const static int numberOfVars = 10;
          "outerIntakeMotorPower",
          "innnerIntakeMotorPower",
          "flywheelMotorPower",
+         "slipConstant"
 
    };
    const static std::string types[numberOfVars] = {
@@ -179,6 +181,7 @@ const static int numberOfVars = 10;
          "float", //outerIntakeMotorPower
          "float", //innerIntakeMotorPower
          "float", //flywheelMotorPower
+         "float", //slipConstant
    };
 };
 

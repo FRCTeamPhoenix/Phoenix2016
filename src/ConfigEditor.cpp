@@ -98,6 +98,7 @@ void ConfigEditor::saveConfig() {
    } else {
       Preferences::GetInstance()->PutString(keyName, newValue);
    }
+   Preferences::GetInstance()->Save();
 }
 
 bool ConfigEditor::isType(std::string str, std::string type){

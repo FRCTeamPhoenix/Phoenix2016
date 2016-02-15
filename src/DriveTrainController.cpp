@@ -21,10 +21,10 @@ DriveTrainController::DriveTrainController(
       m_rightWheelEncoder(rightWheelEncoder),
       m_gyro(gyro),
       m_configEditor(configEditor){
-   m_initalEncoderValueLeft = 0;
-   m_initalEncoderValueRight = 0;
-   m_targetTickRight = 0;
-   m_targetTickLeft = 0;
+   m_initalDistanceLeft = 0;
+   m_initalDistanceRight = 0;
+   m_targetDistanceRight = 0;
+   m_targetDistanceLeft = 0;
    m_goalState = IDLE;
    m_rightMotorPower = 0.0f;
    m_leftMotorPower = 0.0f;
@@ -114,22 +114,22 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
    else{
 
 
-      m_initalEncoderValueRight = m_rightWheelEncoder->Get();
-      m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
-      float ticks = degree * RobotConstants::wheelEncoderTicksPerDegree;
+      m_initalDistanceRight = m_rightWheelEncoder->GetDistance();
+      m_initalDistanceLeft = m_leftWheelEncoder->GetDistance();
+      float distanceToRotate = degree * (RobotConstants::distancePerDegree / m_configEditor->getFloat("slipConstant"));
 
 
-      m_targetTickRight = m_initalEncoderValueRight - ticks;
-      m_targetTickLeft = m_initalEncoderValueLeft + ticks;
+      m_targetDistanceRight = m_initalDistanceRight - distanceToRotate;
+      m_targetDistanceLeft = m_initalDistanceLeft + distanceToRotate;
       m_rightEncoderComplete = false;
       m_leftEncoderComplete = false;
 
       std::ostringstream outputTR;
-      outputTR << "Target Right Tick " << m_targetTickRight;
+      outputTR << "Target Right Tick " << m_targetDistanceRight;
       SmartDashboard::PutString("DB/String 8", outputTR.str());
 
       std::ostringstream outputTL;
-      outputTL << "Target Left Tick " << m_targetTickLeft;
+      outputTL << "Target Left Tick " << m_targetDistanceLeft;
       SmartDashboard::PutString("DB/String 9", outputTL.str());
 
       if (degree > 0) {
@@ -158,20 +158,20 @@ void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
 
 //   m_initalEncoderValueRight = m_rightWheelEncoder->Get();
 //   m_initalEncoderValueLeft = m_leftWheelEncoder->Get();
-   m_initalEncoderValueRight = m_rightWheelEncoder->GetDistance();
-   m_initalEncoderValueLeft = m_leftWheelEncoder->GetDistance();
+   m_initalDistanceRight = m_rightWheelEncoder->GetDistance();
+   m_initalDistanceLeft = m_leftWheelEncoder->GetDistance();
    //will have to find the diameter of the wheel
    //the 6 is the diameter of the wheel
  //  float ticks = distance * (M_PI* 6);
   // float ticks = distance * RobotConstants::ticksPerInch;
-   m_targetTickRight = m_initalEncoderValueRight + distance;
-   m_targetTickLeft = m_initalEncoderValueLeft + distance;
+   m_targetDistanceRight = m_initalDistanceRight + distance;
+   m_targetDistanceLeft = m_initalDistanceLeft + distance;
 
    std::ostringstream outputTR;
-   outputTR << "T-Right " << m_targetTickRight;
+   outputTR << "T-Right " << m_targetDistanceRight;
    SmartDashboard::PutString("DB/String 2", outputTR.str());
    std::ostringstream outputTL;
-   outputTL << "T-Left " << m_targetTickLeft;
+   outputTL << "T-Left " << m_targetDistanceLeft;
    SmartDashboard::PutString("DB/String 3", outputTL.str());
 
    m_rightEncoderComplete = false;
@@ -201,12 +201,12 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
       return TELEOP;
       //Goal state of ENCODERDRIVE, tests if the encoders are where they are supposed to be
    case ENCODERDRIVE:
-      if (((m_rightMotorPower < 0) && (m_rightWheelEncoder->Get() <= m_targetTickRight)) ||
-            ((m_rightMotorPower >= 0) && (m_rightWheelEncoder->Get() >= m_targetTickRight))){
+      if (((m_rightMotorPower < 0) && (m_rightWheelEncoder->GetDistance() <= m_targetDistanceRight)) ||
+            ((m_rightMotorPower >= 0) && (m_rightWheelEncoder->GetDistance() >= m_targetDistanceRight))){
          m_rightEncoderComplete = true;
       }
-      if (((m_leftMotorPower < 0) && (m_leftWheelEncoder->Get() <= m_targetTickLeft)) ||
-            ((m_leftMotorPower >= 0) && (m_leftWheelEncoder->Get() >= m_targetTickLeft))){
+      if (((m_leftMotorPower < 0) && (m_leftWheelEncoder->GetDistance() <= m_targetDistanceLeft)) ||
+            ((m_leftMotorPower >= 0) && (m_leftWheelEncoder->GetDistance() >= m_targetDistanceLeft))){
          m_leftEncoderComplete = true;
       }
       if (m_rightEncoderComplete || m_leftEncoderComplete){

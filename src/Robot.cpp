@@ -23,7 +23,6 @@ void runClient(Robot* robot, Client* client);
 class Robot: public SampleRobot
 {
    AnalogGyro m_gyro;
-   ConfigEditor m_configEditor;
    Talon m_flywheelLeftMotor;
    Talon m_flywheelRightMotor;
    Flywheel m_flywheel;
@@ -32,6 +31,7 @@ class Robot: public SampleRobot
    Encoder m_leftWheelEncoder;
    Encoder m_rightWheelEncoder;
    DriveStation m_driveStation;
+   ConfigEditor m_configEditor;
    RobotDrive m_driveTrain;
    DriveTrainController m_driveTrainController;
    Talon m_armMotorLeft;
@@ -54,7 +54,6 @@ class Robot: public SampleRobot
 public:
    Robot() :
       m_gyro(PortAssign::gyroscope),
-      m_configEditor(&m_driveStation),
       m_flywheelLeftMotor(PortAssign::flywheelLeftMotor),
       m_flywheelRightMotor(PortAssign::flywheelRightMotor),
       m_flywheel(&m_flywheelLeftMotor, &m_flywheelRightMotor),
@@ -63,6 +62,7 @@ public:
       m_leftWheelEncoder(PortAssign::leftWheelEncoderChannelA, PortAssign::leftWheelEncoderChannelB),
       m_rightWheelEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
       m_driveStation(&m_joystick, &m_gamepad),
+      m_configEditor(&m_driveStation),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
       m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor),
       m_armMotorLeft(PortAssign::armMotorLeft),
@@ -77,15 +77,18 @@ public:
       m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder, &m_driveStation, &m_potentiometer, &m_configEditor),
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_configEditor),
-      m_driveCamera("cam0",false),
+      m_driveCamera("cam1",false),
       m_aiming(&m_client, &m_driveTrainController, &m_driveStation),
       m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation){
 
       SmartDashboard::init();
       m_gyro.Calibrate();
-      m_leftWheelEncoder.SetDistancePerPulse(RobotConstants::leftDistancePerPulse);
-      m_rightWheelEncoder.SetDistancePerPulse(RobotConstants::rightDistancePerPulse);
+//      m_leftWheelEncoder.SetDistancePerPulse(RobotConstants::leftDistancePerPulse);
+//      m_rightWheelEncoder.SetDistancePerPulse(RobotConstants::rightDistancePerPulse);
       m_configEditor.showAllKeys();
+
+      m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
+      m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
 
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true);
@@ -108,12 +111,20 @@ public:
        m_driveCamera.SetExposureManual(20);
        m_driveCamera.SetWhiteBalanceAuto();
        CameraServer::GetInstance()->SetQuality(50);
-       CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+       CameraServer::GetInstance()->StartAutomaticCapture("cam1");
 
    }
    void OperatorControl(){
       m_driveTrainController.setGoalState(DriveTrainController::TELEOP);
       while(IsOperatorControl() && IsEnabled()){
+         std::ostringstream LE;
+         LE << m_leftWheelEncoder.GetDistance();
+         SmartDashboard::PutString("DB/String 7", LE.str());
+
+         std::ostringstream RE;
+         RE << m_rightWheelEncoder.GetDistance();
+         SmartDashboard::PutString("DB/String 8", RE.str());
+
          m_driveStation.snapShot();
          m_robotController.run();
          m_driveTrainController.run();
