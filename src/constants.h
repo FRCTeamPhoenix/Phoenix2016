@@ -54,6 +54,11 @@ struct RobotConstants {
    constexpr static double rightDistancePerPulse = 1720/66;
    constexpr static double leftDistancePerPulse = 2475/66;
    constexpr static double distancePerDegree = 0.2093;
+   constexpr static int lidarErrorRange = 4;
+};
+
+struct LidarConstants {
+   const static int numberStoredValues = 100;
 };
 
 namespace DriveStationConstants {

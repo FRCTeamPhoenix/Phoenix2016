@@ -13,7 +13,8 @@
 #include "constants.h"
 #include "DriveStation.h"
 #include "ConfigEditor.h"
-#include <math.h>
+#include "Math.h"
+#include "LidarHandler.h"
 
 class DriveTrainController: public BaseController {
 public:
@@ -21,14 +22,17 @@ public:
       IDLE,
       TELEOP,
       ENCODERDRIVE,
-      GYROTURN
+      GYROTURN,
+      LIDARDRIVE,
+      CONTINUOUSDRIVE
    };
    DriveTrainController(RobotDrive* m_driveTrain,
          DriveStation* m_driveStation,
          Encoder* leftWheelEncoder,
          Encoder* rightWheelEncoder,
          AnalogGyro* gyro,
-         ConfigEditor* configEditor);
+         ConfigEditor* configEditor,
+         LidarHandler* lidar);
    virtual ~DriveTrainController();
    void run();
    void manualDrive(float throttleRatio);
@@ -36,6 +40,9 @@ public:
    void aimRobotCounterclockwise(float degree, float motorSpeed);
    void moveRobotStraight(float distance, float motorSpeed);
    void stopRobot();
+   void driveLidar(float meters, float motorSpeed);
+   void continuousDrive(float motorSpeed);
+
 
    STATE getCurrentState();
 
@@ -50,16 +57,24 @@ private:
    Encoder* m_rightWheelEncoder;
    AnalogGyro* m_gyro;
    ConfigEditor* m_configEditor;
+   LidarHandler* m_lidar;
    int32_t m_initalDistanceLeft;
    int32_t m_initalDistanceRight;
    int32_t m_targetDistanceRight;
    int32_t m_targetDistanceLeft;
+   Timer m_continuousDriveTimer;
+   int32_t m_initalEncoderValueLeft;
+   int32_t m_initalEncoderValueRight;
+   int32_t m_targetTickRight;
+   int32_t m_targetTickLeft;
    float m_rightMotorPower;
    float m_leftMotorPower;
    bool m_rightEncoderComplete;
    bool m_leftEncoderComplete;
    bool clockwise;
    float m_gyroTargetDegree;
+   float lidarInches;
+
 };
 
 #endif /* SRC_DRIVETRAINCONTROLLER_H_ */
