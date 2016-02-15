@@ -21,6 +21,7 @@ void RobotController::run(){
       // Y button cancels autonomous mode, resetting it to manual controls.
       if (m_driveStation->getGamepadButton(DriveStationConstants::buttonY)){
          m_queue.clear();
+	 m_driveTrain->stopRobot();
          m_state = ROBOT_MANUAL;
          return;
       }
