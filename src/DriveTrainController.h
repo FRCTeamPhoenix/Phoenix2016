@@ -16,7 +16,7 @@
 #include "Math.h"
 #include "LidarHandler.h"
 
-class DriveTrainController: public BaseController {
+class DriveTrainController: public BaseController, public PIDOutput {
 public:
    enum STATE {
       IDLE,
@@ -34,6 +34,10 @@ public:
          ConfigEditor* configEditor,
          LidarHandler* lidar);
    virtual ~DriveTrainController();
+
+//   PIDController* m_leftDriveTrainController;
+//   PIDController* m_rightDriveTrainController;
+
    void run();
    void manualDrive(float throttleRatio);
    void aimRobotClockwise(float degree, float motorSpeed);
@@ -42,7 +46,7 @@ public:
    void stopRobot();
    void driveLidar(float meters, float motorSpeed);
    void continuousDrive(float motorSpeed);
-
+//   void PIDWrite(float output);
 
    STATE getCurrentState();
 
@@ -63,10 +67,6 @@ private:
    int32_t m_targetDistanceRight;
    int32_t m_targetDistanceLeft;
    Timer m_continuousDriveTimer;
-   int32_t m_initalEncoderValueLeft;
-   int32_t m_initalEncoderValueRight;
-   int32_t m_targetTickRight;
-   int32_t m_targetTickLeft;
    float m_rightMotorPower;
    float m_leftMotorPower;
    bool m_rightEncoderComplete;

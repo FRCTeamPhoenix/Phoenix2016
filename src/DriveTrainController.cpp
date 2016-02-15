@@ -24,6 +24,11 @@ DriveTrainController::DriveTrainController(
       m_configEditor(configEditor),
       m_lidar(lidar){
    m_goalState = IDLE;
+
+
+//   m_leftDriveTrainController = new PIDController(0.2, 0, 0, m_leftWheelEncoder, this);
+//   m_rightDriveTrainController = new PIDController(0.2, 0, 0, m_rightWheelEncoder, this);
+
    m_rightMotorPower = 0.0f;
    m_leftMotorPower = 0.0f;
    m_initalDistanceLeft = 0;
