@@ -28,7 +28,7 @@ struct PortAssign {
    //Redo lifter motors
    const static uint32_t upperLimit = 4;
    const static uint32_t lowerLimit = 5;
-   const static uint32_t loadedSensor = 6;
+   const static uint32_t loadedSensor = 8;
    const static uint32_t armEncoderChannelA = 7;
    const static uint32_t armEncoderChannelB = 8;
 
@@ -169,7 +169,7 @@ const static int numberOfVars = 10;
          "armMotorPower",
          "homingPower",
          "outerIntakeMotorPower",
-         "innnerIntakeMotorPower",
+         "innerIntakeMotorPower",
          "flywheelMotorPower",
 
    };

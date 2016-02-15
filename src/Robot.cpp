@@ -71,7 +71,7 @@ public:
       m_driveStation(&m_joystick, &m_gamepad),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
       m_lidarOnSwitch(0),
-      m_lidarDIOSwitch(8),
+      m_lidarDIOSwitch(15),
       m_lidarHandler(&m_lidarOnSwitch, 0, 9),
       m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor, &m_lidarHandler),
       m_armMotorLeft(PortAssign::armMotorLeft),
@@ -83,7 +83,7 @@ public:
       m_loadedSensor(PortAssign::loadedSensor),
       m_armEncoder(PortAssign::armEncoderChannelA, PortAssign::armEncoderChannelB),
       m_potentiometer(PortAssign::potentiometer),
-      m_loaderController(&m_armMotorLeft, &m_armMotorRight, &m_intakeMotor, &m_stationaryMotor, &m_upperLimit, &m_lowerLimit, &m_loadedSensor, &m_armEncoder, &m_driveStation, &m_potentiometer, &m_configEditor),
+      m_loaderController(&m_intakeMotor, &m_stationaryMotor, &m_loadedSensor, &m_driveStation, &m_configEditor),
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_configEditor),
       m_driveCamera("cam0",false),
@@ -127,7 +127,6 @@ public:
          m_robotController.run();
          m_driveTrainController.run();
          m_shooterController.run();
-         m_loaderController.run();
       }
    }
 
@@ -278,14 +277,14 @@ public:
          SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
 
          m_shooterController.setOff();
-         m_loaderController.setIdle();
+         //m_loaderController.stop();
          m_driveTrainController.stopRobot();
       }
 
       //Tests the loader by running the motors
       if(m_driveStation.getGamepadButton(DriveStationConstants::buttonLB)){
          SmartDashboard::PutString("DB/String 6", "Loader Test");
-         m_loaderController.startLoading();
+         m_loaderController.start();
       }
 
       //Tests the shooter by running the flywheels
@@ -300,11 +299,6 @@ public:
          }
       }
 
-      //Test the arm motion
-      if (m_driveStation.deadzoneOfGamepadJoystick() != 0){
-         SmartDashboard::PutString("DB/String 6", "Move Arm Test");
-         m_loaderController.moveArm();
-      }
       m_configEditor.update();
    }
 };

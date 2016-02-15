@@ -21,7 +21,7 @@ Flywheel::~Flywheel() {
 
 void Flywheel::run(){
    if(m_running){
-      m_leftFlywheelMotor->Set(m_power);
+      m_leftFlywheelMotor->Set(-m_power);
       m_rightFlywheelMotor->Set(m_power);
    }
    else{
@@ -44,7 +44,7 @@ Flywheel::STATE Flywheel::getCurrentState(){
       return OFF;
    }
 }
-void Flywheel::startMotors(float power){
+void Flywheel::start(float power){
    m_power = power;
    if(m_running == false){
       m_timer.Reset();
@@ -52,7 +52,7 @@ void Flywheel::startMotors(float power){
    }
    m_running = true;
 }
-void Flywheel::stopMotors(){
+void Flywheel::stop(){
    m_power = 0;
    m_running = false;
 }
