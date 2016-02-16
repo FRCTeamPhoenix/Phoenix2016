@@ -26,7 +26,7 @@ class RobotController : public BaseController
       ROBOT_MANUAL
    };
 
-   RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, ConfigEditor*);
+   RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, Flywheel*, ConfigEditor*);
    virtual ~RobotController();
 
    void run();
@@ -40,6 +40,7 @@ class RobotController : public BaseController
    DriveTrainController* m_driveTrain;
    ShooterController * m_shooterController;
    LoaderController * m_loaderController;
+   Flywheel * m_flywheel;
    ConfigEditor * m_configEditor;
 };
 

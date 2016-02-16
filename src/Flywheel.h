@@ -29,8 +29,8 @@ public:
 
    void run();
    STATE getCurrentState();
-   void startMotors(float power);
-   void stopMotors();
+   void start(float power);
+   void stop();
 
 };
 #endif /* SRC_FLYWHEEL_H_ */
