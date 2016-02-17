@@ -28,6 +28,7 @@ LoaderSense::LoaderSense(Client* client, DriveTrainController* driveTrainControl
 
 // IMPORTANT: Call to this method will implement the Loader's alignment process
 void LoaderSense::beginAiming() {
+   updateBallPositionData();
    setCurrentState(FINDING_BALL);
 }
 
@@ -100,7 +101,7 @@ void LoaderSense::rotate() {
    if (lastArrayWasNull) {
       nullArraysInARow++;
       //Goes back to trying to find the ball, if three cycles in a row yield no data
-      if (nullArraysInARow >= 3) {
+      if (/*nullArraysInARow >= 3*/false) {
          nullArraysInARow = 0;
          setCurrentState(FINDING_BALL);
       }
@@ -155,7 +156,7 @@ void LoaderSense::approach() {
    if (lastArrayWasNull) {
          nullArraysInARow++;
          //Goes back to trying to find the ball, if three cycles in a row yield no data
-         if (nullArraysInARow >= 3) {
+         if (/*nullArraysInARow >= 3*/false) {
             nullArraysInARow = 0;
             setCurrentState(FINDING_BALL);
          }
@@ -186,7 +187,7 @@ void LoaderSense::backup() {
    if (lastArrayWasNull) {
          nullArraysInARow++;
          //Goes back to trying to find the ball, if three cycles in a row yield no data
-         if (nullArraysInARow >= 3) {
+         if (/*nullArraysInARow >= 3*/false) {
             nullArraysInARow = 0;
             setCurrentState(FINDING_BALL);
          }
