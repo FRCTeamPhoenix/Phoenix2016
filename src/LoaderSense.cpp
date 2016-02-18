@@ -120,7 +120,7 @@ void LoaderSense::rotate() {
          } else {
 
             //Robot will rotate clockwise 1 degree, at motor speed 0.5
-            m_driveTrainController->aimRobotClockwise(1, 0.5);
+            m_driveTrainController->aimRobotClockwise(1, 0);
 
             SmartDashboard::PutString("DB/String 9", "Rotating clockwise");
 
@@ -135,7 +135,7 @@ void LoaderSense::rotate() {
          } else {
 
             //Robot will rotate counterclockwise 1 degree, at motor speed 0.5
-            m_driveTrainController->aimRobotCounterclockwise(1, 0.5);
+            m_driveTrainController->aimRobotCounterclockwise(1, 0);
 
             SmartDashboard::PutString("DB/String 9", "Rotating counterclockwise");
          }
