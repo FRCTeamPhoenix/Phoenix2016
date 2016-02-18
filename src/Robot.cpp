@@ -126,12 +126,12 @@ public:
 
 
          if(m_joystick.GetRawButton(5)){
-            m_LLif.Set(0.6);
-            m_RLif.Set(0.6);
+            m_LLif.Set(0.5);
+            m_RLif.Set(0.5);
          }
          else if(m_joystick.GetRawButton((3))) {
-            m_LLif.Set(-0.6);
-            m_RLif.Set(-0.6);
+            m_LLif.Set(-0.5);
+            m_RLif.Set(-0.5);
          }
          else{
             m_LLif.Set(0.0);
@@ -156,12 +156,12 @@ public:
             m_loader.Set(0.0);
          }
 
-//         if(m_joystick.GetRawButton(3)){
-//            m_roller.Set(0.2);
-//         }
-//         else{
-//            m_roller.Set(0.0);
-//         }
+         if(m_joystick.GetRawButton(4)){
+            m_roller.Set(0.5);
+         }
+         else{
+            m_roller.Set(0.0);
+         }
 //
          m_driveTrainController.run();
 
