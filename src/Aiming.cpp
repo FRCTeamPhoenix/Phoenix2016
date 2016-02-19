@@ -52,7 +52,7 @@ void Aiming::getNewImageData() {
 void Aiming::findTarget() {
 
    // Rotate while the first coordinate hasn't been found
-   if (lastArrayWasNull) {
+   if (m_currentTargetCoordinates[AimingConstants::targetPositionData::yUL == 0]) {
       m_driveTrainController->aimRobotClockwise(5, 0.5);
 
       SmartDashboard::PutString("DB/String 8", "Looking for target");
@@ -69,9 +69,9 @@ void Aiming::rotate() {
 
    // Right side of robot is tilted too far forwards
    if ((m_currentTargetCoordinates[AimingConstants::yUR] -
-         m_currentTargetCoordinates[AimingConstants::yUL]) > 20 ||
+         m_currentTargetCoordinates[AimingConstants::yUL]) > AimingConstants::maxTiltingFactor &&
          (m_currentTargetCoordinates[AimingConstants::yLL] -
-               m_currentTargetCoordinates[AimingConstants::yLR]) > 20) {
+               m_currentTargetCoordinates[AimingConstants::yLR]) > AimingConstants::maxTiltingFactor) {
 
       m_driveTrainController->aimRobotClockwise(1, 0.5);
 
@@ -80,9 +80,9 @@ void Aiming::rotate() {
 
    // Left side of robot is tilted too far forwards
    else if ((m_currentTargetCoordinates[AimingConstants::yUL] -
-         m_currentTargetCoordinates[AimingConstants::yUR]) > 20 ||
+         m_currentTargetCoordinates[AimingConstants::yUR]) > AimingConstants::maxTiltingFactor &&
          (m_currentTargetCoordinates[AimingConstants::yLR] -
-               m_currentTargetCoordinates[AimingConstants::yLL]) > 20) {
+               m_currentTargetCoordinates[AimingConstants::yLL]) > AimingConstants::maxTiltingFactor) {
 
       m_driveTrainController->aimRobotCounterclockwise(1, 0.5);
 
