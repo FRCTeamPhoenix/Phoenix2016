@@ -105,16 +105,16 @@ namespace DriveStationConstants {
 
 struct AimingConstants{
 
-   //Deteced corners of target
+   //Detected corners of target
    enum targetPositionData {
-      xUL, // upper left x-coordinate
-      yUL, // upper left y-coordinate
-      xUR, // upper right x-coordinate
-      yUR, // upper right y-coordinate
-      xLL, // lower left x-coordinate
-      yLL, // lower left y-coordinate
-      xLR, // lower right x-coordinate
-      yLR, // lower right y-coordinate
+      xUL = 1, // upper left x-coordinate
+      yUL = 2, // upper left y-coordinate
+      xUR = 3, // upper right x-coordinate
+      yUR = 4, // upper right y-coordinate
+      xLL = 5, // lower left x-coordinate
+      yLL = 6, // lower left y-coordinate
+      xLR = 7, // lower right x-coordinate
+      yLR = 8, // lower right y-coordinate
    };
 
    const static int numTargetVals = 8;
@@ -137,9 +137,9 @@ struct AimingConstants{
 struct LoaderSenseConstants {
 
    enum ballPositionData {
-      ballRadius,
-      ballCenterX,
-      ballCenterY
+      ballRadius = 1,
+      ballCenterX = 2,
+      ballCenterY = 3
    };
 
    const static int numBallVals = 3;
