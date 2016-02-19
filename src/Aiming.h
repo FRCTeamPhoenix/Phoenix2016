@@ -50,8 +50,6 @@ private:
    DriveStation* m_driveStation;
    int m_currentTargetCoordinates[9];
    STATE m_currentState;
-   bool lastArrayWasNull;
-   int nullArraysInARow;
 
 };
 

@@ -25,11 +25,6 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, Drive
       m_currentTargetCoordinates[i] = 0;
    }
 
-   lastArrayWasNull = true;
-
-   //Keeps track of the number of blank data sets sent over to Client
-   //This represents the number of action cycles for which the target has not been seen
-   nullArraysInARow = 0;
 }
 
 // IMPORTANT: Call this method to begin aiming process - same as manually setting state to first
@@ -47,12 +42,6 @@ void Aiming::getNewImageData() {
          // Updates array of current coordinates with data received by client
          for(int i = 1; i <= AimingConstants::numTargetVals; i++) {
             m_currentTargetCoordinates[i - 1] = m_client->getTargetData(i);
-         }
-
-         if(m_currentTargetCoordinates[AimingConstants::yUL] == 0) {
-            lastArrayWasNull = true;
-         } else {
-            lastArrayWasNull = false;
          }
 
       }
@@ -78,88 +67,58 @@ void Aiming::findTarget() {
 // Turns robot to line up with target, once target is within field of vision
 void Aiming::rotate() {
 
-   if (lastArrayWasNull) {
-      nullArraysInARow++;
-      // If no target data has been received for three cycles, start looking for the ball again
-      if (nullArraysInARow >= 3) {
-         nullArraysInARow = 0;
-         setCurrentState(FINDING_TARGET);
-      }
+   // Right side of robot is tilted too far forwards
+   if ((m_currentTargetCoordinates[AimingConstants::yUR] -
+         m_currentTargetCoordinates[AimingConstants::yUL]) > 20 ||
+         (m_currentTargetCoordinates[AimingConstants::yLL] -
+               m_currentTargetCoordinates[AimingConstants::yLR]) > 20) {
+
+      m_driveTrainController->aimRobotClockwise(1, 0.5);
+
+      SmartDashboard::PutString("DB/String 8", "Rotating clockwise");
+   }
+
+   // Left side of robot is tilted too far forwards
+   else if ((m_currentTargetCoordinates[AimingConstants::yUL] -
+         m_currentTargetCoordinates[AimingConstants::yUR]) > 20 ||
+         (m_currentTargetCoordinates[AimingConstants::yLR] -
+               m_currentTargetCoordinates[AimingConstants::yLL]) > 20) {
+
+      m_driveTrainController->aimRobotCounterclockwise(1, 0.5);
+
+      SmartDashboard::PutString("DB/String 8", "Rotating counterclockwise");
+   }
+
+   else if (((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
+         < AimingConstants::minTargetWidth) || ((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
+               > AimingConstants::maxTargetWidth)) {
+      setCurrentState(APPROACHING);
    }
 
    else {
-
-      nullArraysInARow = 0;
-
-      // Right side of robot is tilted too far forwards
-      if ((m_currentTargetCoordinates[AimingConstants::yUR] -
-            m_currentTargetCoordinates[AimingConstants::yUL]) > 20 ||
-            (m_currentTargetCoordinates[AimingConstants::yLL] -
-                  m_currentTargetCoordinates[AimingConstants::yLR]) > 20) {
-
-         m_driveTrainController->aimRobotClockwise(1, 0.5);
-
-         SmartDashboard::PutString("DB/String 8", "Rotating clockwise");
-      }
-
-      // Left side of robot is tilted too far forwards
-      else if ((m_currentTargetCoordinates[AimingConstants::yUL] -
-            m_currentTargetCoordinates[AimingConstants::yUR]) > 20 ||
-            (m_currentTargetCoordinates[AimingConstants::yLR] -
-                  m_currentTargetCoordinates[AimingConstants::yLL]) > 20) {
-
-         m_driveTrainController->aimRobotCounterclockwise(1, 0.5);
-
-         SmartDashboard::PutString("DB/String 8", "Rotating counterclockwise");
-      }
-
-      else if (((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
-            < AimingConstants::minTargetWidth) || ((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
-                  > AimingConstants::maxTargetWidth)) {
-         setCurrentState(APPROACHING);
-      }
-
-      else {
-         SmartDashboard::PutString("DB/String 8", "Done aiming!");
-         setCurrentState(IDLE);
-      }
-
+      SmartDashboard::PutString("DB/String 8", "Done aiming!");
+      setCurrentState(IDLE);
    }
-
 }
 
 void Aiming::approachTarget() {
 
-   if (lastArrayWasNull) {
-      nullArraysInARow++;
-      if (nullArraysInARow >= 3) {
-         nullArraysInARow = 0;
-         setCurrentState(FINDING_TARGET);
-      }
+   if ((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
+         < AimingConstants::minTargetWidth) {
+      m_driveTrainController->moveRobotStraight(1, 0.5);
+
+      SmartDashboard::PutString("DB/String 8", "Moving forwards");
+   }
+
+   else if ((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
+         > AimingConstants::maxTargetWidth) {
+      m_driveTrainController->moveRobotStraight(-1, 0.5);
+
+      SmartDashboard::PutString("DB/String 8", "Moving backwards");
    }
 
    else {
-
-      nullArraysInARow = 0;
-
-      if ((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
-            < AimingConstants::minTargetWidth) {
-         m_driveTrainController->moveRobotStraight(1, 0.5);
-
-         SmartDashboard::PutString("DB/String 8", "Moving forwards");
-      }
-
-      else if ((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
-            > AimingConstants::maxTargetWidth) {
-         m_driveTrainController->moveRobotStraight(-1, 0.5);
-
-         SmartDashboard::PutString("DB/String 8", "Moving backwards");
-      }
-
-      else {
-         setCurrentState(ROTATING);
-      }
-
+      setCurrentState(ROTATING);
    }
 
 }

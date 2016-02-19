@@ -18,12 +18,6 @@ LoaderSense::LoaderSense(Client* client, DriveTrainController* driveTrainControl
       m_currentBallPosition[i] = 0;
    }
 
-   lastArrayWasNull = true;
-
-   //Keeps track of the number of blank data sets sent over to Client
-   //This represents the number of action cycles for which the ball has not been seen
-   nullArraysInARow = 0;
-
 }
 
 // IMPORTANT: Call to this method will implement the Loader's alignment process
@@ -47,12 +41,6 @@ void LoaderSense::updateBallPositionData() {
        m_currentBallPosition[i - 1] = m_client->getBallData(i);
 
          }
-
-      if(m_currentBallPosition[LoaderSenseConstants::ballRadius] == 0) {
-         lastArrayWasNull = true;
-      } else {
-         lastArrayWasNull = false;
-      }
 
    }
 
@@ -98,53 +86,38 @@ void LoaderSense::findBall() {
 // IMPORTANT NOTE: will not rotate until ball is a safe distance away
 void LoaderSense::rotate() {
 
-   if (lastArrayWasNull) {
-      nullArraysInARow++;
-      //Goes back to trying to find the ball, if three cycles in a row yield no data
-      if (/*nullArraysInARow >= 3*/false) {
-         nullArraysInARow = 0;
-         setCurrentState(FINDING_BALL);
-      }
-   }
+   if (m_currentBallPosition[LoaderSenseConstants::ballCenterX] < LoaderSenseConstants::minGoodCenterX) {
 
-   else {
+      if (m_currentBallPosition[LoaderSenseConstants::ballRadius] > LoaderSenseConstants::maxSafeRotationRadius) {
 
-      nullArraysInARow = 0;
-
-      if (m_currentBallPosition[LoaderSenseConstants::ballCenterX] < LoaderSenseConstants::minGoodCenterX) {
-
-         if (m_currentBallPosition[LoaderSenseConstants::ballRadius] > LoaderSenseConstants::maxSafeRotationRadius) {
-
-            setCurrentState(BACKUP);
-
-         } else {
-
-            //Robot will rotate clockwise 1 degree, at motor speed 0.5
-            m_driveTrainController->aimRobotClockwise(1, 0);
-
-            SmartDashboard::PutString("DB/String 9", "Rotating clockwise");
-
-         }
-
-      } else if (m_currentBallPosition[LoaderSenseConstants::ballCenterX] > LoaderSenseConstants::maxGoodCenterX) {
-
-         if(m_currentBallPosition[LoaderSenseConstants::ballRadius] > LoaderSenseConstants::maxSafeRotationRadius) {
-
-            setCurrentState(BACKUP);
-
-         } else {
-
-            //Robot will rotate counterclockwise 1 degree, at motor speed 0.5
-            m_driveTrainController->aimRobotCounterclockwise(1, 0);
-
-            SmartDashboard::PutString("DB/String 9", "Rotating counterclockwise");
-         }
+         setCurrentState(BACKUP);
 
       } else {
 
-         setCurrentState(APPROACHING);
+         //Robot will rotate clockwise 1 degree, at motor speed 0.5
+         m_driveTrainController->aimRobotClockwise(1, 0);
+
+         SmartDashboard::PutString("DB/String 9", "Rotating clockwise");
 
       }
+
+   } else if (m_currentBallPosition[LoaderSenseConstants::ballCenterX] > LoaderSenseConstants::maxGoodCenterX) {
+
+      if(m_currentBallPosition[LoaderSenseConstants::ballRadius] > LoaderSenseConstants::maxSafeRotationRadius) {
+
+         setCurrentState(BACKUP);
+
+      } else {
+
+         //Robot will rotate counterclockwise 1 degree, at motor speed 0.5
+         m_driveTrainController->aimRobotCounterclockwise(1, 0);
+
+         SmartDashboard::PutString("DB/String 9", "Rotating counterclockwise");
+      }
+
+   } else {
+
+      setCurrentState(APPROACHING);
 
    }
 
@@ -152,19 +125,6 @@ void LoaderSense::rotate() {
 
 // Approach ball until it is close enough to be loaded
 void LoaderSense::approach() {
-
-   if (lastArrayWasNull) {
-         nullArraysInARow++;
-         //Goes back to trying to find the ball, if three cycles in a row yield no data
-         if (/*nullArraysInARow >= 3*/false) {
-            nullArraysInARow = 0;
-            setCurrentState(FINDING_BALL);
-         }
-      }
-
-   else {
-
-      nullArraysInARow = 0;
 
       if (m_currentBallPosition[LoaderSenseConstants::ballRadius] < LoaderSenseConstants::minGoodRadius) {
          //Robot will move forward an inch, at motor speed 0.5
@@ -177,37 +137,20 @@ void LoaderSense::approach() {
          setCurrentState(IDLE);
       }
 
-   }
-
 }
 
 // Back up until rotation can be safely completed
 void LoaderSense::backup() {
 
-   if (lastArrayWasNull) {
-         nullArraysInARow++;
-         //Goes back to trying to find the ball, if three cycles in a row yield no data
-         if (/*nullArraysInARow >= 3*/false) {
-            nullArraysInARow = 0;
-            setCurrentState(FINDING_BALL);
-         }
-      }
+   if(m_currentBallPosition[LoaderSenseConstants::ballRadius] < LoaderSenseConstants::maxSafeRotationRadius) {
 
-   else {
+      setCurrentState(ROTATING);
 
-      nullArraysInARow = 0;
+   } else {
 
-      if(m_currentBallPosition[LoaderSenseConstants::ballRadius] < LoaderSenseConstants::maxSafeRotationRadius) {
+      m_driveTrainController->moveRobotStraight(-1, 0.5);
 
-         setCurrentState(ROTATING);
-
-      } else {
-
-         m_driveTrainController->moveRobotStraight(-1, 0.5);
-
-         SmartDashboard::PutString("DB/String 9", "Backing up");
-
-      }
+      SmartDashboard::PutString("DB/String 9", "Backing up");
 
    }
 
