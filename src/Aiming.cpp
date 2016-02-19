@@ -52,7 +52,7 @@ void Aiming::getNewImageData() {
 void Aiming::findTarget() {
 
    // Rotate while the first coordinate hasn't been found
-   if (m_currentTargetCoordinates[AimingConstants::targetPositionData::yUL == 0]) {
+   if (m_currentTargetCoordinates[AimingConstants::targetPositionData::yUL] == 0) {
       m_driveTrainController->aimRobotClockwise(5, 0.5);
 
       SmartDashboard::PutString("DB/String 8", "Looking for target");
