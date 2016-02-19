@@ -69,7 +69,7 @@ void Aiming::rotate() {
 
    // Right side of robot is tilted too far forwards
    if ((m_currentTargetCoordinates[AimingConstants::yUR] -
-         m_currentTargetCoordinates[AimingConstants::yUL]) > AimingConstants::maxTiltingFactor &&
+         m_currentTargetCoordinates[AimingConstants::yUL]) > AimingConstants::maxTiltingFactor ||
          (m_currentTargetCoordinates[AimingConstants::yLL] -
                m_currentTargetCoordinates[AimingConstants::yLR]) > AimingConstants::maxTiltingFactor) {
 
@@ -80,7 +80,7 @@ void Aiming::rotate() {
 
    // Left side of robot is tilted too far forwards
    else if ((m_currentTargetCoordinates[AimingConstants::yUL] -
-         m_currentTargetCoordinates[AimingConstants::yUR]) > AimingConstants::maxTiltingFactor &&
+         m_currentTargetCoordinates[AimingConstants::yUR]) > AimingConstants::maxTiltingFactor ||
          (m_currentTargetCoordinates[AimingConstants::yLR] -
                m_currentTargetCoordinates[AimingConstants::yLL]) > AimingConstants::maxTiltingFactor) {
 
