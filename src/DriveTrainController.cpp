@@ -89,6 +89,7 @@ void DriveTrainController::run() {
          if(m_gyroTargetDegree >= m_gyro->GetAngle())
             m_goalState = IDLE;
       }
+      break;
    case LIDARDRIVE:
       if(lidarInches >= (m_lidar->getDistance() *2.54 + RobotConstants::lidarErrorRange))
       {

@@ -28,11 +28,11 @@ float DriveStation::getJoystickThrottle() {
 }
 
 float DriveStation::getGamepadJoystick(){
-   return m_gamepadJoystick;
+   return m_gamepadJoystickY;
 }
 
 float DriveStation::deadzoneOfGamepadJoystick(){
-   float power = getGamepadJoystick();
+   float power = m_gamepadJoystickY;
    if (fabs(power) < 0.05f){
       return 0;
    }
@@ -68,6 +68,7 @@ bool DriveStation::getJoystickButton(int buttonCode) {
 }
 
 void DriveStation::snapShot() {
+
    for(int i=0; i<12; i++){
       m_buttons[i]=m_gamepad->GetRawButton(i+1);
    }
@@ -85,7 +86,6 @@ void DriveStation::snapShot() {
    m_joystickZ = m_joystick->GetZ();
    m_joystickThrottle = m_joystick->GetThrottle();
    m_gamepadJoystickY = m_gamepad->GetY();
-
 }
 
 void DriveStation::printToDashboard(unsigned long *pointToString, int space){

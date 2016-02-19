@@ -9,6 +9,7 @@
 #include "LoaderSense.h"
 #include "Client.h"
 #include "Aiming.h"
+#include "Arm.h"
 #include <thread>
 #include <iostream>
 #include <fstream>
@@ -26,69 +27,76 @@ void lidarThread(Robot * robot, LidarHandler * lidarHandler);
 class Robot: public SampleRobot
 {
    AnalogGyro m_gyro;
-   ConfigEditor m_configEditor;
-   Talon m_flywheelLeftMotor;
-   Talon m_flywheelRightMotor;
-   Flywheel m_flywheel;
-   Joystick m_joystick;
-   Joystick m_gamepad;
+   AnalogPotentiometer m_leftPotentiometer;
+   AnalogPotentiometer m_rightPotentiometer;
+   DigitalOutput m_lidarDIOSwitch;
+   DigitalInput m_loadedSensor;
+   DigitalInput m_leftUpperLimitSwitch;
+   DigitalInput m_rightUpperLimitSwitch;
+   DigitalInput m_leftLowerLimitSwitch;
+   DigitalInput m_rightLowerLimitSwitch;
    Encoder m_leftWheelEncoder;
    Encoder m_rightWheelEncoder;
-   DriveStation m_driveStation;
-   RobotDrive m_driveTrain;
+   Joystick m_joystick;
+   Joystick m_gamepad;
    Relay m_lidarOnSwitch;
-   DigitalOutput m_lidarDIOSwitch;
-   LidarHandler m_lidarHandler;
-   DriveTrainController m_driveTrainController;
+   Talon m_flywheelLeftMotor;
+   Talon m_flywheelRightMotor;
    Talon m_armMotorLeft;
    Talon m_armMotorRight;
    Talon m_intakeMotor;
    Talon m_stationaryMotor;
-   DigitalInput m_upperLimit;
-   DigitalInput m_lowerLimit;
-   DigitalInput m_loadedSensor;
-   Encoder m_armEncoder;
-   AnalogPotentiometer m_potentiometer;
+   Client m_client;
+   DriveStation m_driveStation;
+   LoaderSense m_loaderSense;
+   Aiming m_aiming;
+   LidarHandler m_lidarHandler;
+   ConfigEditor m_configEditor;
+   RobotDrive m_driveTrain;
+   DriveTrainController m_driveTrainController;
+   Flywheel m_flywheel;
    LoaderController m_loaderController;
    ShooterController m_shooterController;
-   RobotController m_robotController;
+   Arm m_arm;
    USBCamera m_driveCamera;
-   Client m_client;
-   Aiming m_aiming;
-   LoaderSense m_loaderSense;
+   RobotController m_robotController;
 
 public:
    Robot() :
+
       m_gyro(PortAssign::gyroscope),
-      m_configEditor(&m_driveStation),
-      m_flywheelLeftMotor(PortAssign::flywheelLeftMotor),
-      m_flywheelRightMotor(PortAssign::flywheelRightMotor),
-      m_flywheel(&m_flywheelLeftMotor, &m_flywheelRightMotor),
-      m_joystick(PortAssign::joystick),
-      m_gamepad(PortAssign::gamepad),
+      m_leftPotentiometer(PortAssign::leftPotentiometer),
+      m_rightPotentiometer(PortAssign::rightPotentiometer),
+      m_lidarDIOSwitch(15),
+      m_loadedSensor(PortAssign::loadedSensor),
+      m_leftUpperLimitSwitch(PortAssign::leftUpperLimitSwitch),
+      m_rightUpperLimitSwitch(PortAssign::rightUpperLimitSwitch),
+      m_leftLowerLimitSwitch(PortAssign::leftLowerLimitSwitch),
+      m_rightLowerLimitSwitch(PortAssign::rightLowerLimitSwitch),
       m_leftWheelEncoder(PortAssign::leftWheelEncoderChannelA, PortAssign::leftWheelEncoderChannelB),
       m_rightWheelEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
-      m_driveStation(&m_joystick, &m_gamepad),
-      m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
+      m_joystick(PortAssign::joystick),
+      m_gamepad(PortAssign::gamepad),
       m_lidarOnSwitch(0),
-      m_lidarDIOSwitch(15),
-      m_lidarHandler(&m_lidarOnSwitch, 0, 9),
-      m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor, &m_lidarHandler),
+      m_flywheelLeftMotor(PortAssign::flywheelLeftMotor),
+      m_flywheelRightMotor(PortAssign::flywheelRightMotor),
       m_armMotorLeft(PortAssign::armMotorLeft),
       m_armMotorRight(PortAssign::armMotorRight),
       m_intakeMotor(PortAssign::intakeMotor),
       m_stationaryMotor(PortAssign::stationaryMotor),
-      m_upperLimit(PortAssign::upperLimit),
-      m_lowerLimit(PortAssign::lowerLimit),
-      m_loadedSensor(PortAssign::loadedSensor),
-      m_armEncoder(PortAssign::armEncoderChannelA, PortAssign::armEncoderChannelB),
-      m_potentiometer(PortAssign::potentiometer),
+      m_driveStation(&m_joystick, &m_gamepad),
+      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
+      m_aiming(&m_client, &m_driveTrainController, &m_driveStation),
+      m_lidarHandler(&m_lidarOnSwitch, 0, 9),
+      m_configEditor(&m_driveStation),
+      m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
+      m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor, &m_lidarHandler),
+      m_flywheel(&m_flywheelLeftMotor, &m_flywheelRightMotor),
       m_loaderController(&m_intakeMotor, &m_stationaryMotor, &m_loadedSensor, &m_driveStation, &m_configEditor),
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
-      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_configEditor),
+      m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor),
       m_driveCamera("cam0",false),
-      m_aiming(&m_client, &m_driveTrainController, &m_driveStation),
-      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation){
+      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm){
 
       SmartDashboard::init();
       m_gyro.Calibrate();
@@ -127,6 +135,7 @@ public:
          m_robotController.run();
          m_driveTrainController.run();
          m_shooterController.run();
+         m_arm.run();
       }
    }
 
