@@ -67,33 +67,32 @@ void Aiming::findTarget() {
 // Turns robot to line up with target, once target is within field of vision
 void Aiming::rotate() {
 
-   // Right side of robot is tilted too far forwards
-   if ((m_currentTargetCoordinates[AimingConstants::yUR] -
-         m_currentTargetCoordinates[AimingConstants::yUL]) > AimingConstants::maxTiltingFactor ||
-         (m_currentTargetCoordinates[AimingConstants::yLL] -
-               m_currentTargetCoordinates[AimingConstants::yLR]) > AimingConstants::maxTiltingFactor) {
+   //Robot is too far right
+   if ((m_currentTargetCoordinates[AimingConstants::xUR] + m_currentTargetCoordinates[AimingConstants::xUL])/2
+         > (AimingConstants::maxXCoordinate/2 + AimingConstants::maxOffset)) {
 
       m_driveTrainController->aimRobotClockwise(1, 0.5);
 
       SmartDashboard::PutString("DB/String 8", "Rotating clockwise");
+
    }
 
-   // Left side of robot is tilted too far forwards
-   else if ((m_currentTargetCoordinates[AimingConstants::yUL] -
-         m_currentTargetCoordinates[AimingConstants::yUR]) > AimingConstants::maxTiltingFactor ||
-         (m_currentTargetCoordinates[AimingConstants::yLR] -
-               m_currentTargetCoordinates[AimingConstants::yLL]) > AimingConstants::maxTiltingFactor) {
+   else if ((m_currentTargetCoordinates[AimingConstants::xUR] + m_currentTargetCoordinates[AimingConstants::xUL])/2
+         < (AimingConstants::maxXCoordinate/2 - AimingConstants::maxOffset)) {
 
       m_driveTrainController->aimRobotCounterclockwise(1, 0.5);
 
       SmartDashboard::PutString("DB/String 8", "Rotating counterclockwise");
+
    }
 
+   /*
    else if (((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
          < AimingConstants::minTargetWidth) || ((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
                > AimingConstants::maxTargetWidth)) {
       setCurrentState(APPROACHING);
    }
+   */
 
    else {
       SmartDashboard::PutString("DB/String 8", "Done aiming!");

@@ -123,6 +123,11 @@ struct AimingConstants{
    // depending upon the chosen coordinate system
    const static int leftTargetVisionBoundary = 30;
    const static int rightTargetVisionBoundary = 290;
+   const static int centerXCoordinate = 320;
+   const static int centerYCoordinate = 240;
+   const static int maxXCoordinate = 640;
+   const static int maxYCoordinate = 480;
+   const static int maxOffset = 20;
    const static int maxTiltingFactor = 20;
    const static int minTargetWidth = 250;
    const static int maxTargetWidth = 350;
