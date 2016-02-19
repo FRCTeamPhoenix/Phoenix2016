@@ -28,11 +28,11 @@ float DriveStation::getJoystickThrottle() {
 }
 
 float DriveStation::getGamepadJoystick(){
-   return m_gamepadJoystickY;
+   return -m_gamepadJoystickY;
 }
 
 float DriveStation::deadzoneOfGamepadJoystick(){
-   float power = m_gamepadJoystickY;
+   float power = -m_gamepadJoystickY;
    if (fabs(power) < 0.05f){
       return 0;
    }
