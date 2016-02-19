@@ -48,6 +48,11 @@ private:
 
    int m_currentBallPosition[4];
    STATE m_currentState;
+   enum rotationDirection {
+      CLOCKWISE,
+      COUNTERCLOCKWISE
+   };
+   rotationDirection currentRotationDirection;
 
 };
 

@@ -13,10 +13,14 @@ LoaderSense::LoaderSense(Client* client, DriveTrainController* driveTrainControl
    m_driveStation(driveStation)
 {
    setCurrentState(IDLE);
+
    m_currentBallPosition[0] = LoaderSenseConstants::loaderFlag;
+
    for (int i = 1; i <= LoaderSenseConstants::numBallVals; i++) {
       m_currentBallPosition[i] = 0;
    }
+
+   currentRotationDirection = CLOCKWISE;
 
 }
 
@@ -95,7 +99,9 @@ void LoaderSense::rotate() {
       } else {
 
          //Robot will rotate clockwise 1 degree, at motor speed 0.5
-         m_driveTrainController->aimRobotClockwise(1, 0);
+         m_driveTrainController->aimRobotClockwise(1, 0.5);
+
+         currentRotationDirection = CLOCKWISE;
 
          SmartDashboard::PutString("DB/String 9", "Rotating clockwise");
 
@@ -110,7 +116,9 @@ void LoaderSense::rotate() {
       } else {
 
          //Robot will rotate counterclockwise 1 degree, at motor speed 0.5
-         m_driveTrainController->aimRobotCounterclockwise(1, 0);
+         m_driveTrainController->aimRobotCounterclockwise(1, 0.5);
+
+         currentRotationDirection = COUNTERCLOCKWISE;
 
          SmartDashboard::PutString("DB/String 9", "Rotating counterclockwise");
       }
@@ -134,6 +142,16 @@ void LoaderSense::approach() {
 
          setCurrentState(ROTATING);
       } else {
+
+         // The following if statements account for robot over-rotation
+         // by invoking rotation in the opposite direction
+         if (currentRotationDirection == CLOCKWISE) {
+            m_driveTrainController->aimRobotCounterclockwise(20, 0.5);
+         }
+         else if (currentRotationDirection == COUNTERCLOCKWISE) {
+            m_driveTrainController->aimRobotClockwise(20, 0.5);
+         }
+
          setCurrentState(IDLE);
       }
 
