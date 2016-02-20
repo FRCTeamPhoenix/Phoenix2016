@@ -58,6 +58,9 @@ void DriveTrainController::manualDrive(float throttleRatio) {
 }
 
 void DriveTrainController::run() {
+
+
+
    switch (getCurrentState()) {
 
    //Goal state with the drivers are driving the robot
@@ -148,14 +151,6 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
       m_rightEncoderComplete = false;
       m_leftEncoderComplete = false;
 
-      std::ostringstream outputTR;
-      outputTR << "Target Right Tick " << m_targetTickRight;
-      SmartDashboard::PutString("DB/String 8", outputTR.str());
-
-      std::ostringstream outputTL;
-      outputTL << "Target Left Tick " << m_targetTickLeft;
-      SmartDashboard::PutString("DB/String 9", outputTL.str());
-
       if (degree > 0) {
          m_rightMotorPower = -(m_configEditor->getFloat("motorPower"));
          m_leftMotorPower = m_configEditor->getFloat("motorPower");
@@ -190,13 +185,6 @@ void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
    // float ticks = distance * RobotConstants::ticksPerInch;
    m_targetTickRight = m_initalEncoderValueRight + distance;
    m_targetTickLeft = m_initalEncoderValueLeft + distance;
-
-   std::ostringstream outputTR;
-   outputTR << "T-Right " << m_targetTickRight;
-   SmartDashboard::PutString("DB/String 2", outputTR.str());
-   std::ostringstream outputTL;
-   outputTL << "T-Left " << m_targetTickLeft;
-   SmartDashboard::PutString("DB/String 3", outputTL.str());
 
    m_rightEncoderComplete = false;
    m_leftEncoderComplete = false;
@@ -244,7 +232,7 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
    case GYROTURN:
       return GYROTURN;
    case LIDARDRIVE:
-        return LIDARDRIVE;
+      return LIDARDRIVE;
    default:
       return IDLE;
    }

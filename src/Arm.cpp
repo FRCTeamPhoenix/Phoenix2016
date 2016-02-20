@@ -10,8 +10,8 @@
 Arm::Arm(
       Talon* armMotorLeft,
       Talon* armMotorRight,
-      AnalogPotentiometer* leftPotentiometer,
-      AnalogPotentiometer* rightPotentiometer,
+      AnalogInput* leftPotentiometer,
+      AnalogInput* rightPotentiometer,
       DigitalInput* leftUpperLimitSwitch,
       DigitalInput* rightUpperLimitSwitch,
       DigitalInput* leftLowerLimitSwitch,
@@ -38,36 +38,38 @@ Arm::~Arm() {
 void Arm::run(){
 
    std::ostringstream leftPotentiometer;
-   leftPotentiometer << "L Angle: ";
-   leftPotentiometer << m_leftPotentiometer->Get();
-   SmartDashboard::PutString("DB/String 3", leftPotentiometer.str());
+   leftPotentiometer << "LP Voltage: ";
+   leftPotentiometer << m_leftPotentiometer->GetVoltage();
+   SmartDashboard::PutString("DB/String 1", leftPotentiometer.str());
 
    std::ostringstream rightPotentiometer;
-   rightPotentiometer << "R Angle: ";
-   rightPotentiometer << m_rightPotentiometer->Get();
-   SmartDashboard::PutString("DB/String 4", rightPotentiometer.str());
+   rightPotentiometer << "RP Voltage: ";
+   rightPotentiometer << m_rightPotentiometer->GetVoltage();
+   SmartDashboard::PutString("DB/String 2", rightPotentiometer.str());
+
+//   std::ostringstream limitSwitch;
+//   limitSwitch << "BL: ";
+//   limitSwitch << m_leftLowerLimitSwitch->Get();
+//   limitSwitch << " BR: ";
+//   limitSwitch << m_rightLowerLimitSwitch->Get();
+//   limitSwitch << " FR: ";
+//   limitSwitch << m_rightUpperLimitSwitch->Get();
+//   limitSwitch << " FL: ";
+//   limitSwitch << m_leftUpperLimitSwitch->Get();
+//   SmartDashboard::PutString("DB/String 7", limitSwitch.str());
 
    float power = 0.0;
-   if (!PDRIVE)
-   {
-      std::ostringstream outputR;
-      outputR << "power: ";
-      outputR << (m_armMotorPower);
-      SmartDashboard::PutString("DB/String 7", outputR.str() );
+   if (!PDRIVE){
       if(m_armMotorPower > 0){
-         SmartDashboard::PutString("DB/String 8", "greaterthan0");
          //if (!m_leftUpperLimitSwitch->Get() && !m_rightUpperLimitSwitch->Get()){
-         if ((m_leftPotentiometer->Get() < RobotConstants::maxSoftLimitLeft) && (m_rightPotentiometer->Get() < RobotConstants::maxSoftLimitRight)){
-            SmartDashboard::PutString("DB/String 8", "intheifUppter");
+         if ((m_leftPotentiometer->GetVoltage() < RobotConstants::maxSoftLimitLeft) && (m_rightPotentiometer->GetVoltage() < RobotConstants::maxSoftLimitRight)){
             power = m_armMotorPower;
          }
          //}
       }
       if(m_armMotorPower < 0 ){
-         SmartDashboard::PutString("DB/String 8", "lessthan0");
          //if (!m_leftLowerLimitSwitch->Get() && !m_rightLowerLimitSwitch->Get()){
-         if ((m_leftPotentiometer->Get() > RobotConstants::minSoftLimitLeft) && (m_rightPotentiometer->Get() > RobotConstants::minSoftLimitRight)){
-            SmartDashboard::PutString("DB/String 8", "intheifLower");
+         if ((m_leftPotentiometer->GetVoltage() > RobotConstants::minSoftLimitLeft) && (m_rightPotentiometer->GetVoltage() > RobotConstants::minSoftLimitRight)){
             power = m_armMotorPower;
          }
          //}
@@ -96,7 +98,6 @@ void Arm::run(){
 }
 
 void Arm::move(float motorPower){
-   SmartDashboard::PutString("DB/String 2", "In Move");
    PDRIVE = false;
    m_armMotorPower = motorPower;
 }
@@ -113,11 +114,11 @@ void Arm::angle(float angle,float motorpower){
 }
 
 float Arm::getAngleLeft(){
-   double relativeVoltLeft = (m_leftPotentiometer->Get() - m_configEditor->getFloat("potLeftValueLow"))/(m_configEditor->getFloat("potLeftValueHigh") - m_configEditor->getFloat("potLeftValueLow"));
+   double relativeVoltLeft = (m_leftPotentiometer->GetVoltage() - m_configEditor->getFloat("potLeftValueLow"))/(m_configEditor->getFloat("potLeftValueHigh") - m_configEditor->getFloat("potLeftValueLow"));
    return relativeVoltLeft * (RobotConstants::maxTheta - RobotConstants::minTheta);
 }
 
 float Arm::getAngleRight(){
-   double relativeVoltRight = (m_rightPotentiometer->Get() - m_configEditor->getFloat("potRightValueLow"))/(m_configEditor->getFloat("potRightValueHigh") - m_configEditor->getFloat("potRightValueLow"));
+   double relativeVoltRight = (m_rightPotentiometer->GetVoltage() - m_configEditor->getFloat("potRightValueLow"))/(m_configEditor->getFloat("potRightValueHigh") - m_configEditor->getFloat("potRightValueLow"));
    return relativeVoltRight* (RobotConstants::maxTheta - RobotConstants::minTheta);
 }

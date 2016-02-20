@@ -18,8 +18,8 @@ class Arm {
 private:
    Talon* m_armMotorLeft;
    Talon* m_armMotorRight;
-   AnalogPotentiometer* m_leftPotentiometer;
-   AnalogPotentiometer* m_rightPotentiometer;
+   AnalogInput* m_leftPotentiometer;
+   AnalogInput* m_rightPotentiometer;
    DigitalInput* m_leftUpperLimitSwitch;
    DigitalInput* m_rightUpperLimitSwitch;
    DigitalInput* m_leftLowerLimitSwitch;
@@ -32,8 +32,8 @@ public:
    Arm(
          Talon* armMotorLeft,
          Talon* armMotorRight,
-         AnalogPotentiometer* leftPotentiometer,
-         AnalogPotentiometer* rightPotentiometer,
+         AnalogInput* leftPotentiometer,
+         AnalogInput* rightPotentiometer,
          DigitalInput* leftUpperLimitSwitch,
          DigitalInput* rightUpperLimitSwitch,
          DigitalInput* leftLowerLimitSwitch,

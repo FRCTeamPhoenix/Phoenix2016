@@ -27,8 +27,8 @@ void lidarThread(Robot * robot, LidarHandler * lidarHandler);
 class Robot: public SampleRobot
 {
    AnalogGyro m_gyro;
-   AnalogPotentiometer m_leftPotentiometer;
-   AnalogPotentiometer m_rightPotentiometer;
+   AnalogInput m_leftPotentiometer;
+   AnalogInput m_rightPotentiometer;
    DigitalOutput m_lidarDIOSwitch;
    DigitalInput m_loadedSensor;
    DigitalInput m_leftUpperLimitSwitch;
@@ -129,6 +129,18 @@ public:
 
    }
    void OperatorControl(){
+      SmartDashboard::PutString("DB/String 0", "Teleop ");
+      SmartDashboard::PutString("DB/String 0", " ");
+      SmartDashboard::PutString("DB/String 1", " ");
+      SmartDashboard::PutString("DB/String 2", " ");
+      SmartDashboard::PutString("DB/String 3", " ");
+      SmartDashboard::PutString("DB/String 4", " ");
+      SmartDashboard::PutString("DB/String 5", " ");
+      SmartDashboard::PutString("DB/String 6", " ");
+      SmartDashboard::PutString("DB/String 7", " ");
+      SmartDashboard::PutString("DB/String 8", " ");
+      SmartDashboard::PutString("DB/String 9", " ");
+
       m_driveTrainController.setGoalState(DriveTrainController::TELEOP);
       while(IsOperatorControl() && IsEnabled()){
          m_driveStation.snapShot();
@@ -314,6 +326,11 @@ public:
 
 void lidarThread(Robot * robot, LidarHandler * lidarHandler) {
    while(robot->IsEnabled() && (robot->IsAutonomous() || robot->IsOperatorControl() || robot->IsTest())) {
+      std::ostringstream lidar;
+      lidar << "Lidar Value: ";
+      lidar << lidarHandler->getDistance();
+      SmartDashboard::PutString("DB/String 0", lidar.str());
+
       lidarHandler->run();
       Wait(0.1);
    }
