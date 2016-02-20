@@ -16,6 +16,11 @@ class Robot: public SampleRobot
    Talon m_RLif;
    Talon m_roller;
 
+//   Talon RF;
+//   Talon LF;
+//   Talon RR;
+//   Talon LR;
+
 //   Talon m_leftPotMotor;
 //   Talon m_rightPotMotor;
 
@@ -49,11 +54,17 @@ public:
       m_RLif(8),
       m_roller(9),
 
+
+//      RF(0),
+//      LF(1),
+//      RR(2),
+//      LR(3),
+
 //      m_leftPotMotor(7),
 //      m_rightPotMotor(8),
 
-      m_LPot(1),
-      m_RPot(2),
+      m_RPot(1),
+      m_LPot(2),
 
       m_ballSensor(8),
 
@@ -122,6 +133,53 @@ public:
          outputRPot << "Right Pot: ";
          outputRPot << m_RPot.GetVoltage();
          SmartDashboard::PutString("DB/String 6", outputRPot.str());
+
+
+
+//
+//         if(m_joystick.GetRawButton(1)){
+//            RF.Set(1);
+//            LF.Set(1);
+//            RR.Set(1);
+//            LR.Set(1);
+//            m_loader.Set(1);
+//            m_RFly.Set(1);
+//            m_LFly.Set(1);
+//            m_LLif.Set(1);
+//            m_RLif.Set(1);
+//            m_roller.Set(1);
+//
+//         }
+//
+//         if(m_joystick.GetRawButton(2)){
+//            RF.Set(-1);
+//            LF.Set(-1);
+//            RR.Set(-1);
+//            LR.Set(-1);
+//            m_loader.Set(-1);
+//            m_RFly.Set(-1);
+//            m_LFly.Set(-1);
+//            m_LLif.Set(-1);
+//            m_RLif.Set(-1);
+//            m_roller.Set(-1);
+//
+//         }
+//
+//         if(m_joystick.GetRawButton(3)){
+//            RF.Set(0);
+//            LF.Set(0);
+//            RR.Set(0);
+//            LR.Set(0);
+//            m_loader.Set(0);
+//            m_RFly.Set(0);
+//            m_LFly.Set(0);
+//            m_LLif.Set(0);
+//            m_RLif.Set(0);
+//            m_roller.Set(0);
+//
+//         }
+
+
 
 
 
