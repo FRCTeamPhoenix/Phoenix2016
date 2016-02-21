@@ -128,6 +128,40 @@ public:
       CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 
    }
+   void Autonomous (){
+      SmartDashboard::PutString("DB/String 0", "Autonomous ");
+      SmartDashboard::PutString("DB/String 0", " ");
+      SmartDashboard::PutString("DB/String 1", " ");
+      SmartDashboard::PutString("DB/String 2", " ");
+      SmartDashboard::PutString("DB/String 3", " ");
+      SmartDashboard::PutString("DB/String 4", " ");
+      SmartDashboard::PutString("DB/String 5", " ");
+      SmartDashboard::PutString("DB/String 6", " ");
+      SmartDashboard::PutString("DB/String 7", " ");
+      SmartDashboard::PutString("DB/String 8", " ");
+      SmartDashboard::PutString("DB/String 9", " ");
+      bool addedToQueue = false;
+      while (IsAutonomous()&& IsEnabled()){
+         /*
+          * TODO: Action.run
+          */
+         m_driveStation.snapShot();
+         m_robotController.run();
+         m_driveTrainController.run();
+         m_shooterController.run();
+         m_arm.run();
+
+         if(!addedToQueue){
+            m_driveTrainController.moveRobotStraight(24,.5);
+            /*
+             * TODO: Action.add move forward
+             * TODO: Action ball aim
+             */
+            addedToQueue = true;
+         }
+      }
+
+   }
    void OperatorControl(){
       SmartDashboard::PutString("DB/String 0", "Teleop ");
       SmartDashboard::PutString("DB/String 0", " ");
