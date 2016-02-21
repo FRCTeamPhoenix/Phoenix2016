@@ -152,7 +152,7 @@ public:
          m_arm.run();
 
          if(!addedToQueue){
-            m_driveTrainController.moveRobotStraight(24,.5);
+
             /*
              * TODO: Action.add move forward
              * TODO: Action ball aim
@@ -209,7 +209,7 @@ public:
          outputG << (m_gyro.GetAngle());
          SmartDashboard::PutString("DB/String 9", outputG.str());
 
-         //Homes robot arm at the beginning of test
+
          //         m_loaderController.setHoming();
          //
          //         m_loaderController.run();
@@ -221,7 +221,7 @@ public:
          //         }
          //Calls all run functions involved with testing
 
-         //Outputs the encoder valuse of the left and right wheels
+         //Outputs the encoder value of the left and right wheels
          std::ostringstream outputR;
          outputR << "EncoderR: ";
          outputR << (m_rightWheelEncoder.Get());
@@ -238,7 +238,7 @@ public:
 
          //DriveTrainController
          std::ostringstream outputDriveTrainController;
-         outputDriveTrainController << "DriveTrainController State: " << (m_driveTrainController.getCurrentState());
+         outputDriveTrainController << "DTC State: " << (m_driveTrainController.getCurrentState());
          SmartDashboard::PutString("DB/String 3", outputDriveTrainController.str());
 
          //         //ShooterController
@@ -251,110 +251,110 @@ public:
          //          SmartDashboard::PutString("DB/String 6", ":) Aiming Robot Clockwise 90 Test");
          //        m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
          m_configEditor.update();
-      }
-      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
-         m_driveTrainController.driveLidar(36,0.5);
-      }
-      //Aiming Robot Counter Clockwise 90 degrees
-      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
-         SmartDashboard::PutString("DB/String 6", ":) Aiming Robot CounterClockwise 90 Test");
-         m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
-      }
 
-      //Robot drives straight
-      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonY)){
-         SmartDashboard::PutString("DB/String 6", ":) Moving Robot Straight Test");
-         m_driveTrainController.moveRobotStraight(45, m_configEditor.getFloat("motorPower"));
-      }
-      //test drivetrain repeatability by running forwards and backward five times.
-      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonX)){
-         SmartDashboard::PutString("DB/String 6", "Repeatability Test Straight");
-         bool changeDirection = true;
-         int loop = 0;
-         while(loop<=10){
-            m_driveStation.snapShot();
-            m_driveTrainController.run();
-            //Stops everything on the robot
-            if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
-               SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
-
-               m_driveTrainController.stopRobot();
-               m_shooterController.setOff();
-               loop = 111;
-            }
-            //Switching between going forward and backward
-            if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
-               loop++;
-               if(changeDirection){
-                  m_driveTrainController.moveRobotStraight(m_configEditor.getFloat("distance"), m_configEditor.getFloat("motorPower"));
-                  changeDirection = false;
-               }
-               else {
-                  m_driveTrainController.moveRobotStraight(m_configEditor.getFloat("distance"), m_configEditor.getFloat("motorPower"));
-                  changeDirection = true;
-               }
-            }
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
+            m_driveTrainController.aimRobotClockwise(36,0.5);
          }
-      }
+         //Aiming Robot Counter Clockwise 90 degrees
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
+            SmartDashboard::PutString("DB/String 6", ":) Aiming Robot CounterClockwise 90 Test");
+            m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
+         }
 
-      //Tests drivetrain repeatablity test
-      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonRB)){
-         SmartDashboard::PutString("DB/String 6", "Repeatability Test Rotation");
-         bool changeRotation = true;
-         int loop = 0;
-         while(loop<=10){
-            m_driveStation.snapShot();
-            m_driveTrainController.run();
-            //Stops everything on the robot
-            if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
-               SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
+         //Robot drives straight
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonY)){
+            SmartDashboard::PutString("DB/String 6", ":) Moving Robot Straight Test");
+            m_driveTrainController.moveRobotStraight(45, m_configEditor.getFloat("motorPower"));
+         }
+         //test drivetrain repeatability by running forwards and backward five times.
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonX)){
+            SmartDashboard::PutString("DB/String 6", "Repeatability Test Straight");
+            bool changeDirection = true;
+            int loop = 0;
+            while(loop<=10){
+               m_driveStation.snapShot();
+               m_driveTrainController.run();
+               //Stops everything on the robot
+               if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
+                  SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
 
-               m_driveTrainController.stopRobot();
-               m_shooterController.setOff();
-               loop = 111;
-            }
-            //Switches the dirctions between
-            if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
-               loop++;
-               if(changeRotation){
-                  m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
-                  changeRotation = false;
+                  m_driveTrainController.stopRobot();
+                  m_shooterController.setOff();
+                  loop = 111;
                }
-               else{
-                  m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
-                  changeRotation = true;
+               //Switching between going forward and backward
+               if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
+                  loop++;
+                  if(changeDirection){
+                     m_driveTrainController.moveRobotStraight(m_configEditor.getFloat("distance"), m_configEditor.getFloat("motorPower"));
+                     changeDirection = false;
+                  }
+                  else {
+                     m_driveTrainController.moveRobotStraight(m_configEditor.getFloat("distance"), m_configEditor.getFloat("motorPower"));
+                     changeDirection = true;
+                  }
                }
             }
          }
-      }
 
-      //Stops everything on robot
-      if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
-         SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
+         //Tests drivetrain repeatablity test
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonRB)){
+            SmartDashboard::PutString("DB/String 6", "Repeatability Test Rotation");
+            bool changeRotation = true;
+            int loop = 0;
+            while(loop<=10){
+               m_driveStation.snapShot();
+               m_driveTrainController.run();
+               //Stops everything on the robot
+               if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
+                  SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
 
-         m_shooterController.setOff();
-         //m_loaderController.stop();
-         m_driveTrainController.stopRobot();
-      }
-
-      //Tests the loader by running the motors
-      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonLB)){
-         SmartDashboard::PutString("DB/String 6", "Loader Test");
-         m_loaderController.start();
-      }
-
-      //Tests the shooter by running the flywheels
-      if(m_driveStation.getGamepadButton(DriveStationConstants::triggerRT)){
-         SmartDashboard::PutString("DB/String 6", "Shooter Test");
-
-         if(m_shooterController.getCurrentState() == ShooterController::ARMED){
-            m_shooterController.setShooting();
+                  m_driveTrainController.stopRobot();
+                  m_shooterController.setOff();
+                  loop = 111;
+               }
+               //Switches the dirctions between
+               if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
+                  loop++;
+                  if(changeRotation){
+                     m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
+                     changeRotation = false;
+                  }
+                  else{
+                     m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
+                     changeRotation = true;
+                  }
+               }
+            }
          }
-         else{
-            m_shooterController.setArmed();
+
+         //Stops everything on robot
+         if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
+            SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
+
+            m_shooterController.setOff();
+            //m_loaderController.stop();
+            m_driveTrainController.stopRobot();
+         }
+
+         //Tests the loader by running the motors
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonLB)){
+            SmartDashboard::PutString("DB/String 6", "Loader Test");
+            m_loaderController.start();
+         }
+
+         //Tests the shooter by running the flywheels
+         if(m_driveStation.getGamepadButton(DriveStationConstants::triggerRT)){
+            SmartDashboard::PutString("DB/String 6", "Shooter Test");
+
+            if(m_shooterController.getCurrentState() == ShooterController::ARMED){
+               m_shooterController.setShooting();
+            }
+            else{
+               m_shooterController.setArmed();
+            }
          }
       }
-
    }
 };
 

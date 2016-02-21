@@ -49,15 +49,15 @@ struct PortAssign {
 };
 
 struct RobotConstants {
-   constexpr static float wheelEncoderTicksPerDegree = 4.5f;
+   constexpr static float wheelEncoderDistancePerDegree = 0.1406f;//4.5
    constexpr static float ticksPerInch = 32;
    // 384ticks per wheel rev. three rev. for 360 degrees.
    // (384 *3) / 360 = 3.2
    constexpr static float flywheelMotorSpeed = 1.0f;
    constexpr static bool gyro = true;
 
-   constexpr static double rightDistancePerPulse = (66/1720); //0.0384
-   constexpr static double leftDistancePerPulse = 66/2475; //0.0267
+   constexpr static double rightDistancePerPulse = (66.0/1720.0); //0.0384
+   constexpr static double leftDistancePerPulse = (66.0/2475.0); //0.0267
    constexpr static int lidarErrorRange = 4;
 
    constexpr static const float armMotorLeftPower = 1.0f;
