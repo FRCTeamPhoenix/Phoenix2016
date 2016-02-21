@@ -250,6 +250,7 @@ public:
          //         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
          //          SmartDashboard::PutString("DB/String 6", ":) Aiming Robot Clockwise 90 Test");
          //        m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
+         m_configEditor.update();
       }
       if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
          m_driveTrainController.driveLidar(36,0.5);
@@ -354,7 +355,6 @@ public:
          }
       }
 
-      m_configEditor.update();
    }
 };
 
