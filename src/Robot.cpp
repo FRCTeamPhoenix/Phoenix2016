@@ -48,8 +48,8 @@ class Robot: public SampleRobot
    Talon m_stationaryMotor;
    Client m_client;
    DriveStation m_driveStation;
-   LoaderSense m_loaderSense;
-   Aiming m_aiming;
+   //   LoaderSense m_loaderSense;
+   //   Aiming m_aiming;
    LidarHandler m_lidarHandler;
    ConfigEditor m_configEditor;
    RobotDrive m_driveTrain;
@@ -85,8 +85,8 @@ public:
       m_intakeMotor(PortAssign::intakeMotor),
       m_stationaryMotor(PortAssign::stationaryMotor),
       m_driveStation(&m_joystick, &m_gamepad),
-      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
-      m_aiming(&m_client, &m_driveTrainController, &m_driveStation),
+      //      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
+      //      m_aiming(&m_client, &m_driveTrainController, &m_driveStation),
       m_lidarHandler(&m_lidarOnSwitch, 0, 9),
       m_configEditor(&m_driveStation),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
@@ -114,20 +114,31 @@ public:
       // }
    }
    void RobotInit() override{
-      cout<<"run init socket function" << endl;
-      //m_client.initilizeSocket();
-      if (m_client.m_initGood){
-         cout<<"init good start thread" << endl;
-         std::thread receiveThread(runClient, this, &m_client);
-         receiveThread.detach();
-      }
+      //      cout<<"run init socket function" << endl;
+      //      m_client.initilizeSocket();
+      //      if (m_client.m_initGood){
+      //         cout<<"init good start thread" << endl;
+      //         std::thread receiveThread(runClient, this, &m_client);
+      //         receiveThread.detach();
+      //      }
 
       m_driveCamera.SetExposureManual(20);
       m_driveCamera.SetWhiteBalanceAuto();
       CameraServer::GetInstance()->SetQuality(50);
       CameraServer::GetInstance()->StartAutomaticCapture("cam0");
-
    }
+
+   void Autonomous(){
+//      m_driveTrainController.moveRobotStraight(24, 0.6);
+//      while(IsAutonomous() && IsEnabled()){
+//      m_driveStation.snapShot();
+//      m_robotController.run();
+//      m_driveTrainController.run();
+//      m_shooterController.run();
+//      m_arm.run();
+//      }
+   }
+
    void OperatorControl(){
       SmartDashboard::PutString("DB/String 0", "Teleop ");
       SmartDashboard::PutString("DB/String 0", " ");
