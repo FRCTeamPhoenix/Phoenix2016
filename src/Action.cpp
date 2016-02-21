@@ -1,4 +1,5 @@
 #include "Action.h"
+
 /*
  * Default constructor.
  * In initializer list for derived classes, do the following:
@@ -11,6 +12,14 @@
 Action::Action(void)
 {
    m_initialized = false;
+}
+
+/*
+ * Added for safety reasons.
+ * It is always good to have a destructor.
+ */
+Action::~Action(void)
+{
 }
 
 bool

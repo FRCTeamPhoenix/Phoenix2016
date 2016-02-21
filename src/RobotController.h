@@ -17,6 +17,7 @@
 #include "Actions.h"
 #include "ConfigEditor.h"
 #include "constants.h"
+#include <queue>
 
 class RobotController : public BaseController
 {
@@ -34,7 +35,7 @@ class RobotController : public BaseController
  private:
    STATE m_state;
 
-   std::vector<Action*> m_queue;
+   std::queue<Action*> m_queue;
 
    DriveStation* m_driveStation;
    DriveTrainController* m_driveTrain;
