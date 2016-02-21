@@ -3,7 +3,12 @@
 #include "RobotController.h"
 #include "DriveStation.h"
 #include "DriveTrainController.h"
+#include "LidarHandler.h"
 #include <sstream>
+
+class Robot;
+
+void lidarThread(Robot * robot, LidarHandler * lidarHandler);
 
 class Robot: public SampleRobot
 {
@@ -42,6 +47,9 @@ class Robot: public SampleRobot
 
 
    DriveTrainController m_driveTrainController;
+
+   Relay m_lidarOnSwitch;
+   LidarHandler m_lidarHandler;
 
 public:
    Robot() :
@@ -82,7 +90,10 @@ public:
       m_robotController(&m_DriveStation),
 
 
-      m_driveTrainController(&m_driveTrain, &m_DriveStation)
+      m_driveTrainController(&m_driveTrain, &m_DriveStation),
+
+      m_lidarOnSwitch(0),
+      m_lidarHandler(&m_lidarOnSwitch, 0, 9)
    {
       SmartDashboard::init();
    }
@@ -97,6 +108,8 @@ public:
 
    void Test(){
 
+      std::thread lidarRun(lidarThread, this, &m_lidarHandler);
+      lidarRun.detach();
 
       while(IsTest() && IsEnabled()){
          std::ostringstream outputL;
@@ -134,7 +147,12 @@ public:
          outputRPot << m_RPot.GetVoltage();
          SmartDashboard::PutString("DB/String 6", outputRPot.str());
 
-
+         std::ostringstream Lidar;
+         Lidar << "Lidar: ";
+         Lidar << m_lidarHandler.getDistance();
+         Lidar << " Resets: ";
+         Lidar << m_lidarHandler.getResetCount();
+         SmartDashboard::PutString("DB/String 7", Lidar.str());
 
 //
 //         if(m_joystick.GetRawButton(1)){
@@ -225,8 +243,15 @@ public:
 
       }
 
-
+   lidarRun.join();
    }
 };
 
+
+void lidarThread(Robot * robot, LidarHandler * lidarHandler) {
+   while(robot->IsEnabled() && (robot->IsAutonomous() || robot->IsOperatorControl() || robot->IsTest())) {
+      lidarHandler->run();
+      Wait(0.1);
+   }
+}
 START_ROBOT_CLASS(Robot);
