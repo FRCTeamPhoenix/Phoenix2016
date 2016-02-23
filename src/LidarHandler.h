@@ -21,11 +21,11 @@ class LidarHandler {
    //Relay controlling power cycles
    Relay * m_onSwitch;
 
-   //Counter that gets lidar period
-   Counter m_counter;
-
    //Interfaces with the preferences file
    ConfigEditor * m_configEditor;
+
+   //Counter that gets lidar period
+   Counter m_counter;
 
    //current lidar distance
    double m_distance;
