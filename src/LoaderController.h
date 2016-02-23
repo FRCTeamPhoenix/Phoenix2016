@@ -15,34 +15,23 @@
 #include "ConfigEditor.h"
 
 //Values for the motor speeds might need to be changed
-static const float armMotorLeft = 1.0f;
-static const float armMotorRight = 1.0f;
 static const float intakeMotorSpeed = 1.0f;
 static const float stationaryMotorSpeed = 1.0f;
-static const float homingSpeed = -0.1f;
 
 class LoaderController : public BaseController{
 private:
    Talon* m_intakeMotor;
    Talon* m_stationaryMotor;
-
-
    DigitalInput* m_loadedSensor;
-
    DriveStation* m_driveStation;
-
    ConfigEditor* m_configEditor;
 
 public:
    LoaderController(
-
          Talon* intakeMotor,
          Talon* stationaryMotor,
-
          DigitalInput* loadedSensor,
-
          DriveStation* driveStation,
-
          ConfigEditor* configEditor);
    void run();
    //Starts the loading process

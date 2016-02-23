@@ -55,10 +55,10 @@ private:
    AnalogGyro* m_gyro;
    ConfigEditor* m_configEditor;
    LidarHandler* m_lidar;
-   int32_t m_initalEncoderValueLeft;
-   int32_t m_initalEncoderValueRight;
-   int32_t m_targetTickRight;
-   int32_t m_targetTickLeft;
+   int32_t m_initalEncoderDistanceLeft;
+   int32_t m_initalEncoderDistanceRight;
+   int32_t m_targetDistanceRight;
+   int32_t m_targetDistanceLeft;
    float m_rightMotorPower;
    float m_leftMotorPower;
    bool m_rightEncoderComplete;

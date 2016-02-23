@@ -17,6 +17,7 @@
 #include "Actions.h"
 #include "ConfigEditor.h"
 #include "constants.h"
+#include "Arm.h"
 #include <queue>
 
 class RobotController : public BaseController
@@ -27,9 +28,10 @@ class RobotController : public BaseController
       ROBOT_MANUAL
    };
 
-   RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, Flywheel*, ConfigEditor*);
+   RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, Flywheel*, ConfigEditor*, Arm*);
    virtual ~RobotController();
-
+   void setAuto();
+   void setManual();
    void run();
    void performAction(void);
  private:
@@ -43,6 +45,7 @@ class RobotController : public BaseController
    LoaderController * m_loaderController;
    Flywheel * m_flywheel;
    ConfigEditor * m_configEditor;
+   Arm* m_arm;
 };
 
 #endif /* SRC_ROBOTCONTROLLER_H_ */
