@@ -160,7 +160,7 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-const static int numberOfVars = 10;
+const static int numberOfVars = 13;
    const static std::string variables[numberOfVars] = {
          "motorPower",
          "degree",
@@ -172,7 +172,9 @@ const static int numberOfVars = 10;
          "outerIntakeMotorPower",
          "innerIntakeMotorPower",
          "flywheelMotorPower",
-
+         "fastAverageFactor",
+         "slowAverageFactor",
+         "lidarOffset"
    };
    const static std::string types[numberOfVars] = {
          "float", //motorPower
@@ -185,6 +187,9 @@ const static int numberOfVars = 10;
          "float", //outerIntakeMotorPower
          "float", //innerIntakeMotorPower
          "float", //flywheelMotorPower
+         "double", //fastAverageFactor
+         "double" //slowAverageFactor,
+         "double" //lidarOffset
    };
 };
 
