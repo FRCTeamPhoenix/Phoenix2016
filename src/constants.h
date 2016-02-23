@@ -188,7 +188,7 @@ const static int numberOfVars = 13;
          "float", //innerIntakeMotorPower
          "float", //flywheelMotorPower
          "double", //fastAverageFactor
-         "double" //slowAverageFactor,
+         "double", //slowAverageFactor,
          "double" //lidarOffset
    };
 };
