@@ -18,7 +18,7 @@ LidarHandler::LidarHandler(Relay * onSwitch, ConfigEditor * configEditor, uint32
    m_counter.SetSemiPeriodMode(true);
    m_resetCount = 0;
    m_storedCounter = 0;
-
+   m_distance = 0;
    m_fastAverage = 0;
    m_mediumAverage = 0;
    m_slowAverage = 0;
