@@ -29,7 +29,6 @@ class Robot: public SampleRobot
    AnalogGyro m_gyro;
    AnalogInput m_leftPotentiometer;
    AnalogInput m_rightPotentiometer;
-   DigitalOutput m_lidarDIOSwitch;
    DigitalInput m_loadedSensor;
    DigitalInput m_leftUpperLimitSwitch;
    DigitalInput m_rightUpperLimitSwitch;
@@ -39,7 +38,6 @@ class Robot: public SampleRobot
    Encoder m_rightWheelEncoder;
    Joystick m_joystick;
    Joystick m_gamepad;
-   Relay m_lidarOnSwitch;
    Talon m_flywheelLeftMotor;
    Talon m_flywheelRightMotor;
    Talon m_armMotorLeft;
@@ -50,7 +48,6 @@ class Robot: public SampleRobot
    DriveStation m_driveStation;
    LoaderSense m_loaderSense;
    Aiming m_aiming;
-   LidarHandler m_lidarHandler;
    ConfigEditor m_configEditor;
    RobotDrive m_driveTrain;
    DriveTrainController m_driveTrainController;
@@ -60,6 +57,8 @@ class Robot: public SampleRobot
    Arm m_arm;
    USBCamera m_driveCamera;
    RobotController m_robotController;
+   Relay m_lidarOnSwitch;
+   LidarHandler m_lidarHandler;
 
 public:
    Robot() :
@@ -67,7 +66,6 @@ public:
       m_gyro(PortAssign::gyroscope),
       m_leftPotentiometer(PortAssign::leftPotentiometer),
       m_rightPotentiometer(PortAssign::rightPotentiometer),
-      m_lidarDIOSwitch(15),
       m_loadedSensor(PortAssign::loadedSensor),
       m_leftUpperLimitSwitch(PortAssign::leftUpperLimitSwitch),
       m_rightUpperLimitSwitch(PortAssign::rightUpperLimitSwitch),
@@ -77,7 +75,6 @@ public:
       m_rightWheelEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
       m_joystick(PortAssign::joystick),
       m_gamepad(PortAssign::gamepad),
-      m_lidarOnSwitch(0),
       m_flywheelLeftMotor(PortAssign::flywheelLeftMotor),
       m_flywheelRightMotor(PortAssign::flywheelRightMotor),
       m_armMotorLeft(PortAssign::armMotorLeft),
@@ -87,7 +84,6 @@ public:
       m_driveStation(&m_joystick, &m_gamepad),
       m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
       m_aiming(&m_client, &m_driveTrainController, &m_driveStation),
-      m_lidarHandler(&m_lidarOnSwitch, 0, 9),
       m_configEditor(&m_driveStation),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
       m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor, &m_lidarHandler),
@@ -96,7 +92,9 @@ public:
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor),
       m_driveCamera("cam0",false),
-      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm){
+      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm),
+      m_lidarOnSwitch(0),
+      m_lidarHandler(&m_lidarOnSwitch, &m_configEditor, 9){
 
       SmartDashboard::init();
       m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
@@ -127,6 +125,8 @@ public:
       CameraServer::GetInstance()->SetQuality(50);
       CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 
+      std::thread lidarRun(lidarThread, this, &m_lidarHandler);
+      lidarRun.detach();
    }
    void Autonomous (){
       SmartDashboard::PutString("DB/String 0", "Autonomous ");
@@ -195,12 +195,9 @@ public:
          m_shooterController.run();
          m_arm.run();
       }
-      lidarRun.join();
    }
 
    void Test(){
-      std::thread lidarRun(lidarThread, this, &m_lidarHandler);
-      lidarRun.detach();
       //Resets the encoders
       m_leftWheelEncoder.Reset();
       m_rightWheelEncoder.Reset();
@@ -221,19 +218,16 @@ public:
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
 
       while(IsTest() && IsEnabled()){
-         if(SmartDashboard::GetBoolean("DB/Button 3",false)) {
+         /*if(SmartDashboard::GetBoolean("DB/Button 3",false)) {
             std::ostringstream slid;
             slid.str(std::string());
             slid << m_lidarHandler.getFastAverage();
             SmartDashboard::PutString("DB/String 0", "Fast: " + slid.str());
             slid.str(std::string());
-            slid << m_lidarHandler.getFastAverage();
-            SmartDashboard::PutString("DB/String 1", "Medium: " + slid.str());
-            slid.str(std::string());
-            slid << m_lidarHandler.getFastAverage();
-            SmartDashboard::PutString("DB/String 2", "Slow: " + slid.str());
+            slid << m_lidarHandler.getSlowAverage();
+            SmartDashboard::PutString("DB/String 1", "Slow: " + slid.str());
             continue;
-         }
+         }*/
 
          std::ostringstream outputG;
          outputG << "Gyro: ";
@@ -394,17 +388,11 @@ public:
             }
          }
       }
-      lidarRun.join();
    }
 };
 
 void lidarThread(Robot * robot, LidarHandler * lidarHandler) {
-   while(robot->IsEnabled() && (robot->IsAutonomous() || robot->IsOperatorControl() || robot->IsTest())) {
-      std::ostringstream lidar;
-      lidar << "Lidar Value: ";
-      lidar << lidarHandler->getDistance();
-      SmartDashboard::PutString("DB/String 0", lidar.str());
-
+   while(true) {
       lidarHandler->run();
       Wait(0.1);
    }
