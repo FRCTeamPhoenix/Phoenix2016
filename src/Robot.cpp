@@ -121,6 +121,8 @@ public:
 
    }
    void OperatorControl(){
+      std::thread lidarRun(lidarThread, this, &m_lidarHandler);
+      lidarRun.detach();
       m_driveTrainController.setGoalState(DriveTrainController::TELEOP);
       while(IsOperatorControl() && IsEnabled()){
          m_driveStation.snapShot();
@@ -129,9 +131,12 @@ public:
          m_shooterController.run();
          m_aiming.run();
       }
+      lidarRun.join();
    }
 
    void Test(){
+      std::thread lidarRun(lidarThread, this, &m_lidarHandler);
+      lidarRun.detach();
       //Resets the encoders
       m_leftWheelEncoder.Reset();
       m_rightWheelEncoder.Reset();
@@ -150,6 +155,20 @@ public:
       SmartDashboard::PutString("DB/String 9", " ");
 
       while(IsTest() && IsEnabled()){
+         if(SmartDashboard::GetBoolean("DB/Button 3",false)) {
+            std::ostringstream slid;
+            slid.str(std::string());
+            slid << m_lidarHandler.getFastAverage();
+            SmartDashboard::PutString("DB/String 0", "Fast: " + slid.str());
+            slid.str(std::string());
+            slid << m_lidarHandler.getFastAverage();
+            SmartDashboard::PutString("DB/String 1", "Medium: " + slid.str());
+            slid.str(std::string());
+            slid << m_lidarHandler.getFastAverage();
+            SmartDashboard::PutString("DB/String 2", "Slow: " + slid.str());
+            continue;
+         }
+
          std::ostringstream outputG;
          outputG << "Gyro: ";
          outputG << (m_gyro.GetAngle());
@@ -197,7 +216,7 @@ public:
          //          SmartDashboard::PutString("DB/String 6", ":) Aiming Robot Clockwise 90 Test");
          //        m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
          m_configEditor.update();
-      }
+//      }
       if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
          m_driveTrainController.driveLidar(36,0.5);
       }
@@ -300,7 +319,8 @@ public:
             m_shooterController.setArmed();
          }
       }
-
+   }
+   lidarRun.join();
    }
 };
 
