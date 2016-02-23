@@ -180,6 +180,9 @@ public:
       SmartDashboard::PutString("DB/String 8", " ");
       SmartDashboard::PutString("DB/String 9", " ");
 
+
+      std::thread lidarRun(lidarThread, this, &m_lidarHandler);
+      lidarRun.detach();
       m_driveTrainController.setGoalState(DriveTrainController::TELEOP);
       m_robotController.setManual();
       m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
@@ -192,9 +195,12 @@ public:
          m_shooterController.run();
          m_arm.run();
       }
+      lidarRun.join();
    }
 
    void Test(){
+      std::thread lidarRun(lidarThread, this, &m_lidarHandler);
+      lidarRun.detach();
       //Resets the encoders
       m_leftWheelEncoder.Reset();
       m_rightWheelEncoder.Reset();
@@ -215,6 +221,20 @@ public:
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
 
       while(IsTest() && IsEnabled()){
+         if(SmartDashboard::GetBoolean("DB/Button 3",false)) {
+            std::ostringstream slid;
+            slid.str(std::string());
+            slid << m_lidarHandler.getFastAverage();
+            SmartDashboard::PutString("DB/String 0", "Fast: " + slid.str());
+            slid.str(std::string());
+            slid << m_lidarHandler.getFastAverage();
+            SmartDashboard::PutString("DB/String 1", "Medium: " + slid.str());
+            slid.str(std::string());
+            slid << m_lidarHandler.getFastAverage();
+            SmartDashboard::PutString("DB/String 2", "Slow: " + slid.str());
+            continue;
+         }
+
          std::ostringstream outputG;
          outputG << "Gyro: ";
          outputG << (m_gyro.GetAngle());
@@ -262,7 +282,15 @@ public:
          //          SmartDashboard::PutString("DB/String 6", ":) Aiming Robot Clockwise 90 Test");
          //        m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
          m_configEditor.update();
-
+//      }
+//      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
+//         m_driveTrainController.driveLidar(36,0.5);
+//      }
+      //Aiming Robot Counter Clockwise 90 degrees
+      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
+         SmartDashboard::PutString("DB/String 6", ":) Aiming Robot CounterClockwise 90 Test");
+         m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
+      }
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
             m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"),m_configEditor.getFloat("motorPower"));
          }
@@ -366,6 +394,7 @@ public:
             }
          }
       }
+      lidarRun.join();
    }
 };
 

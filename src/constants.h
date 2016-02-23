@@ -81,6 +81,7 @@ struct RobotConstants {
 
 struct LidarConstants {
    const static int numberStoredValues = 100;
+   constexpr static double periodToInches = 100000.0 / 2.54;
 };
 
 namespace DriveStationConstants {

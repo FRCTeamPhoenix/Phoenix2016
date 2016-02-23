@@ -7,6 +7,9 @@
 
 #include <LidarHandler.h>
 
+/**
+ * All distances in class are in inches
+ */
 LidarHandler::LidarHandler(Relay * onSwitch, double offset, uint32_t lidarPort):
    m_onSwitch(onSwitch),
    m_counter(lidarPort),
@@ -37,7 +40,7 @@ double LidarHandler::getSlowAverage() {
 }
 
 void LidarHandler::run() {
-    double distance = m_counter.GetPeriod() * 100000;
+    double distance = m_counter.GetPeriod() * LidarConstants::periodToInches  - m_offset;
 
     //this will be true if distance is inf or NaN (i.e. the lidar has crashed)
     bool infDistance = distance - distance != 0;
@@ -51,7 +54,7 @@ void LidarHandler::run() {
        SmartDashboard::PutString("DB/String 1", " ");
        m_onSwitch->Set(Relay::kOn);
     } else {
-       m_distance = distance - m_offset;
+       m_distance = distance;
 
        m_storedDistances[m_storedCounter % LidarConstants::numberStoredValues] = distance;
        m_storedCounter++;
