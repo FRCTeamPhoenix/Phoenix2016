@@ -29,7 +29,6 @@ class Robot: public SampleRobot
    AnalogGyro m_gyro;
    AnalogInput m_leftPotentiometer;
    AnalogInput m_rightPotentiometer;
-   DigitalOutput m_lidarDIOSwitch;
    DigitalInput m_loadedSensor;
    DigitalInput m_leftUpperLimitSwitch;
    DigitalInput m_rightUpperLimitSwitch;
@@ -39,7 +38,6 @@ class Robot: public SampleRobot
    Encoder m_rightWheelEncoder;
    Joystick m_joystick;
    Joystick m_gamepad;
-   Relay m_lidarOnSwitch;
    Talon m_flywheelLeftMotor;
    Talon m_flywheelRightMotor;
    Talon m_armMotorLeft;
@@ -50,7 +48,6 @@ class Robot: public SampleRobot
    DriveStation m_driveStation;
    LoaderSense m_loaderSense;
    Aiming m_aiming;
-   LidarHandler m_lidarHandler;
    ConfigEditor m_configEditor;
    RobotDrive m_driveTrain;
    DriveTrainController m_driveTrainController;
@@ -60,6 +57,8 @@ class Robot: public SampleRobot
    Arm m_arm;
    USBCamera m_driveCamera;
    RobotController m_robotController;
+   Relay m_lidarOnSwitch;
+   LidarHandler m_lidarHandler;
 
 public:
    Robot() :
@@ -67,7 +66,6 @@ public:
       m_gyro(PortAssign::gyroscope),
       m_leftPotentiometer(PortAssign::leftPotentiometer),
       m_rightPotentiometer(PortAssign::rightPotentiometer),
-      m_lidarDIOSwitch(15),
       m_loadedSensor(PortAssign::loadedSensor),
       m_leftUpperLimitSwitch(PortAssign::leftUpperLimitSwitch),
       m_rightUpperLimitSwitch(PortAssign::rightUpperLimitSwitch),
@@ -77,7 +75,6 @@ public:
       m_rightWheelEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
       m_joystick(PortAssign::joystick),
       m_gamepad(PortAssign::gamepad),
-      m_lidarOnSwitch(0),
       m_flywheelLeftMotor(PortAssign::flywheelLeftMotor),
       m_flywheelRightMotor(PortAssign::flywheelRightMotor),
       m_armMotorLeft(PortAssign::armMotorLeft),
@@ -87,7 +84,6 @@ public:
       m_driveStation(&m_joystick, &m_gamepad),
       m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
       m_aiming(&m_client, &m_driveTrainController, &m_driveStation),
-      m_lidarHandler(&m_lidarOnSwitch, &m_configEditor, 9),
       m_configEditor(&m_driveStation),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
       m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor, &m_lidarHandler),
@@ -96,7 +92,9 @@ public:
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor),
       m_driveCamera("cam0",false),
-      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm){
+      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm),
+      m_lidarOnSwitch(0),
+      m_lidarHandler(&m_lidarOnSwitch, &m_configEditor, 9){
 
       SmartDashboard::init();
       m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
