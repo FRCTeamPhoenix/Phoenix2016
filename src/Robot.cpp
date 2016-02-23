@@ -151,19 +151,16 @@ public:
       SmartDashboard::PutString("DB/String 9", " ");
 
       while(IsTest() && IsEnabled()){
-         if(SmartDashboard::GetBoolean("DB/Button 3",false)) {
+         /*if(SmartDashboard::GetBoolean("DB/Button 3",false)) {
             std::ostringstream slid;
             slid.str(std::string());
             slid << m_lidarHandler.getFastAverage();
             SmartDashboard::PutString("DB/String 0", "Fast: " + slid.str());
             slid.str(std::string());
-            slid << m_lidarHandler.getFastAverage();
-            SmartDashboard::PutString("DB/String 1", "Medium: " + slid.str());
-            slid.str(std::string());
-            slid << m_lidarHandler.getFastAverage();
-            SmartDashboard::PutString("DB/String 2", "Slow: " + slid.str());
+            slid << m_lidarHandler.getSlowAverage();
+            SmartDashboard::PutString("DB/String 1", "Slow: " + slid.str());
             continue;
-         }
+         }*/
 
          std::ostringstream outputG;
          outputG << "Gyro: ";
@@ -320,8 +317,10 @@ public:
 };
 
 void lidarThread(LidarHandler * lidarHandler) {
+   while(true) {
    lidarHandler->run();
    Wait(0.1);
+   }
 }
 
 void runClient(Robot* robot, Client* client){
