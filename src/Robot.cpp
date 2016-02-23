@@ -20,7 +20,7 @@ using namespace std;
 class Robot;
 
 void runClient(Robot* robot, Client* client);
-void lidarThread(Robot * robot, LidarHandler * lidarHandler);
+void lidarThread(LidarHandler * lidarHandler);
 
 
 class Robot: public SampleRobot
@@ -72,7 +72,7 @@ public:
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
       m_lidarOnSwitch(0),
       m_lidarDIOSwitch(15),
-      m_lidarHandler(&m_lidarOnSwitch, 0, 9),
+      m_lidarHandler(&m_lidarOnSwitch, &m_configEditor, 9),
       m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor, &m_lidarHandler),
       m_armMotorLeft(PortAssign::armMotorLeft),
       m_armMotorRight(PortAssign::armMotorRight),
@@ -119,10 +119,10 @@ public:
       CameraServer::GetInstance()->SetQuality(50);
       CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 
+      std::thread lidarRun(lidarThread, &m_lidarHandler);
+      lidarRun.detach();
    }
    void OperatorControl(){
-      std::thread lidarRun(lidarThread, this, &m_lidarHandler);
-      lidarRun.detach();
       m_driveTrainController.setGoalState(DriveTrainController::TELEOP);
       while(IsOperatorControl() && IsEnabled()){
          m_driveStation.snapShot();
@@ -133,8 +133,6 @@ public:
    }
 
    void Test(){
-      std::thread lidarRun(lidarThread, this, &m_lidarHandler);
-      lidarRun.detach();
       //Resets the encoders
       m_leftWheelEncoder.Reset();
       m_rightWheelEncoder.Reset();
@@ -321,11 +319,9 @@ public:
    }
 };
 
-void lidarThread(Robot * robot, LidarHandler * lidarHandler) {
-   while(robot->IsEnabled() && (robot->IsAutonomous() || robot->IsOperatorControl() || robot->IsTest())) {
-      lidarHandler->run();
-      Wait(0.1);
-   }
+void lidarThread(LidarHandler * lidarHandler) {
+   lidarHandler->run();
+   Wait(0.1);
 }
 
 void runClient(Robot* robot, Client* client){
