@@ -21,19 +21,19 @@ class Robot: public SampleRobot
    Talon m_RLif;
    Talon m_roller;
 
-//   Talon RF;
-//   Talon LF;
-//   Talon RR;
-//   Talon LR;
 
-//   Talon m_leftPotMotor;
-//   Talon m_rightPotMotor;
 
 
    AnalogInput m_LPot;
    AnalogInput m_RPot;
 
    DigitalInput m_ballSensor;
+   DigitalInput m_RFLimit;
+   DigitalInput m_LFLimit;
+   DigitalInput m_RRLimit;
+   DigitalInput m_LRLimit;
+
+
 
    Encoder m_LEncoder;
    Encoder m_REncoder;
@@ -75,6 +75,11 @@ public:
       m_LPot(2),
 
       m_ballSensor(8),
+
+      m_RFLimit(6),
+      m_RRLimit(7),
+      m_LFLimit(10),
+      m_LRLimit(11),
 
       m_LEncoder(0, 1),
       m_REncoder(2, 3),
@@ -153,6 +158,19 @@ public:
          Lidar << " Resets: ";
          Lidar << m_lidarHandler.getResetCount();
          SmartDashboard::PutString("DB/String 7", Lidar.str());
+
+         std::ostringstream Limits;
+         Limits << "RF: ";
+         Limits << m_RFLimit.Get();
+         Limits << " LF: ";
+         Limits << m_LFLimit.Get();
+         Limits << "RR: ";
+         Limits << m_RRLimit.Get();
+         Limits << " LR: ";
+         Limits << m_LRLimit.Get();
+         SmartDashboard::PutString("DB/String 8", Limits.str());
+
+
 
 //
 //         if(m_joystick.GetRawButton(1)){
