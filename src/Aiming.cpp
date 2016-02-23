@@ -21,6 +21,7 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, Drive
    m_lidar(lidar),
    m_shooter(shooter)
 {
+
    setCurrentState(IDLE);
 
    memset(m_currentTargetCoordinates,0,8);
@@ -56,38 +57,45 @@ void Aiming::getNewImageData() {
 
 }
 
-
 // Turns robot to line up with target, once target is within field of vision
 void Aiming::centering() {
+
    double m_targetCenter_x;
    double deviation;
 
    m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL] +m_currentTargetCoordinates[AimingConstants::xLR])/2);
-   deviation = m_targetCenter_x - AimingConstants::offsetCenter;
+   deviation = (m_targetCenter_x - AimingConstants::offsetCenter);
 
-   if(deviation<-10){
-      m_driveTrainController->aimRobotCounterclockwise(2,0.5f);
+   ostringstream print;
+   print << "center: "<<m_targetCenter_x << ":" << deviation;
+   SmartDashboard::PutString("DB/String 9", print.str());
+
+
+   if(deviation< -10){
+
+      SmartDashboard::PutString("DB/String 8","ccw");
+      m_driveTrainController->aimRobotCounterclockwise(5,0.6f);
 
    }
    else if (deviation>10){
-      m_driveTrainController->aimRobotClockwise(2,0.5f);
+      SmartDashboard::PutString("DB/String 8","cw");
+      m_driveTrainController->aimRobotClockwise(5,0.6f);
    }
    else {
-      setCurrentState(APPROACHING);
+      setCurrentState(IDLE);
    }
 
 }
 
 void Aiming::approachTarget() {
 
-
    m_shooter->setArmed();
 
    if (m_lidar->getFastAverage() < AimingConstants::aimedDistance - 12){
-      m_driveTrainController->moveRobotStraight(6,0.5f);
+      m_driveTrainController->moveRobotStraight(-6,0.5f);
    }
    else if (m_lidar->getFastAverage() > AimingConstants::aimedDistance + 12){
-         m_driveTrainController->moveRobotStraight(-6,0.5f);
+         m_driveTrainController->moveRobotStraight(6,0.5f);
    }
    else {
       if (m_shooter->getCurrentState()== m_shooter->ARMED){
@@ -133,15 +141,19 @@ void Aiming::run() {
 
    switch(m_currentState) {
    case IDLE:
+      SmartDashboard::PutString("DB/String 0", "State: IDLE" );
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonStart)) {
             setCurrentState(CENTERING);
       }
       break;
    case CENTERING:
+      SmartDashboard::PutString("DB/String 0", "State: Centering" );
       getNewImageData();
       centering();
       break;
    case APPROACHING:
+      SmartDashboard::PutString("DB/String 0", "State: Approaching" );
+
       getNewImageData();
       approachTarget();
    default:

@@ -27,6 +27,7 @@ public:
    enum STATE {
          IDLE,
          CENTERING,
+         AJUSTING,
          APPROACHING
       };
 

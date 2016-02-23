@@ -9,6 +9,7 @@
 #include "LoaderSense.h"
 #include "Client.h"
 #include "Aiming.h"
+#include "Arm.h"
 #include <thread>
 #include <iostream>
 #include <fstream>
@@ -26,75 +27,77 @@ void lidarThread(Robot * robot, LidarHandler * lidarHandler);
 class Robot: public SampleRobot
 {
    AnalogGyro m_gyro;
-   ConfigEditor m_configEditor;
-   Talon m_flywheelLeftMotor;
-   Talon m_flywheelRightMotor;
-   Flywheel m_flywheel;
-   Joystick m_joystick;
-   Joystick m_gamepad;
+   AnalogInput m_leftPotentiometer;
+   AnalogInput m_rightPotentiometer;
+   DigitalOutput m_lidarDIOSwitch;
+   DigitalInput m_loadedSensor;
+   DigitalInput m_leftUpperLimitSwitch;
+   DigitalInput m_rightUpperLimitSwitch;
+   DigitalInput m_leftLowerLimitSwitch;
+   DigitalInput m_rightLowerLimitSwitch;
    Encoder m_leftWheelEncoder;
    Encoder m_rightWheelEncoder;
-   DriveStation m_driveStation;
-   RobotDrive m_driveTrain;
+   Joystick m_joystick;
+   Joystick m_gamepad;
    Relay m_lidarOnSwitch;
-   DigitalOutput m_lidarDIOSwitch;
-   LidarHandler m_lidarHandler;
-   DriveTrainController m_driveTrainController;
+   Talon m_flywheelLeftMotor;
+   Talon m_flywheelRightMotor;
    Talon m_armMotorLeft;
    Talon m_armMotorRight;
    Talon m_intakeMotor;
    Talon m_stationaryMotor;
-   DigitalInput m_upperLimit;
-   DigitalInput m_lowerLimit;
-   DigitalInput m_loadedSensor;
-   Encoder m_armEncoder;
-   AnalogPotentiometer m_potentiometer;
+   Client m_client;
+   DriveStation m_driveStation;
+   LidarHandler m_lidarHandler;
+   ConfigEditor m_configEditor;
+   RobotDrive m_driveTrain;
+   DriveTrainController m_driveTrainController;
+   Flywheel m_flywheel;
    LoaderController m_loaderController;
    ShooterController m_shooterController;
-   RobotController m_robotController;
+   Arm m_arm;
    USBCamera m_driveCamera;
-   Client m_client;
    Aiming m_aiming;
    LoaderSense m_loaderSense;
+   RobotController m_robotController;
 
 public:
    Robot() :
+
       m_gyro(PortAssign::gyroscope),
-      m_configEditor(&m_driveStation),
-      m_flywheelLeftMotor(PortAssign::flywheelLeftMotor),
-      m_flywheelRightMotor(PortAssign::flywheelRightMotor),
-      m_flywheel(&m_flywheelLeftMotor, &m_flywheelRightMotor),
-      m_joystick(PortAssign::joystick),
-      m_gamepad(PortAssign::gamepad),
+      m_leftPotentiometer(PortAssign::leftPotentiometer),
+      m_rightPotentiometer(PortAssign::rightPotentiometer),
+      m_lidarDIOSwitch(15),
+      m_loadedSensor(PortAssign::loadedSensor),
+      m_leftUpperLimitSwitch(PortAssign::leftUpperLimitSwitch),
+      m_rightUpperLimitSwitch(PortAssign::rightUpperLimitSwitch),
+      m_leftLowerLimitSwitch(PortAssign::leftLowerLimitSwitch),
+      m_rightLowerLimitSwitch(PortAssign::rightLowerLimitSwitch),
       m_leftWheelEncoder(PortAssign::leftWheelEncoderChannelA, PortAssign::leftWheelEncoderChannelB),
       m_rightWheelEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
-      m_driveStation(&m_joystick, &m_gamepad),
-      m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
+      m_joystick(PortAssign::joystick),
+      m_gamepad(PortAssign::gamepad),
       m_lidarOnSwitch(0),
-      m_lidarDIOSwitch(15),
-      m_lidarHandler(&m_lidarOnSwitch, 0, 9),
-      m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor, &m_lidarHandler),
+      m_flywheelLeftMotor(PortAssign::flywheelLeftMotor),
+      m_flywheelRightMotor(PortAssign::flywheelRightMotor),
       m_armMotorLeft(PortAssign::armMotorLeft),
       m_armMotorRight(PortAssign::armMotorRight),
       m_intakeMotor(PortAssign::intakeMotor),
       m_stationaryMotor(PortAssign::stationaryMotor),
-      m_upperLimit(PortAssign::upperLimit),
-      m_lowerLimit(PortAssign::lowerLimit),
-      m_loadedSensor(PortAssign::loadedSensor),
-      m_armEncoder(PortAssign::armEncoderChannelA, PortAssign::armEncoderChannelB),
-      m_potentiometer(PortAssign::potentiometer),
+      m_driveStation(&m_joystick, &m_gamepad),
+      m_lidarHandler(&m_lidarOnSwitch, 0, 9),
+      m_configEditor(&m_driveStation),
+      m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
+      m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor, &m_lidarHandler),
+      m_flywheel(&m_flywheelLeftMotor, &m_flywheelRightMotor),
       m_loaderController(&m_intakeMotor, &m_stationaryMotor, &m_loadedSensor, &m_driveStation, &m_configEditor),
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
-      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor),
+      m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor),
       m_driveCamera("cam0",false),
-      m_aiming(&m_client, &m_driveTrainController, &m_driveStation,&m_lidarHandler,&m_shooterController),
-      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation){
+      m_aiming(&m_client, &m_driveTrainController, &m_driveStation, &m_lidarHandler, &m_shooterController),
+      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
+      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm){
 
-      SmartDashboard::init();
-      m_gyro.Calibrate();
-      m_leftWheelEncoder.SetDistancePerPulse(RobotConstants::leftDistancePerPulse);
-      m_rightWheelEncoder.SetDistancePerPulse(RobotConstants::rightDistancePerPulse);
-      m_configEditor.showAllKeys();
 
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true);
@@ -106,8 +109,14 @@ public:
       // }
    }
    void RobotInit() override{
+      SmartDashboard::init();
+      m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
+      m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
+      m_gyro.Calibrate();
+      m_configEditor.showAllKeys();
+
       cout<<"run init socket function" << endl;
-      //m_client.initilizeSocket();
+      m_client.initilizeSocket();
       if (m_client.m_initGood){
          cout<<"init good start thread" << endl;
          std::thread receiveThread(runClient, this, &m_client);
@@ -120,16 +129,73 @@ public:
       CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 
    }
+   void Autonomous (){
+      SmartDashboard::PutString("DB/String 0", "Autonomous ");
+      SmartDashboard::PutString("DB/String 0", " ");
+      SmartDashboard::PutString("DB/String 1", " ");
+      SmartDashboard::PutString("DB/String 2", " ");
+      SmartDashboard::PutString("DB/String 3", " ");
+      SmartDashboard::PutString("DB/String 4", " ");
+      SmartDashboard::PutString("DB/String 5", " ");
+      SmartDashboard::PutString("DB/String 6", " ");
+      SmartDashboard::PutString("DB/String 7", " ");
+      SmartDashboard::PutString("DB/String 8", " ");
+      SmartDashboard::PutString("DB/String 9", " ");
+      bool addedToQueue = false;
+      m_robotController.setAuto();
+      m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
+      m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
+
+      while (IsAutonomous()&& IsEnabled()){
+
+         /*
+          * TODO: Action.run
+          */
+         m_driveStation.snapShot();
+         m_robotController.run();
+         m_driveTrainController.run();
+         m_shooterController.run();
+         m_arm.run();
+
+         if(!addedToQueue){
+
+            /*
+             * TODO: Action.add move forward
+             * TODO: Action ball aim
+             */
+            addedToQueue = true;
+         }
+      }
+
+   }
    void OperatorControl(){
+      SmartDashboard::PutString("DB/String 0", "Teleop ");
+      SmartDashboard::PutString("DB/String 0", " ");
+      SmartDashboard::PutString("DB/String 1", " ");
+      SmartDashboard::PutString("DB/String 2", " ");
+      SmartDashboard::PutString("DB/String 3", " ");
+      SmartDashboard::PutString("DB/String 4", " ");
+      SmartDashboard::PutString("DB/String 5", " ");
+      SmartDashboard::PutString("DB/String 6", " ");
+      SmartDashboard::PutString("DB/String 7", " ");
+      SmartDashboard::PutString("DB/String 8", " ");
+      SmartDashboard::PutString("DB/String 9", " ");
+
+
       std::thread lidarRun(lidarThread, this, &m_lidarHandler);
       lidarRun.detach();
       m_driveTrainController.setGoalState(DriveTrainController::TELEOP);
+      m_robotController.setManual();
+      m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
+      m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
+
       while(IsOperatorControl() && IsEnabled()){
          m_driveStation.snapShot();
          m_robotController.run();
          m_driveTrainController.run();
          m_shooterController.run();
-         m_aiming.run();
+        m_aiming.run();
+         m_arm.run();
       }
       lidarRun.join();
    }
@@ -153,6 +219,8 @@ public:
       SmartDashboard::PutString("DB/String 7", " ");
       SmartDashboard::PutString("DB/String 8", " ");
       SmartDashboard::PutString("DB/String 9", " ");
+      m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
+      m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
 
       while(IsTest() && IsEnabled()){
          if(SmartDashboard::GetBoolean("DB/Button 3",false)) {
@@ -174,7 +242,7 @@ public:
          outputG << (m_gyro.GetAngle());
          SmartDashboard::PutString("DB/String 9", outputG.str());
 
-         //Homes robot arm at the beginning of test
+
          //         m_loaderController.setHoming();
          //
          //         m_loaderController.run();
@@ -186,7 +254,7 @@ public:
          //         }
          //Calls all run functions involved with testing
 
-         //Outputs the encoder valuse of the left and right wheels
+         //Outputs the encoder value of the left and right wheels
          std::ostringstream outputR;
          outputR << "EncoderR: ";
          outputR << (m_rightWheelEncoder.Get());
@@ -203,7 +271,7 @@ public:
 
          //DriveTrainController
          std::ostringstream outputDriveTrainController;
-         outputDriveTrainController << "DriveTrainController State: " << (m_driveTrainController.getCurrentState());
+         outputDriveTrainController << "DTC State: " << (m_driveTrainController.getCurrentState());
          SmartDashboard::PutString("DB/String 3", outputDriveTrainController.str());
 
          //         //ShooterController
@@ -217,115 +285,128 @@ public:
          //        m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
          m_configEditor.update();
 //      }
-      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
-         m_driveTrainController.driveLidar(36,0.5);
-      }
+//      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
+//         m_driveTrainController.driveLidar(36,0.5);
+//      }
       //Aiming Robot Counter Clockwise 90 degrees
       if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
          SmartDashboard::PutString("DB/String 6", ":) Aiming Robot CounterClockwise 90 Test");
          m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
       }
-
-      //Robot drives straight
-      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonY)){
-         SmartDashboard::PutString("DB/String 6", ":) Moving Robot Straight Test");
-         m_driveTrainController.moveRobotStraight(45, m_configEditor.getFloat("motorPower"));
-      }
-      //test drivetrain repeatability by running forwards and backward five times.
-      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonX)){
-         SmartDashboard::PutString("DB/String 6", "Repeatability Test Straight");
-         bool changeDirection = true;
-         int loop = 0;
-         while(loop<=10){
-            m_driveStation.snapShot();
-            m_driveTrainController.run();
-            //Stops everything on the robot
-            if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
-               SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
-
-               m_driveTrainController.stopRobot();
-               m_shooterController.setOff();
-               loop = 111;
-            }
-            //Switching between going forward and backward
-            if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
-               loop++;
-               if(changeDirection){
-                  m_driveTrainController.moveRobotStraight(m_configEditor.getFloat("distance"), m_configEditor.getFloat("motorPower"));
-                  changeDirection = false;
-               }
-               else {
-                  m_driveTrainController.moveRobotStraight(m_configEditor.getFloat("distance"), m_configEditor.getFloat("motorPower"));
-                  changeDirection = true;
-               }
-            }
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
+            m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"),m_configEditor.getFloat("motorPower"));
          }
-      }
+         //Aiming Robot Counter Clockwise 90 degrees
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
+            SmartDashboard::PutString("DB/String 6", ":) Aiming Robot CounterClockwise 90 Test");
+            m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
+         }
 
-      //Tests drivetrain repeatablity test
-      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonRB)){
-         SmartDashboard::PutString("DB/String 6", "Repeatability Test Rotation");
-         bool changeRotation = true;
-         int loop = 0;
-         while(loop<=10){
-            m_driveStation.snapShot();
-            m_driveTrainController.run();
-            //Stops everything on the robot
-            if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
-               SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
+         //Robot drives straight
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonY)){
+            SmartDashboard::PutString("DB/String 6", ":) Moving Robot Straight Test");
+            m_driveTrainController.moveRobotStraight(m_configEditor.getFloat("distance"), m_configEditor.getFloat("motorPower"));
+         }
+         //test drivetrain repeatability by running forwards and backward five times.
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonX)){
+            SmartDashboard::PutString("DB/String 6", "Repeatability Test Straight");
+            bool changeDirection = true;
+            int loop = 0;
+            while(loop<=10){
+               m_driveStation.snapShot();
+               m_driveTrainController.run();
+               //Stops everything on the robot
+               if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
+                  SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
 
-               m_driveTrainController.stopRobot();
-               m_shooterController.setOff();
-               loop = 111;
-            }
-            //Switches the dirctions between
-            if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
-               loop++;
-               if(changeRotation){
-                  m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
-                  changeRotation = false;
+                  m_driveTrainController.stopRobot();
+                  m_shooterController.setOff();
+                  loop = 111;
                }
-               else{
-                  m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
-                  changeRotation = true;
+               //Switching between going forward and backward
+               if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
+                  loop++;
+                  if(changeDirection){
+                     m_driveTrainController.moveRobotStraight(m_configEditor.getFloat("distance"), m_configEditor.getFloat("motorPower"));
+                     changeDirection = false;
+                  }
+                  else {
+                     m_driveTrainController.moveRobotStraight(m_configEditor.getFloat("distance"), m_configEditor.getFloat("motorPower"));
+                     changeDirection = true;
+                  }
                }
             }
          }
-      }
 
-      //Stops everything on robot
-      if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
-         SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
+         //Tests drivetrain repeatablity test
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonRB)){
+            SmartDashboard::PutString("DB/String 6", "Repeatability Test Rotation");
+            bool changeRotation = true;
+            int loop = 0;
+            while(loop<=10){
+               m_driveStation.snapShot();
+               m_driveTrainController.run();
+               //Stops everything on the robot
+               if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
+                  SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
 
-         m_shooterController.setOff();
-         //m_loaderController.stop();
-         m_driveTrainController.stopRobot();
-      }
-
-      //Tests the loader by running the motors
-      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonLB)){
-         SmartDashboard::PutString("DB/String 6", "Loader Test");
-         m_loaderController.start();
-      }
-
-      //Tests the shooter by running the flywheels
-      if(m_driveStation.getGamepadButton(DriveStationConstants::triggerRT)){
-         SmartDashboard::PutString("DB/String 6", "Shooter Test");
-
-         if(m_shooterController.getCurrentState() == ShooterController::ARMED){
-            m_shooterController.setShooting();
+                  m_driveTrainController.stopRobot();
+                  m_shooterController.setOff();
+                  loop = 111;
+               }
+               //Switches the dirctions between
+               if(m_driveTrainController.getCurrentState()== DriveTrainController::IDLE){
+                  loop++;
+                  if(changeRotation){
+                     m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
+                     changeRotation = false;
+                  }
+                  else{
+                     m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
+                     changeRotation = true;
+                  }
+               }
+            }
          }
-         else{
-            m_shooterController.setArmed();
+
+         //Stops everything on robot
+         if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){
+            SmartDashboard::PutString("DB/String 6", "STOP ROBOT!!");
+
+            m_shooterController.setOff();
+            //m_loaderController.stop();
+            m_driveTrainController.stopRobot();
+         }
+
+         //Tests the loader by running the motors
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonLB)){
+            SmartDashboard::PutString("DB/String 6", "Loader Test");
+            m_loaderController.start();
+         }
+
+         //Tests the shooter by running the flywheels
+         if(m_driveStation.getGamepadButton(DriveStationConstants::triggerRT)){
+            SmartDashboard::PutString("DB/String 6", "Shooter Test");
+
+            if(m_shooterController.getCurrentState() == ShooterController::ARMED){
+               m_shooterController.setShooting();
+            }
+            else{
+               m_shooterController.setArmed();
+            }
          }
       }
-   }
-   lidarRun.join();
+      lidarRun.join();
    }
 };
 
 void lidarThread(Robot * robot, LidarHandler * lidarHandler) {
    while(robot->IsEnabled() && (robot->IsAutonomous() || robot->IsOperatorControl() || robot->IsTest())) {
+      std::ostringstream lidar;
+      lidar << "Lidar Value: ";
+      lidar << lidarHandler->getDistance();
+      SmartDashboard::PutString("DB/String 0", lidar.str());
+
       lidarHandler->run();
       Wait(0.1);
    }

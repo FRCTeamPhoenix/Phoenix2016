@@ -1,7 +1,7 @@
 #include "Client.h"
 #define NPACK 1
 #define PORT 31415 //port currently used for testing, can be changed
-#define SRV_IP "10.0.42.142" //static ip of pi is 10.0.42.142
+#define SRV_IP "10.23.42.142" //static ip of pi is 10.0.42.142
 
 
 Client::Client() {
