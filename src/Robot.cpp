@@ -130,7 +130,6 @@ public:
          m_driveTrainController.run();
          m_shooterController.run();
       }
-      lidarRun.join();
    }
 
    void Test(){
@@ -319,7 +318,6 @@ public:
          }
       }
    }
-   lidarRun.join();
    }
 };
 
