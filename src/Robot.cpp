@@ -121,6 +121,9 @@ public:
 
    }
    void OperatorControl(){
+      std::thread lidarRun(lidarThread, this, &m_lidarHandler);
+      lidarRun.detach();
+
       m_driveTrainController.setGoalState(DriveTrainController::TELEOP);
       while(IsOperatorControl() && IsEnabled()){
          m_driveStation.snapShot();
@@ -131,6 +134,8 @@ public:
    }
 
    void Test(){
+      std::thread lidarRun(lidarThread, this, &m_lidarHandler);
+      lidarRun.detach();
       //Resets the encoders
       m_leftWheelEncoder.Reset();
       m_rightWheelEncoder.Reset();
