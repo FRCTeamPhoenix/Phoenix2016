@@ -87,7 +87,7 @@ public:
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor),
       m_driveCamera("cam0",false),
-      m_aiming(&m_client, &m_driveTrainController, &m_driveStation),
+      m_aiming(&m_client, &m_driveTrainController, &m_driveStation,&m_lidarHandler,&m_shooterController),
       m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation){
 
       SmartDashboard::init();
@@ -127,6 +127,7 @@ public:
          m_robotController.run();
          m_driveTrainController.run();
          m_shooterController.run();
+         m_aiming.run();
       }
    }
 

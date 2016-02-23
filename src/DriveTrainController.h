@@ -13,7 +13,7 @@
 #include "constants.h"
 #include "DriveStation.h"
 #include "ConfigEditor.h"
-#include "Math.h"
+#include <cmath>
 #include "LidarHandler.h"
 
 class DriveTrainController: public BaseController {

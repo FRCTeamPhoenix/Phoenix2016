@@ -14,28 +14,25 @@
 
 #include <Aiming.h>
 
-Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, DriveStation* driveStation) :
+Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, DriveStation* driveStation,LidarHandler* lidar,ShooterController* shooter) :
    m_client(client),
    m_driveTrainController(driveTrainController),
-   m_driveStation(driveStation)
+   m_driveStation(driveStation),
+   m_lidar(lidar),
+   m_shooter(shooter)
 {
    setCurrentState(IDLE);
-   m_currentTargetCoordinates[0] = AimingConstants::targetFlag;
-   for (int i = 1; i <= AimingConstants::numTargetVals; i++) {
-      m_currentTargetCoordinates[i] = 0;
-   }
 
-   lastArrayWasNull = true;
+   memset(m_currentTargetCoordinates,0,8);
 
    //Keeps track of the number of blank data sets sent over to Client
    //This represents the number of action cycles for which the target has not been seen
-   nullArraysInARow = 0;
 }
 
 // IMPORTANT: Call this method to begin aiming process - same as manually setting state to first
 // phase of aiming process
 void Aiming::beginAiming() {
-   setCurrentState(FINDING_TARGET);
+   setCurrentState(CENTERING);
 }
 
 // Gives Aiming class access to image data sent over to client from Raspberry Pi
@@ -45,8 +42,8 @@ void Aiming::getNewImageData() {
    if(m_client->m_unreadTargetData) {
 
          // Updates array of current coordinates with data received by client
-         for(int i = 1; i <= AimingConstants::numTargetVals; i++) {
-            m_currentTargetCoordinates[i - 1] = m_client->getTargetData(i);
+         for(int i = 0; i < AimingConstants::numTargetVals; i++) {
+            m_currentTargetCoordinates[i] = m_client->getTargetData(i+1);
          }
 
          if(m_currentTargetCoordinates[AimingConstants::yUL] == 0) {
@@ -60,108 +57,45 @@ void Aiming::getNewImageData() {
 }
 
 
-void Aiming::findTarget() {
-
-   // Rotate while the first coordinate hasn't been found
-   if (lastArrayWasNull) {
-      m_driveTrainController->aimRobotClockwise(5, 0.5);
-
-      SmartDashboard::PutString("DB/String 8", "Looking for target");
-   }
-
-   else {
-      setCurrentState(ROTATING);
-   }
-
-}
-
 // Turns robot to line up with target, once target is within field of vision
-void Aiming::rotate() {
+void Aiming::centering() {
+   double m_targetCenter_x;
+   double deviation;
 
-   if (lastArrayWasNull) {
-      nullArraysInARow++;
-      // If no target data has been received for three cycles, start looking for the ball again
-      if (nullArraysInARow >= 3) {
-         nullArraysInARow = 0;
-         setCurrentState(FINDING_TARGET);
-      }
+   m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL] +m_currentTargetCoordinates[AimingConstants::xLR])/2);
+   deviation = m_targetCenter_x - AimingConstants::offsetCenter;
+
+   if(deviation<-10){
+      m_driveTrainController->aimRobotCounterclockwise(2,0.5f);
+
    }
-
+   else if (deviation>10){
+      m_driveTrainController->aimRobotClockwise(2,0.5f);
+   }
    else {
-
-      nullArraysInARow = 0;
-
-      // Right side of robot is tilted too far forwards
-      if ((m_currentTargetCoordinates[AimingConstants::yUR] -
-            m_currentTargetCoordinates[AimingConstants::yUL]) > 20 ||
-            (m_currentTargetCoordinates[AimingConstants::yLL] -
-                  m_currentTargetCoordinates[AimingConstants::yLR]) > 20) {
-
-         m_driveTrainController->aimRobotClockwise(1, 0.5);
-
-         SmartDashboard::PutString("DB/String 8", "Rotating clockwise");
-      }
-
-      // Left side of robot is tilted too far forwards
-      else if ((m_currentTargetCoordinates[AimingConstants::yUL] -
-            m_currentTargetCoordinates[AimingConstants::yUR]) > 20 ||
-            (m_currentTargetCoordinates[AimingConstants::yLR] -
-                  m_currentTargetCoordinates[AimingConstants::yLL]) > 20) {
-
-         m_driveTrainController->aimRobotCounterclockwise(1, 0.5);
-
-         SmartDashboard::PutString("DB/String 8", "Rotating counterclockwise");
-      }
-
-      else if (((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
-            < AimingConstants::minTargetWidth) || ((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
-                  > AimingConstants::maxTargetWidth)) {
-         setCurrentState(APPROACHING);
-      }
-
-      else {
-         SmartDashboard::PutString("DB/String 8", "Done aiming!");
-         setCurrentState(IDLE);
-      }
-
+      setCurrentState(APPROACHING);
    }
 
 }
 
 void Aiming::approachTarget() {
 
-   if (lastArrayWasNull) {
-      nullArraysInARow++;
-      if (nullArraysInARow >= 3) {
-         nullArraysInARow = 0;
-         setCurrentState(FINDING_TARGET);
-      }
-   }
 
+   m_shooter->setArmed();
+
+   if (m_lidar->getFastAverage() < AimingConstants::aimedDistance - 12){
+      m_driveTrainController->moveRobotStraight(6,0.5f);
+   }
+   else if (m_lidar->getFastAverage() > AimingConstants::aimedDistance + 12){
+         m_driveTrainController->moveRobotStraight(-6,0.5f);
+   }
    else {
-
-      nullArraysInARow = 0;
-
-      if ((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
-            < AimingConstants::minTargetWidth) {
-         m_driveTrainController->moveRobotStraight(1, 0.5);
-
-         SmartDashboard::PutString("DB/String 8", "Moving forwards");
+      if (m_shooter->getCurrentState()== m_shooter->ARMED){
+         m_shooter->setShooting();
       }
-
-      else if ((m_currentTargetCoordinates[AimingConstants::xLR] - m_currentTargetCoordinates[AimingConstants::xLL])
-            > AimingConstants::maxTargetWidth) {
-         m_driveTrainController->moveRobotStraight(-1, 0.5);
-
-         SmartDashboard::PutString("DB/String 8", "Moving backwards");
-      }
-
-      else {
-         setCurrentState(ROTATING);
-      }
+      setCurrentState(IDLE);
 
    }
-
 }
 
 void Aiming::setTargetCoordinateValue(AimingConstants::targetPositionData position, int newValue) {
@@ -200,16 +134,12 @@ void Aiming::run() {
    switch(m_currentState) {
    case IDLE:
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonStart)) {
-            setCurrentState(FINDING_TARGET);
+            setCurrentState(CENTERING);
       }
       break;
-   case FINDING_TARGET:
+   case CENTERING:
       getNewImageData();
-      findTarget();
-      break;
-   case ROTATING:
-      getNewImageData();
-      rotate();
+      centering();
       break;
    case APPROACHING:
       getNewImageData();

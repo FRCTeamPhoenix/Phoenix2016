@@ -127,6 +127,9 @@ struct AimingConstants{
    const static int minTargetWidth = 250;
    const static int maxTargetWidth = 350;
 
+   const static int offsetCenter = 0; //untuned value not correct
+   constexpr static double aimedDistance=84;//untuned value not correct
+
    // First array element passed in a target data array
    const static int targetFlag = 1;
 
