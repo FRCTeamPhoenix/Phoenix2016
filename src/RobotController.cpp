@@ -91,8 +91,7 @@ void RobotController::run(){
    }
 }
 
-void RobotController::performAction(void)
-{
+void RobotController::performAction(void){
    if (m_queue.size() == 0)
    {
       m_state = ROBOT_MANUAL;
@@ -107,4 +106,10 @@ void RobotController::performAction(void)
       delete currentAction;
       m_queue.pop();
    }
+}
+void RobotController::setAuto(){
+   m_state = ROBOT_AUTO;
+}
+void  RobotController::setManual(){
+   m_state = ROBOT_MANUAL;
 }

@@ -30,7 +30,8 @@ class RobotController : public BaseController
 
    RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, Flywheel*, ConfigEditor*, Arm*);
    virtual ~RobotController();
-
+   void setAuto();
+   void setManual();
    void run();
    void performAction(void);
  private:

@@ -54,10 +54,10 @@ struct RobotConstants {
    // 384ticks per wheel rev. three rev. for 360 degrees.
    // (384 *3) / 360 = 3.2
    constexpr static float flywheelMotorSpeed = 1.0f;
-   constexpr static bool gyro = true;
+   constexpr static bool gyro = false; //Determines which mode we use for turning.
 
-   constexpr static double rightDistancePerPulse = (66.0/1720.0); //0.0384
-   constexpr static double leftDistancePerPulse = (66.0/2475.0); //0.0267
+   //constexpr static double rightDistancePerPulse = (66.0/1720.0); //0.0384
+   //constexpr static double leftDistancePerPulse = (66.0/2475.0); //0.0267
    constexpr static int lidarErrorRange = 4;
 
    constexpr static const float armMotorLeftPower = 1.0f;
@@ -182,7 +182,7 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-const static int numberOfVars = 14;
+const static int numberOfVars = 15;
 const static std::string variables[numberOfVars] = {
       "motorPower",
       "degree",
@@ -197,7 +197,8 @@ const static std::string variables[numberOfVars] = {
       "potLeftValueLow",
       "potRightValueLow",
       "potLeftValueHigh",
-      "potRightValueHigh"
+      "potRightValueHigh",
+      "wheelEncoderDistancePerDegree"
 
 };
 const static std::string types[numberOfVars] = {
@@ -215,6 +216,7 @@ const static std::string types[numberOfVars] = {
       "float", //potRightValueLow
       "float", //potLeftValueHigh
       "float", //potRightValueHigh
+      "float", //wheelEncoderDistancePerDegree
 };
 };
 

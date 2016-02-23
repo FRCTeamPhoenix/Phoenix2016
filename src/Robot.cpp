@@ -99,9 +99,9 @@ public:
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm){
 
       SmartDashboard::init();
+      m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
+      m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
       m_gyro.Calibrate();
-      m_leftWheelEncoder.SetDistancePerPulse(RobotConstants::leftDistancePerPulse);
-      m_rightWheelEncoder.SetDistancePerPulse(RobotConstants::rightDistancePerPulse);
       m_configEditor.showAllKeys();
 
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
@@ -141,7 +141,12 @@ public:
       SmartDashboard::PutString("DB/String 8", " ");
       SmartDashboard::PutString("DB/String 9", " ");
       bool addedToQueue = false;
+      m_robotController.setAuto();
+      m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
+      m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
+
       while (IsAutonomous()&& IsEnabled()){
+
          /*
           * TODO: Action.run
           */
@@ -176,6 +181,10 @@ public:
       SmartDashboard::PutString("DB/String 9", " ");
 
       m_driveTrainController.setGoalState(DriveTrainController::TELEOP);
+      m_robotController.setManual();
+      m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
+      m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
+
       while(IsOperatorControl() && IsEnabled()){
          m_driveStation.snapShot();
          m_robotController.run();
@@ -202,6 +211,8 @@ public:
       SmartDashboard::PutString("DB/String 7", " ");
       SmartDashboard::PutString("DB/String 8", " ");
       SmartDashboard::PutString("DB/String 9", " ");
+      m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
+      m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
 
       while(IsTest() && IsEnabled()){
          std::ostringstream outputG;
@@ -253,7 +264,7 @@ public:
          m_configEditor.update();
 
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
-            m_driveTrainController.aimRobotClockwise(36,0.5);
+            m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"),m_configEditor.getFloat("motorPower"));
          }
          //Aiming Robot Counter Clockwise 90 degrees
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
@@ -264,7 +275,7 @@ public:
          //Robot drives straight
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonY)){
             SmartDashboard::PutString("DB/String 6", ":) Moving Robot Straight Test");
-            m_driveTrainController.moveRobotStraight(45, m_configEditor.getFloat("motorPower"));
+            m_driveTrainController.moveRobotStraight(m_configEditor.getFloat("distance"), m_configEditor.getFloat("motorPower"));
          }
          //test drivetrain repeatability by running forwards and backward five times.
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonX)){

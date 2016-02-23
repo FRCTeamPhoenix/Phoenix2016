@@ -121,7 +121,7 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
    if (m_goalState == ENCODERDRIVE || m_goalState == GYROTURN){
       return;
    }
-   if (!RobotConstants::gyro){
+   if (RobotConstants::gyro){
       m_gyroTargetDegree = m_gyro->GetAngle() + degree;
 
       if (degree > 0) {
@@ -142,7 +142,7 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
 
       m_initalEncoderDistanceRight = m_rightWheelEncoder->GetDistance();
       m_initalEncoderDistanceLeft = m_leftWheelEncoder->GetDistance();
-      float distance = degree * RobotConstants::wheelEncoderDistancePerDegree;
+      float distance = degree * m_configEditor->getFloat("wheelEncoderDistancePerDegree");
 
 
       m_targetDistanceRight = m_initalEncoderDistanceRight - distance;
@@ -154,6 +154,100 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
          m_rightMotorPower = -motorSpeed;
          m_leftMotorPower = motorSpeed;
       }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       else {
          m_rightMotorPower = motorSpeed;
          m_leftMotorPower = -motorSpeed;
