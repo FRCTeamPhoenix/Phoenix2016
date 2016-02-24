@@ -242,9 +242,24 @@ public:
             m_LFly.Set(0.0);
          }
 
+//      if(m_joystick.GetRawButton(1)){
+//         m_RFly.Set(1);
+//         m_LFly.Set(1);
+//      }
+//
+//      if(m_joystick.GetRawButton(2)){
+//         m_RFly.Set(-1);
+//         m_LFly.Set(-1);
+//      }
+//
+//      if(m_joystick.GetRawButton(3)){
+//         m_RFly.Set(0.0);
+//         m_LFly.Set(0.0);
+//      }
+
 
          if(m_joystick.GetRawButton(2)){
-            m_loader.Set(-1);
+            m_loader.Set(0.75);
          }
          else{
             m_loader.Set(0.0);
@@ -256,12 +271,10 @@ public:
          else{
             m_roller.Set(0.0);
          }
-//
+
          m_driveTrainController.run();
 
       }
-
-   lidarRun.join();
    }
 };
 
