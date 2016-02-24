@@ -30,11 +30,11 @@ public:
    bool getGamepadButton(int);
    bool getJoystickButton(int);
    std::string getStringInput(int);
-      bool getButtonInput(int);
+   bool getButtonInput(int);
 
-      void setString(int, std::string);
+   void setString(int, std::string);
 
-      void setButton(int, bool);
+   void setButton(int, bool);
 
 
    //Sets member varibles for all inputs
@@ -56,7 +56,7 @@ private:
    float m_gamepadJoystick;
    float m_gamepadJoystickY;
    bool m_buttonInputs[6];
-     std::string m_stringInputs[13];
+   std::string m_stringInputs[13];
 };
 
 

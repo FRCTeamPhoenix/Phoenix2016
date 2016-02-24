@@ -42,19 +42,21 @@ DriveTrainController::~DriveTrainController() {
 }
 
 // ThrottleRatio .8 is too high :(
-void DriveTrainController::manualDrive(float throttleRatio) {
+void DriveTrainController::manualDrive() {
+
+   float throttleRatio = (-m_driveStation->getJoystickThrottle()+ 1)/2;
    float throttle = m_driveStation->getYWithDeadzone();
    float twist = m_driveStation->getZWithDeadzone();
    float twistRatio = 1 - throttleRatio;
 
-   if (fabs(throttle) > 0.01){
-      m_leftMotorPower = (throttle * throttleRatio) + (twist * twistRatio);
-      m_rightMotorPower = (throttle * throttleRatio) - (twist * twistRatio);
-   }
-   else{
-      m_leftMotorPower = twist * throttleRatio;
-      m_rightMotorPower = -twist * throttleRatio;
-   }
+   std::ostringstream t;
+   t<<"Twist: ";
+   t<<twistRatio;
+   SmartDashboard::PutString("DB/String 9", t.str());
+
+   m_leftMotorPower = (throttle * throttleRatio) + (twist * twistRatio);
+   m_rightMotorPower = (throttle * throttleRatio) - (twist * twistRatio);
+
 }
 
 void DriveTrainController::run() {
@@ -63,7 +65,7 @@ void DriveTrainController::run() {
 
    //Goal state with the drivers are driving the robot
    case TELEOP:
-      manualDrive(m_configEditor->getFloat("motorPower"));
+      manualDrive();
       break;
       //Goal state of when the robot is not doing anything
    case IDLE:
