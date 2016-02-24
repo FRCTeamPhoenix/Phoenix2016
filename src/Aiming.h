@@ -20,6 +20,7 @@
 #include "DriveTrainController.h"
 #include "ShooterController.h"
 #include "constants.h"
+#include <cmath>
 
 class Aiming {
 public:
@@ -27,8 +28,9 @@ public:
    enum STATE {
          IDLE,
          CENTERING,
-         AJUSTING,
-         APPROACHING
+         APPROACHING,
+         REVERTING,
+         SHOOTING
       };
 
    Aiming(Client*, DriveTrainController*, DriveStation*,LidarHandler*,ShooterController*);
@@ -36,6 +38,8 @@ public:
    void beginAiming();
    void centering();
    void approachTarget();
+   void revert();
+   void shoot();
    STATE getCurrentState();
    void setTargetCoordinateValue(AimingConstants::targetPositionData, int);
    void setCurrentState(STATE);
@@ -50,9 +54,16 @@ private:
    DriveStation* m_driveStation;
    LidarHandler * m_lidar;
    ShooterController *m_shooter;
+   Timer m_timer;
    int m_currentTargetCoordinates[8];
    STATE m_currentState;
    bool lastArrayWasNull;
+   bool hasApproached;
+   bool rotateCW;
+   bool rotateCCW;
+   bool fullProcess;
+
+
    int nullArraysInARow;
 
 };

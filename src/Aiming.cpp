@@ -22,8 +22,11 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, Drive
    m_shooter(shooter)
 {
 
+   rotateCW=false;
+   rotateCCW=false;
    setCurrentState(IDLE);
-
+   hasApproached=false;
+   fullProcess=false;
    memset(m_currentTargetCoordinates,0,8);
 
    //Keeps track of the number of blank data sets sent over to Client
@@ -39,29 +42,23 @@ void Aiming::beginAiming() {
 // Gives Aiming class access to image data sent over to client from Raspberry Pi
 void Aiming::getNewImageData() {
 
-   //Check for fresh data
-   if(m_client->m_unreadTargetData) {
+   // Updates array of current coordinates with data received by client
+   for(int i = 0; i < AimingConstants::numTargetVals; i++) {
+      m_currentTargetCoordinates[i] = m_client->getTargetData(i+1);
+   }
 
-         // Updates array of current coordinates with data received by client
-         for(int i = 0; i < AimingConstants::numTargetVals; i++) {
-            m_currentTargetCoordinates[i] = m_client->getTargetData(i+1);
-         }
 
-         if(m_currentTargetCoordinates[AimingConstants::yUL] == 0) {
-            lastArrayWasNull = true;
-         } else {
-            lastArrayWasNull = false;
-         }
-
-      }
 
 }
 
 // Turns robot to line up with target, once target is within field of vision
 void Aiming::centering() {
 
+   bool hasRotated =false;
    double m_targetCenter_x;
    double deviation;
+   double calculatedRotation;
+   double initialTargetCenterX;
 
    m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL] +m_currentTargetCoordinates[AimingConstants::xLR])/2);
    deviation = (m_targetCenter_x - AimingConstants::offsetCenter);
@@ -71,39 +68,110 @@ void Aiming::centering() {
    SmartDashboard::PutString("DB/String 9", print.str());
 
 
-   if(deviation< -10){
-
+   if(deviation< -AimingConstants::rotationVariance &&
+         (m_driveTrainController->getCurrentState()==m_driveTrainController->IDLE
+          || m_driveTrainController->getCurrentState()==m_driveTrainController->TELEOP) &&
+         !hasRotated){
+      initialTargetCenterX = m_targetCenter_x;
       SmartDashboard::PutString("DB/String 8","ccw");
-      m_driveTrainController->aimRobotCounterclockwise(5,0.6f);
+      m_driveTrainController->aimRobotCounterclockwise(20, 0.6f);
+
 
    }
-   else if (deviation>10){
+   else if (deviation > AimingConstants::rotationVariance &&
+         (m_driveTrainController->getCurrentState()==m_driveTrainController->IDLE
+         || m_driveTrainController->getCurrentState()==m_driveTrainController->TELEOP) &&
+         !hasRotated){
+
       SmartDashboard::PutString("DB/String 8","cw");
-      m_driveTrainController->aimRobotClockwise(5,0.6f);
+      initialTargetCenterX = m_targetCenter_x;
+      m_driveTrainController->aimRobotClockwise(20, 0.6f);
+
    }
    else {
-      setCurrentState(IDLE);
+      if (fullProcess&&!hasApproached){
+         setCurrentState(APPROACHING);
+      }
+      else {
+         setCurrentState(IDLE);
+      }
+
    }
+   if (hasRotated && (m_driveTrainController->getCurrentState()== m_driveTrainController->IDLE
+         || m_driveTrainController->getCurrentState()==m_driveTrainController->TELEOP)){
+      calculatedRotation = fabs((((m_targetCenter_x-initialTargetCenterX)/20)*deviation));
+
+
+      if (deviation < 0){
+         m_driveTrainController->aimRobotCounterclockwise(calculatedRotation, 0.5f);
+      }
+      else {
+         m_driveTrainController->aimRobotClockwise(calculatedRotation, 0.5f);
+      }
+   }
+
+
 
 }
 
+//void Aiming::revert(){
+//
+//
+//   if (rotateCW){
+//      m_driveTrainController->aimRobotCounterclockwise(AimingConstants::rotateCorrect,0.5f);
+//   }
+//   else if  (rotateCCW){
+//      m_driveTrainController->aimRobotClockwise(AimingConstants::rotateCorrect,0.5f);
+//   }
+//
+//   rotateCW=false;
+//   rotateCCW=false;
+//   if (!hasApproached && fullProcess){
+//      setCurrentState(APPROACHING);
+//   }
+//   else if (hasApproached && fullProcess){
+//      setCurrentState(SHOOTING);
+//   }
+//   else {
+//      setCurrentState(IDLE);
+//   }
+//
+//
+//}
+
 void Aiming::approachTarget() {
 
-   m_shooter->setArmed();
 
-   if (m_lidar->getFastAverage() < AimingConstants::aimedDistance - 12){
+   if (m_lidar->getFastAverage() < AimingConstants::aimedDistance - AimingConstants::distanceVariance){
       m_driveTrainController->moveRobotStraight(-6,0.5f);
    }
-   else if (m_lidar->getFastAverage() > AimingConstants::aimedDistance + 12){
+   else if (m_lidar->getFastAverage() > AimingConstants::aimedDistance + AimingConstants::distanceVariance){
          m_driveTrainController->moveRobotStraight(6,0.5f);
    }
    else {
-      if (m_shooter->getCurrentState()== m_shooter->ARMED){
-         m_shooter->setShooting();
+      hasApproached=true;
+      if (fullProcess){
+         setCurrentState(CENTERING);
       }
-      setCurrentState(IDLE);
+      else {
+         setCurrentState(IDLE);
+      }
 
    }
+}
+
+void Aiming::shoot(){
+   if (m_timer.Get()==0){
+      m_timer.Start();
+   }
+   m_shooter->setArmed();
+   if (m_timer.HasPeriodPassed(1.5)){
+      m_shooter->setShooting();
+      setCurrentState(IDLE);
+      m_timer.Stop();
+      m_timer.Reset();
+   }
+
 }
 
 void Aiming::setTargetCoordinateValue(AimingConstants::targetPositionData position, int newValue) {
@@ -132,8 +200,10 @@ void Aiming::printCurrentCoordinates() {
          m_currentTargetCoordinates[AimingConstants::yLR] << ")" << endl;
 }
 
+
 // Called to implement all aiming mechanisms
 void Aiming::run() {
+   ostringstream print;
 
    if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonA)) {
          setCurrentState(IDLE);
@@ -141,10 +211,27 @@ void Aiming::run() {
 
    switch(m_currentState) {
    case IDLE:
+      m_driveTrainController->setGoalState(m_driveTrainController->TELEOP);
+      getNewImageData();
+
       SmartDashboard::PutString("DB/String 0", "State: IDLE" );
+      print << "target:"<<m_currentTargetCoordinates[AimingConstants::xUL];
+      SmartDashboard::PutString("DB/String 5",print.str());
+
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonStart)) {
+            fullProcess=true;
             setCurrentState(CENTERING);
       }
+      else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonB)) {
+         setCurrentState(APPROACHING);
+      }
+      else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonY)) {
+         setCurrentState(CENTERING);
+      }
+      else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonX)) {
+         setCurrentState(SHOOTING);
+      }
+
       break;
    case CENTERING:
       SmartDashboard::PutString("DB/String 0", "State: Centering" );
@@ -153,9 +240,19 @@ void Aiming::run() {
       break;
    case APPROACHING:
       SmartDashboard::PutString("DB/String 0", "State: Approaching" );
-
       getNewImageData();
       approachTarget();
+      break;
+//   case REVERTING:
+//      SmartDashboard::PutString("DB/String 0", "State: Reverting" );
+//      getNewImageData();
+//      revert();
+//      break;
+   case SHOOTING:
+      SmartDashboard::PutString("DB/String 0", "State: Shooting" );
+      getNewImageData();
+      shoot();
+    break;
    default:
       break;
    }

@@ -85,17 +85,14 @@ void Client::receivePacket(){
                //Target has flag 1 in first place of array ball has flag 2, lydar has flag 3
                if (m_convertedData[0]==1){
                    copyArray(m_convertedData,m_targetData);
-                   m_unreadTargetData=true;
 
                }
                else if (m_convertedData[0]==2){
                    copyArray(m_convertedData,m_ballData);
-                   m_unreadBallData=true;
 
                }
                else if (m_convertedData[0]==3){
                    copyArray(m_convertedData,m_distanceData);
-                   m_unreadDistanceData=true;
                }
                else {
                    cout << "no valid flag found" <<endl;
@@ -119,19 +116,16 @@ void Client::sendPacket() {
 }
 
 int Client::getBallData(int element){
-    m_unreadBallData=false;
     return m_ballData[element];
 
 }
 
 int Client::getTargetData(int element){
-    m_unreadTargetData=false;
     return m_targetData[element];
 
 }
 
 int Client::getDistanceData(){
-    m_unreadDistanceData=false;
     return *m_distanceData;
 
 }
