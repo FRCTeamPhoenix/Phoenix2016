@@ -59,9 +59,13 @@ private:
    STATE m_currentState;
    bool lastArrayWasNull;
    bool hasApproached;
-   bool rotateCW;
-   bool rotateCCW;
+   bool hasRotated;
    bool fullProcess;
+   double initialTargetCenterX;
+   double m_targetCenter_x;
+   double deviation;
+
+
 
 
    int nullArraysInARow;

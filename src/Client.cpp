@@ -106,7 +106,7 @@ void Client::byteToInt(char *byteArray,int *intArray){
 
         intArray[currentInt]=(int)byteArray[currentByte] + ((int)(byteArray[currentByte+1]) << 8);
         currentByte+=2;
-        cout << "received data = " <<  intArray[currentInt] << endl;
+        //cout << "received data = " <<  intArray[currentInt] << endl;
     }
 }
 

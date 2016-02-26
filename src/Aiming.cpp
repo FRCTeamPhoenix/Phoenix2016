@@ -22,19 +22,25 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, Drive
    m_shooter(shooter)
 {
 
-   rotateCW=false;
-   rotateCCW=false;
+   // We have not yet rotated
+   hasRotated=false;
+
+   // Nothing is happening
    setCurrentState(IDLE);
+
+   // We have not yet approached
    hasApproached=false;
+
+   // By default, we will only be performing a specified part of the aiming process
+   // In order to perform the ENTIRE process (including shooting), START should be pressed
    fullProcess=false;
+
+   // "Clean slate" for the target coordinate array!
    memset(m_currentTargetCoordinates,0,8);
 
-   //Keeps track of the number of blank data sets sent over to Client
-   //This represents the number of action cycles for which the target has not been seen
 }
 
-// IMPORTANT: Call this method to begin aiming process - same as manually setting state to first
-// phase of aiming process
+// Call this method to begin aiming process - same as manually setting state to first phase of aiming process
 void Aiming::beginAiming() {
    setCurrentState(CENTERING);
 }
@@ -46,9 +52,6 @@ void Aiming::getNewImageData() {
    for(int i = 0; i < AimingConstants::numTargetVals; i++) {
       m_currentTargetCoordinates[i] = m_client->getTargetData(i+1);
    }
-
-
-
 }
 
 // Turns robot to line up with target, once target is within field of vision
@@ -64,9 +67,13 @@ void Aiming::centering() {
    m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL] +m_currentTargetCoordinates[AimingConstants::xLR])/2);
    deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
 
-   ostringstream print;
-   print << "center: "<<m_targetCenter_x << ":" << deviation;
-   SmartDashboard::PutString("DB/String 9", print.str());
+
+   // Amount of offset from our desired center coordinate (w/ respect to current frame of vision)
+   deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
+
+   ostringstream aimingPrints;
+   aimingPrints<< "C: " << m_targetCenter_x << ", " << "D: " << deviation;
+   SmartDashboard::PutString("DB/String 9",aimingPrints.str());
 
 
    if((deviation< -AimingConstants::rotationVariance) && (initialTargetCenterX != m_targetCenter_x) &&
@@ -93,9 +100,10 @@ void Aiming::centering() {
       }
       else {
          setCurrentState(IDLE);
-      }
-   }
 
+      }
+
+   }
 }
 
 //void Aiming::revert(){
@@ -114,15 +122,19 @@ void Aiming::centering() {
 //
 //}
 
+
 void Aiming::approachTarget() {
 
 
+   // Decide if we need to move forward or backwards
    if (m_lidar->getFastAverage() < AimingConstants::aimedDistance - AimingConstants::distanceVariance){
       m_driveTrainController->moveRobotStraight(-6,0.5f);
    }
    else if (m_lidar->getFastAverage() > AimingConstants::aimedDistance + AimingConstants::distanceVariance){
          m_driveTrainController->moveRobotStraight(6,0.5f);
    }
+
+   // We're done approaching and can move to the next phase we need!
    else {
       hasApproached=true;
       if (fullProcess){
@@ -136,9 +148,13 @@ void Aiming::approachTarget() {
 }
 
 void Aiming::shoot(){
+
+   // Do we need to start the timer?
    if (m_timer.Get()==0){
       m_timer.Start();
    }
+
+   // Get the shooter ready, and then shoot if enough time has passed
    m_shooter->setArmed();
    if (m_timer.HasPeriodPassed(1.5)){
       m_shooter->setShooting();
@@ -178,7 +194,6 @@ void Aiming::printCurrentCoordinates() {
 
 // Called to implement all aiming mechanisms
 void Aiming::run() {
-   ostringstream print;
 
    if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonA)) {
          setCurrentState(IDLE);
@@ -187,11 +202,12 @@ void Aiming::run() {
    switch(m_currentState) {
    case IDLE:
       m_driveTrainController->setGoalState(m_driveTrainController->TELEOP);
+      fullProcess=false;
+      hasRotated=false;
+      hasApproached=false;
       getNewImageData();
 
       SmartDashboard::PutString("DB/String 0", "State: IDLE" );
-      print << "target:"<<m_currentTargetCoordinates[AimingConstants::xUL];
-      SmartDashboard::PutString("DB/String 5",print.str());
 
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonStart)) {
             fullProcess=true;
@@ -218,11 +234,11 @@ void Aiming::run() {
       getNewImageData();
       approachTarget();
       break;
-//   case REVERTING:
-//      SmartDashboard::PutString("DB/String 0", "State: Reverting" );
-//      getNewImageData();
-//      revert();
-//      break;
+   case REVERTING:
+      SmartDashboard::PutString("DB/String 0", "State: Reverting" );
+      getNewImageData();
+      revert();
+      break;
    case SHOOTING:
       SmartDashboard::PutString("DB/String 0", "State: Shooting" );
       getNewImageData();
