@@ -29,7 +29,7 @@ RobotController::~RobotController() {}
 
 void RobotController::run(){
    if (m_state == ROBOT_AUTO){
-      m_queue.push(new ActionDrive(m_driveTrain, 24 , m_configEditor->getFloat("motorPower")));
+
 
       // Y button cancels autonomous mode, resetting it to manual controls.
       if (m_driveStation->getGamepadButton(DriveStationConstants::buttonY)){
@@ -102,9 +102,10 @@ void RobotController::performAction(void){
       m_queue.pop();
    }
 }
-void RobotController::setAuto(){
+void RobotController::initAutonoumosModeQueue(){
+   m_queue.push(new ActionDrive(m_driveTrain, 24 , m_configEditor->getFloat("motorPower")));
    m_state = ROBOT_AUTO;
 }
-void  RobotController::setManual(){
+void RobotController::setManual(){
    m_state = ROBOT_MANUAL;
 }

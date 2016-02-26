@@ -145,17 +145,16 @@ public:
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
 
       while (IsAutonomous()&& IsEnabled()){
+         if(!addedToQueue){
+            m_robotController.initAutonoumosModeQueue();
+            addedToQueue = true;
+         }
 
          m_driveStation.snapShot();
          m_driveTrainController.run();
          m_robotController.run();
          //m_shooterController.run();
          //m_arm.run();
-
-         if(!addedToQueue){
-           // m_robotController.setAuto();
-            addedToQueue = true;
-         }
       }
 
    }
