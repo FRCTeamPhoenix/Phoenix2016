@@ -217,32 +217,32 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
       return TELEOP;
       //Goal state of ENCODERDRIVE, tests if the encoders are where they are supposed to be
    case ENCODERDRIVE:
-//      std::ostringstream j;
-//      j<<"TargetRight";
-//      j<<m_targetDistanceRight;
-//      SmartDashboard::PutString("DB/String 5", j.str());
+      //      std::ostringstream j;
+      //      j<<"TargetRight";
+      //      j<<m_targetDistanceRight;
+      //      SmartDashboard::PutString("DB/String 5", j.str());
    {
       std::ostringstream ku;
       ku<<"realRight: ";
       ku<<m_rightWheelEncoder->GetDistance();
       SmartDashboard::PutString("DB/String 6", ku.str());}
-      if ((((m_rightMotorPower < 0) && (m_rightWheelEncoder->GetDistance() <= m_targetDistanceRight))) || (
-            ((m_rightMotorPower >= 0) && (m_rightWheelEncoder->GetDistance() >= m_targetDistanceRight)))){
-         m_rightEncoderComplete = true;
-      }
-      if ((((m_leftMotorPower < 0) && (m_leftWheelEncoder->GetDistance() <= m_targetDistanceLeft))) ||
-            (((m_leftMotorPower >= 0) && (m_leftWheelEncoder->GetDistance() >= m_targetDistanceLeft)))){
-         m_leftEncoderComplete = true;
-      }
-      if (m_rightEncoderComplete || m_leftEncoderComplete){
-         m_goalState = IDLE;
-         SmartDashboard::PutString("DB/String 7", "In enc cmplt");
-         return IDLE;
-      }
-      else {
-         m_goalState = ENCODERDRIVE;
-         return ENCODERDRIVE;
-      }
+   if ((((m_rightMotorPower < 0) && (m_rightWheelEncoder->GetDistance() <= m_targetDistanceRight))) || (
+         ((m_rightMotorPower >= 0) && (m_rightWheelEncoder->GetDistance() >= m_targetDistanceRight)))){
+      m_rightEncoderComplete = true;
+   }
+   if ((((m_leftMotorPower < 0) && (m_leftWheelEncoder->GetDistance() <= m_targetDistanceLeft))) ||
+         (((m_leftMotorPower >= 0) && (m_leftWheelEncoder->GetDistance() >= m_targetDistanceLeft)))){
+      m_leftEncoderComplete = true;
+   }
+   if (m_rightEncoderComplete || m_leftEncoderComplete){
+      m_goalState = IDLE;
+      SmartDashboard::PutString("DB/String 7", "In enc cmplt");
+      return IDLE;
+   }
+   else {
+      m_goalState = ENCODERDRIVE;
+      return ENCODERDRIVE;
+   }
    case GYROTURN:
       return GYROTURN;
    case LIDARDRIVE:

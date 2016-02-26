@@ -22,7 +22,7 @@
 
 class RobotController : public BaseController
 {
- public:
+public:
    enum STATE {
       ROBOT_AUTO,
       ROBOT_MANUAL
@@ -34,7 +34,7 @@ class RobotController : public BaseController
    void setManual();
    void run();
    void performAction(void);
- private:
+private:
    STATE m_state;
 
    std::queue<Action*> m_queue;
