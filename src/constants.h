@@ -151,7 +151,7 @@ struct AimingConstants{
    const static int minTargetWidth = 250;
    const static int maxTargetWidth = 350;
 
-   const static int offsetCenter = 275; //untuned value not correct
+   const static int desiredCenter = 275; //untuned value not correct
    constexpr static double aimedDistance=84;//untuned value not correct
 
    const static int distanceVariance = 12; //in inches
@@ -191,42 +191,47 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-const static int numberOfVars = 15;
-const static std::string variables[numberOfVars] = {
-      "motorPower",
-      "degree",
-      "distance",
-      "leftDistancePerPulse",
-      "rightDistancePerPulse",
-      "armMotorPower",
-      "homingPower",
-      "outerIntakeMotorPower",
-      "innerIntakeMotorPower",
-      "flywheelMotorPower",
-      "potLeftValueLow",
-      "potRightValueLow",
-      "potLeftValueHigh",
-      "potRightValueHigh",
-      "wheelEncoderDistancePerDegree"
-
-};
-const static std::string types[numberOfVars] = {
-      "float", //motorPower
-      "float", //degree
-      "float", //distance
-      "double", //leftDistancePerPulse
-      "double", //rightDistancePerPulse
-      "float", //armMotorPower
-      "float", //homingPower
-      "float", //outerIntakeMotorPower
-      "float", //innerIntakeMotorPower
-      "float", //flywheelMotorPower
-      "float", //potLeftValueLow
-      "float", //potRightValueLow
-      "float", //potLeftValueHigh
-      "float", //potRightValueHigh
-      "float", //wheelEncoderDistancePerDegree
-};
+   const static int numberOfVars = 18;
+   const static std::string variables[numberOfVars] = {
+         "motorPower",
+         "degree",
+         "distance",
+         "leftDistancePerPulse",
+         "rightDistancePerPulse",
+         "armMotorPower",
+         "homingPower",
+         "outerIntakeMotorPower",
+         "innerIntakeMotorPower",
+         "flywheelMotorPower",
+         "potLeftValueLow",
+         "potRightValueLow",
+         "potLeftValueHigh",
+         "potRightValueHigh",
+         "wheelEncoderDistancePerDegree",
+         "fastAverageFactor",
+         "slowAverageFactor",
+         "lidarOffset"
+   };
+   const static std::string types[numberOfVars] = {
+         "float", //motorPower
+         "float", //degree
+         "float", //distance
+         "double", //leftDistancePerPulse
+         "double", //rightDistancePerPulse
+         "float", //armMotorPower
+         "float", //homingPower
+         "float", //outerIntakeMotorPower
+         "float", //innerIntakeMotorPower
+         "float", //flywheelMotorPower
+         "float", //potLeftValueLow
+         "float", //potRightValueLow
+         "float", //potLeftValueHigh
+         "float", //potRightValueHigh
+         "float", //wheelEncoderDistancePerDegree
+         "double", //fastAverageFactor
+         "double", //slowAverageFactor,
+         "double" //lidarOffset
+   };
 };
 
 #endif /* SRC_CONSTANTS_H_ */
