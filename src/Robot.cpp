@@ -91,7 +91,7 @@ public:
       m_loaderController(&m_intakeMotor, &m_stationaryMotor, &m_loadedSensor, &m_driveStation, &m_configEditor),
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor),
-      m_driveCamera("cam1",false),
+      m_driveCamera("cam0",false),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm),
       m_lidarOnSwitch(0),
       m_lidarHandler(&m_lidarOnSwitch, &m_configEditor, 9){
@@ -123,7 +123,7 @@ public:
       m_driveCamera.SetExposureManual(20);
       m_driveCamera.SetWhiteBalanceAuto();
       CameraServer::GetInstance()->SetQuality(50);
-      CameraServer::GetInstance()->StartAutomaticCapture("cam1");
+      CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 
       std::thread lidarRun(lidarThread, this, &m_lidarHandler);
       lidarRun.detach();
