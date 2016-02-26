@@ -55,62 +55,46 @@ void Aiming::getNewImageData() {
 void Aiming::centering() {
 
    bool hasRotated =false;
-   double m_targetCenter_x;
+   double m_targetCenter_x=10;
    double deviation;
    double calculatedRotation;
    double initialTargetCenterX;
 
+   initialTargetCenterX=m_targetCenter_x;
    m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL] +m_currentTargetCoordinates[AimingConstants::xLR])/2);
-   deviation = (m_targetCenter_x - AimingConstants::offsetCenter);
+   deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
 
    ostringstream print;
    print << "center: "<<m_targetCenter_x << ":" << deviation;
    SmartDashboard::PutString("DB/String 9", print.str());
 
 
-   if(deviation< -AimingConstants::rotationVariance &&
-         (m_driveTrainController->getCurrentState()==m_driveTrainController->IDLE
-          || m_driveTrainController->getCurrentState()==m_driveTrainController->TELEOP) &&
-         !hasRotated){
-      initialTargetCenterX = m_targetCenter_x;
-      SmartDashboard::PutString("DB/String 8","ccw");
-      m_driveTrainController->aimRobotCounterclockwise(20, 0.6f);
+   if((deviation< -AimingConstants::rotationVariance) && (initialTargetCenterX != m_targetCenter_x) &&
+         (m_driveTrainController->getCurrentState()==m_driveTrainController->IDLE)){
+
+      m_driveTrainController->aimRobotCounterclockwise(1, 0.6f);
 
 
    }
-   else if (deviation > AimingConstants::rotationVariance &&
-         (m_driveTrainController->getCurrentState()==m_driveTrainController->IDLE
-         || m_driveTrainController->getCurrentState()==m_driveTrainController->TELEOP) &&
-         !hasRotated){
+   else if (deviation > AimingConstants::rotationVariance && (initialTargetCenterX != m_targetCenter_x) &&
+         (m_driveTrainController->getCurrentState()==m_driveTrainController->IDLE)){
 
-      SmartDashboard::PutString("DB/String 8","cw");
-      initialTargetCenterX = m_targetCenter_x;
-      m_driveTrainController->aimRobotClockwise(20, 0.6f);
+      m_driveTrainController->aimRobotClockwise(1, 0.6f);
 
    }
-   else {
-      if (fullProcess&&!hasApproached){
+   else if (deviation <  AimingConstants::rotationVariance && deviation > -AimingConstants::rotationVariance &&
+         (m_driveTrainController->getCurrentState()==m_driveTrainController->IDLE)){
+
+      if (!hasApproached && fullProcess){
          setCurrentState(APPROACHING);
+      }
+      else if (hasApproached && fullProcess){
+         setCurrentState(SHOOTING);
       }
       else {
          setCurrentState(IDLE);
       }
-
    }
-   if (hasRotated && (m_driveTrainController->getCurrentState()== m_driveTrainController->IDLE
-         || m_driveTrainController->getCurrentState()==m_driveTrainController->TELEOP)){
-      calculatedRotation = fabs((((m_targetCenter_x-initialTargetCenterX)/20)*deviation));
-
-
-      if (deviation < 0){
-         m_driveTrainController->aimRobotCounterclockwise(calculatedRotation, 0.5f);
-      }
-      else {
-         m_driveTrainController->aimRobotClockwise(calculatedRotation, 0.5f);
-      }
-   }
-
-
 
 }
 
@@ -126,15 +110,6 @@ void Aiming::centering() {
 //
 //   rotateCW=false;
 //   rotateCCW=false;
-//   if (!hasApproached && fullProcess){
-//      setCurrentState(APPROACHING);
-//   }
-//   else if (hasApproached && fullProcess){
-//      setCurrentState(SHOOTING);
-//   }
-//   else {
-//      setCurrentState(IDLE);
-//   }
 //
 //
 //}
