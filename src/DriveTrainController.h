@@ -34,7 +34,7 @@ public:
          LidarHandler* lidar);
    virtual ~DriveTrainController();
    void run();
-   void manualDrive(float throttleRatio);
+   void manualDrive();
    void aimRobotClockwise(float degree, float motorSpeed);
    void aimRobotCounterclockwise(float degree, float motorSpeed);
    void moveRobotStraight(float distance, float motorSpeed);

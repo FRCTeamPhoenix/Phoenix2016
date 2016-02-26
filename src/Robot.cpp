@@ -141,27 +141,19 @@ public:
       SmartDashboard::PutString("DB/String 8", " ");
       SmartDashboard::PutString("DB/String 9", " ");
       bool addedToQueue = false;
-      m_robotController.setAuto();
       m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
 
       while (IsAutonomous()&& IsEnabled()){
 
-         /*
-          * TODO: Action.run
-          */
          m_driveStation.snapShot();
-         m_robotController.run();
          m_driveTrainController.run();
-         m_shooterController.run();
-         m_arm.run();
+         m_robotController.run();
+         //m_shooterController.run();
+         //m_arm.run();
 
          if(!addedToQueue){
-
-            /*
-             * TODO: Action.add move forward
-             * TODO: Action ball aim
-             */
+           // m_robotController.setAuto();
             addedToQueue = true;
          }
       }
@@ -276,15 +268,15 @@ public:
          //          SmartDashboard::PutString("DB/String 6", ":) Aiming Robot Clockwise 90 Test");
          //        m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
          m_configEditor.update();
-//      }
-//      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
-//         m_driveTrainController.driveLidar(36,0.5);
-//      }
-      //Aiming Robot Counter Clockwise 90 degrees
-      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
-         SmartDashboard::PutString("DB/String 6", ":) Aiming Robot CounterClockwise 90 Test");
-         m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
-      }
+         //      }
+         //      if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
+         //         m_driveTrainController.driveLidar(36,0.5);
+         //      }
+         //Aiming Robot Counter Clockwise 90 degrees
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
+            SmartDashboard::PutString("DB/String 6", ":) Aiming Robot CounterClockwise 90 Test");
+            m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
+         }
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
             m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"),m_configEditor.getFloat("motorPower"));
          }
