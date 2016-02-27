@@ -64,6 +64,8 @@ private:
    double initialTargetCenterX;
    double m_targetCenter_x;
    double deviation;
+   bool driveIdle;
+   bool newCenter;
 
 
 

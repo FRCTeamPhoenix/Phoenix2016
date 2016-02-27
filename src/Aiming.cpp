@@ -62,12 +62,23 @@ void Aiming::centering() {
    double deviation;
    //double calculatedRotation;
    double initialTargetCenterX;
+   driveIdle=false;
+   newCenter=false;
+   if ((m_driveTrainController->getCurrentState()==m_driveTrainController->IDLE
+         || m_driveTrainController->getCurrentState()==m_driveTrainController->TELEOP )){
+      driveIdle=true;
+   }
+
+
 
    initialTargetCenterX=m_targetCenter_x;
+
    m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL] +m_currentTargetCoordinates[AimingConstants::xLR])/2);
    deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
 
-
+   if (m_targetCenter_x != initialTargetCenterX){
+      newCenter=true;
+   }
    // Amount of offset from our desired center coordinate (w/ respect to current frame of vision)
    deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
 
@@ -76,21 +87,17 @@ void Aiming::centering() {
    SmartDashboard::PutString("DB/String 9",aimingPrints.str());
 
 
-   if((deviation< -AimingConstants::rotationVariance) && (initialTargetCenterX != m_targetCenter_x) &&
-         (m_driveTrainController->getCurrentState()==m_driveTrainController->IDLE)){
+   if(deviation< -AimingConstants::rotationVariance && driveIdle && newCenter){
 
       m_driveTrainController->aimRobotCounterclockwise(1, 0.6f);
 
-
    }
-   else if (deviation > AimingConstants::rotationVariance && (initialTargetCenterX != m_targetCenter_x) &&
-         (m_driveTrainController->getCurrentState()==m_driveTrainController->IDLE)){
+   else if (deviation > AimingConstants::rotationVariance && newCenter && driveIdle){
 
       m_driveTrainController->aimRobotClockwise(1, 0.6f);
 
    }
-   else if (deviation <  AimingConstants::rotationVariance && deviation > -AimingConstants::rotationVariance &&
-         (m_driveTrainController->getCurrentState()==m_driveTrainController->IDLE)){
+   else if (deviation <  AimingConstants::rotationVariance && deviation > -AimingConstants::rotationVariance && driveIdle){
 
       if (!hasApproached && fullProcess){
          setCurrentState(APPROACHING);
