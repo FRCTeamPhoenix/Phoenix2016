@@ -7,14 +7,15 @@
 
 #include "Flywheel.h"
 
-Flywheel::Flywheel(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor, Encoder* leftFlywheelEncoder, Encoder* rightFlywheelEncoder, LidarHandler* lidar) :
+Flywheel::Flywheel(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor, Encoder* leftFlywheelEncoder, Encoder* rightFlywheelEncoder, LidarHandler* lidar, ConfigEditor * configEditor) :
    m_leftFlywheelMotor(leftFlywheelMotor),
    m_rightFlywheelMotor(rightFlywheelMotor),
    m_leftFlywheelEncoder(leftFlywheelEncoder),
    m_rightFlywheelEncoder(rightFlywheelEncoder),
    m_lidar(lidar),
    m_leftFlywheelController(m_leftFlywheelMotor, m_leftFlywheelEncoder),
-   m_rightFlywheelController(m_rightFlywheelMotor, m_rightFlywheelEncoder)
+   m_rightFlywheelController(m_rightFlywheelMotor, m_rightFlywheelEncoder),
+   m_configEditor(configEditor)
 {
    m_spinning = false;
 
@@ -73,7 +74,7 @@ void Flywheel::setRate(float rate) {
 
 
 float Flywheel::calculateSpeed() {
-   return 2000;
+   return m_configEditor->getFloat("shooterPower");
    float currentDistance = m_lidar->getFastAverage();
 
    if(currentDistance < m_minDistance){

@@ -50,9 +50,9 @@ void DriveTrainController::manualDrive() {
    float twistRatio = 1 - throttleRatio;
 
    std::ostringstream t;
-   t<<"Twist: ";
-   t<<twistRatio;
-   SmartDashboard::PutString("DB/String 9", t.str());
+   t << "Throttle: ";
+   t << throttleRatio;
+   SmartDashboard::PutString("DB/String 5", t.str());
 
    m_leftMotorPower = (throttle * throttleRatio) + (twist * twistRatio);
    m_rightMotorPower = (throttle * throttleRatio) - (twist * twistRatio);

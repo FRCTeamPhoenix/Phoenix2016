@@ -30,13 +30,13 @@ private:
    float m_minDistance;
    float m_minDistanceRate;
 
-
+   ConfigEditor * m_configEditor;
 
    void setRate(float rate);
    float calculateSpeed();
 
 public:
-   Flywheel(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor, Encoder* leftFlywheelEncoder, Encoder* rigtFlywheelEncoder, LidarHandler* lidar);
+   Flywheel(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor, Encoder* leftFlywheelEncoder, Encoder* rigtFlywheelEncoder, LidarHandler* lidar, ConfigEditor * configEditor);
    virtual ~Flywheel();
 
    enum STATE{
