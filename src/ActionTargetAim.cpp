@@ -13,7 +13,7 @@ ActionTargetAim::ActionTargetAim(Aiming* aim)
 // Start the centering process
 void ActionTargetAim::init(void)
 {
-   m_aimer->centering();
+   m_aimer->setCurrentState(Aiming::CENTERING);
    m_initialized = true;
 }
 
@@ -21,6 +21,7 @@ void ActionTargetAim::init(void)
 bool ActionTargetAim::execute(void)
 {
    m_aimer->getNewImageData();
+   m_aimer->centering();
    // Continue aiming process if still in centering phase
    if (m_aimer->getCurrentState() == Aiming::CENTERING) {
       return false;

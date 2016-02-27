@@ -11,50 +11,6 @@
  * until the the shooter is positioned correctly to shoot at the desired high target.
  *
  */
-/*
-#ifndef SRC_AIMING_H_
-#define SRC_AIMING_H_
-#define ARRAY_SIZE(array) (sizeof((array))/sizeof((array[0])))
-#include "Math.h"
-#include "Client.h"
-#include "DriveTrainController.h"
-#include "Constants.h"
-
-class Aiming {
-public:
-
-   enum STATE {
-         IDLE,
-         FINDING_TARGET,
-         ROTATING,
-         APPROACHING
-      };
-
-   Aiming(Client*, DriveTrainController*, DriveStation*);
-   void getNewImageData();
-   void beginAiming();
-   void findTarget();
-   void rotate();
-   void approachTarget();
-   STATE getCurrentState();
-   void setTargetCoordinateValue(AimingConstants::targetPositionData, int);
-   void setCurrentState(STATE);
-   void printCurrentCoordinates();
-   void run();
-   virtual ~Aiming();
-
-private:
-
-   Client* m_client;
-   DriveTrainController* m_driveTrainController;
-   DriveStation* m_driveStation;
-   int m_currentTargetCoordinates[9];
-   STATE m_currentState;
-   bool lastArrayWasNull;
-   int nullArraysInARow;
-
-};
-*/
 
 #ifndef SRC_AIMING_H_
 #define SRC_AIMING_H_
@@ -87,6 +43,7 @@ public:
    STATE getCurrentState();
    void setTargetCoordinateValue(AimingConstants::targetPositionData, int);
    void setCurrentState(STATE);
+   void setFullProcess(bool);
    void printCurrentCoordinates();
    void run();
    virtual ~Aiming();
