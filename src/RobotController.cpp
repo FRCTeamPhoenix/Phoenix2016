@@ -109,7 +109,7 @@ void RobotController::performAction(void){
 void RobotController::initAutonoumosModeQueue(){
 
    // Drive forwards 5 feet
-   m_queue.push(new ActionDrive(m_driveTrain, 60 , m_configEditor->getFloat("motorPower")));
+   m_queue.push(new ActionDrive(m_driveTrain, 144, m_configEditor->getFloat("motorPower")));
 
    // Start spinning flywheels to get them up to speed
    //TODO: Only one parameter will be needed in the future, due to motor power calculation
@@ -120,7 +120,7 @@ void RobotController::initAutonoumosModeQueue(){
    m_queue.push(new ActionTargetAim(m_aiming));
 
    // Shoot, after flywheels are up to speed and robot is centered
-   m_queue.push(new ActionShoot(m_shooterController));
+   m_queue.push(new ActionShoot(m_loaderController));
 
    m_state = ROBOT_AUTO;
 }

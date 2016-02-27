@@ -15,14 +15,14 @@
 
 #include "Action.h"
 #include "ActionShoot.h"
-#include "ShooterController.h"
+#include "LoaderController.h"
 
 class ActionShoot : public Action
 {
 private:
-   ShooterController* m_shooterController;
+   LoaderController* m_loaderController;
 public:
-   ActionShoot(ShooterController*);
+   ActionShoot(LoaderController*);
    void init(void);
    bool execute(void);
    ~ActionShoot();

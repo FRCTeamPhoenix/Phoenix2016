@@ -11,8 +11,8 @@
 #include "ActionShoot.h"
 
 // Constructor
-ActionShoot::ActionShoot(ShooterController* shooterController)
-   : Action(), m_shooterController(shooterController)
+ActionShoot::ActionShoot(LoaderController* loaderController)
+   : Action(), m_loaderController(loaderController)
 {
 
 }
@@ -20,14 +20,14 @@ ActionShoot::ActionShoot(ShooterController* shooterController)
 // Start the shooter running
 void ActionShoot::init(void)
 {
-   m_shooterController->run();
+   m_loaderController->start();
    m_initialized = true;
 }
 
 // End the action if the shooter is off (this means shooting is done)
 bool ActionShoot::execute(void)
 {
-   return m_shooterController->getCurrentState() == ShooterController::OFF;
+   return m_loaderController->loaded() == false;
 }
 
 // Destructor
