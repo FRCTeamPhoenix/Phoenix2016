@@ -36,21 +36,20 @@ public:
    RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, Flywheel*,
          ConfigEditor*, Arm*, Aiming*);
    virtual ~RobotController();
-   void initAutonomousModeQueue();
-   void setManual();
-   void run();
+   void run(void);
+ private:
    void performAction(void);
-private:
+
    STATE m_state;
 
    std::queue<Action*> m_queue;
 
    DriveStation* m_driveStation;
    DriveTrainController* m_driveTrain;
-   ShooterController * m_shooterController;
-   LoaderController * m_loaderController;
-   Flywheel * m_flywheel;
-   ConfigEditor * m_configEditor;
+   ShooterController* m_shooterController;
+   LoaderController* m_loaderController;
+   Flywheel* m_flywheel;
+   ConfigEditor* m_configEditor;
    Arm* m_arm;
    Aiming* m_aiming;
 };
