@@ -17,6 +17,7 @@ ActionSpinFlywheels::ActionSpinFlywheels(Flywheel* flywheel, float motorPower)
 // Sets up the flywheels for action
 void ActionSpinFlywheels::init(void)
 {
+   // won't need a parameter later
    m_flywheel->start(m_motorPower);
    m_initialized = true;
 }
@@ -24,7 +25,8 @@ void ActionSpinFlywheels::init(void)
 // Determines whether further execution is necessary (are the motors done spinning?)
 bool ActionSpinFlywheels::execute(void)
 {
-   return m_flywheel->getCurrentState() == Flywheel::OFF;
+   return true;
+         //m_flywheel->getCurrentState() == Flywheel::OFF;
 }
 
 ActionSpinFlywheels::~ActionSpinFlywheels() {
