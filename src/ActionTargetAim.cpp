@@ -9,12 +9,18 @@ ActionTargetAim::ActionTargetAim(Aiming* aim)
 void
 ActionTargetAim::init(void)
 {
-   m_aimer->beginAiming();
+   m_aimer->centering();
    m_initialized = true;
 }
 
 bool
 ActionTargetAim::execute(void)
 {
-   return m_aimer->getCurrentState() == Aiming::IDLE;
+   if (m_aimer->getCurrentState() == Aiming::CENTERING) {
+      return false;
+   }
+   else {
+      m_aimer->setCurrentState(Aiming::IDLE);
+      return true;
+   }
 }

@@ -47,7 +47,6 @@ class Robot: public SampleRobot
    Client m_client;
    DriveStation m_driveStation;
    LoaderSense m_loaderSense;
-   Aiming m_aiming;
    ConfigEditor m_configEditor;
    RobotDrive m_driveTrain;
    DriveTrainController m_driveTrainController;
@@ -59,6 +58,7 @@ class Robot: public SampleRobot
    RobotController m_robotController;
    Relay m_lidarOnSwitch;
    LidarHandler m_lidarHandler;
+   Aiming m_aiming;
 
 public:
    Robot() :
@@ -83,7 +83,6 @@ public:
       m_stationaryMotor(PortAssign::stationaryMotor),
       m_driveStation(&m_joystick, &m_gamepad),
       m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
-      m_aiming(&m_client, &m_driveTrainController, &m_driveStation),
       m_configEditor(&m_driveStation),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
       m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor, &m_lidarHandler),
@@ -94,7 +93,8 @@ public:
       m_driveCamera("cam0",false),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm, &m_aiming),
       m_lidarOnSwitch(0),
-      m_lidarHandler(&m_lidarOnSwitch, &m_configEditor, 9){
+      m_lidarHandler(&m_lidarOnSwitch, &m_configEditor, 9),
+      m_aiming(&m_client, &m_driveTrainController, &m_driveStation, &m_lidarHandler, &m_shooterController){
 
       SmartDashboard::init();
       m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
