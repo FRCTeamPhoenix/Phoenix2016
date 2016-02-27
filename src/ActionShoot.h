@@ -3,6 +3,9 @@
  *
  *  Created on: Feb 26, 2016
  *      Author: Brin Harper
+ *
+ *      This class allows for integration of the shooting process into the Action
+ *      system. Shooting (releasing the ball) is defined here as its own action.
  */
 
 #ifndef SRC_ACTIONSHOOT_H_
