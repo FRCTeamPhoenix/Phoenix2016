@@ -28,17 +28,18 @@ class Robot: public SampleRobot
    AnalogInput m_RPot;
 
    DigitalInput m_ballSensor;
-   DigitalInput m_RFLimit;
-   DigitalInput m_LFLimit;
-   DigitalInput m_RRLimit;
-   DigitalInput m_LRLimit;
+//   DigitalInput m_RFLimit;
+//   DigitalInput m_LFLimit;
+//   DigitalInput m_RRLimit;
+//   DigitalInput m_LRLimit;
 
 
 
    Encoder m_LEncoder;
    Encoder m_REncoder;
 
-   Encoder m_flyEncoder;
+   Encoder m_LflyEncoder;
+   Encoder m_RflyEncoder;
 
    Joystick m_gamepad;
    DriveStation m_DriveStation;
@@ -76,16 +77,16 @@ public:
 
       m_ballSensor(8),
 
-      m_RFLimit(6),
-      m_RRLimit(7),
-      m_LFLimit(10),
-      m_LRLimit(11),
+//      m_RFLimit(6),
+//      m_RRLimit(7),
+//      m_LFLimit(10),
+//      m_LRLimit(11),
 
       m_LEncoder(0, 1),
       m_REncoder(2, 3),
 
-      m_flyEncoder(4, 5),
-
+      m_LflyEncoder(4, 5),
+      m_RflyEncoder(6, 7),
       m_gamepad(PortAssign::gamepad),
       m_DriveStation(&m_joystick, &m_gamepad),
       m_driveTrain(PortAssign::frontLeftWheelMotor,
@@ -127,10 +128,15 @@ public:
          outputR << m_REncoder.Get();
          SmartDashboard::PutString("DB/String 1", outputR.str());
 
-         std::ostringstream outputE;
-         outputE << "Fly Encoder: ";
-         outputE << m_flyEncoder.Get();
-         SmartDashboard::PutString("DB/String 2", outputE.str());
+         std::ostringstream outputEL;
+         outputEL << "LFly Encoder: ";
+         outputEL << m_LflyEncoder.GetRate();
+         SmartDashboard::PutString("DB/String 2", outputEL.str());
+
+         std::ostringstream outputER;
+         outputER << "RFly Encoder: ";
+         outputER << m_RflyEncoder.GetRate();
+         SmartDashboard::PutString("DB/String 3", outputER.str());
 
          std::ostringstream outputS;
          outputS << "Ball Sensor: ";
@@ -159,16 +165,16 @@ public:
          Lidar << m_lidarHandler.getResetCount();
          SmartDashboard::PutString("DB/String 7", Lidar.str());
 
-         std::ostringstream Limits;
-         Limits << "RF: ";
-         Limits << m_RFLimit.Get();
-         Limits << " LF: ";
-         Limits << m_LFLimit.Get();
-         Limits << "RR: ";
-         Limits << m_RRLimit.Get();
-         Limits << " LR: ";
-         Limits << m_LRLimit.Get();
-         SmartDashboard::PutString("DB/String 8", Limits.str());
+//         std::ostringstream Limits;
+//         Limits << "RL: ";
+//         Limits << m_RFLimit.Get();
+//         Limits << " LL: ";
+//         Limits << m_LFLimit.Get();
+//         Limits << " RU: ";
+//         Limits << m_RRLimit.Get();
+//         Limits << " LU: ";
+//         Limits << m_LRLimit.Get();
+//         SmartDashboard::PutString("DB/String 8", Limits.str());
 
 
 
