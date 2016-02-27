@@ -102,6 +102,8 @@ public:
       m_lidarHandler(&m_lidarOnSwitch, 0, 9)
    {
       SmartDashboard::init();
+      m_LflyEncoder.SetDistancePerPulse(1.0);
+      m_RflyEncoder.SetDistancePerPulse(1.0);
    }
 
    void OperatorControl()
