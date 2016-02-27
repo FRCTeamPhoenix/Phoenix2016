@@ -30,7 +30,7 @@ void Flywheel::run(){
          break;
       case NOTREADY:
       case READY:
-         setRate(1000);//calculateSpeed());
+         setRate(calculateSpeed());
          break;
    }
 }
@@ -42,7 +42,7 @@ Flywheel::STATE Flywheel::getCurrentState(){
       return OFF;
    }
 
-   if(upToSpeed(0.05)){
+   if(upToSpeed(0.0)){
       //SmartDashboard::PutString("DB/String 5", "Ready To Fire");
       return READY;
    }
@@ -67,7 +67,7 @@ bool Flywheel::upToSpeed(float tolerance) {
 }
 
 void Flywheel::setRate(float rate) {
-   m_leftFlywheelController.setRate(rate);
+   m_leftFlywheelController.setRate(-rate);
    m_rightFlywheelController.setRate(rate);
 }
 
