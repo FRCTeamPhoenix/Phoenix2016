@@ -17,18 +17,20 @@ ActionShoot::ActionShoot(ShooterController* shooterController)
 
 }
 
-//
+// Start the shooter running
 void ActionShoot::init(void)
 {
    m_shooterController->run();
    m_initialized = true;
 }
 
+// End the action if the shooter is off (this means shooting is done)
 bool ActionShoot::execute(void)
 {
    return m_shooterController->getCurrentState() == ShooterController::OFF;
 }
 
+// Destructor
 ActionShoot::~ActionShoot() {
 
 }
