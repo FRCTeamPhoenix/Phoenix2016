@@ -3,6 +3,11 @@
  *
  *  Created on: Feb 26, 2016
  *      Author: Brin Harper
+ *
+ *      This class allows for integration of the initial process of getting
+ *      the flywheels up to speed into the Action system.  The defined Action
+ *      is speeding up the flywheels based on the distance-linked motor power.
+ *
  */
 
 
