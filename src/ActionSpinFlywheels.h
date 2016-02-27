@@ -11,18 +11,18 @@
 #pragma once
 
 #include "Action.h"
+#include "Flywheel.h"
 
 class ActionSpinFlywheels : public Action
 {
- public:
+private:
+   Flywheel* m_flywheel;
+   float m_motorPower;
+public:
    ActionSpinFlywheels(Flywheel*, float);
    void init(void);
    bool execute(void);
    ~ActionSpinFlywheels();
-
- private:
-   Flywheel* m_flywheel;
-   float m_motorPower;
 };
 
 

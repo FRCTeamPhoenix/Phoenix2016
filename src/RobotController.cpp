@@ -6,6 +6,7 @@
  */
 
 #include "RobotController.h"
+#include "ActionSpinFlywheels.h"
 
 RobotController::RobotController(DriveStation* ds,
       DriveTrainController* dt,
@@ -104,6 +105,9 @@ void RobotController::performAction(void){
 }
 void RobotController::initAutonoumosModeQueue(){
    m_queue.push(new ActionDrive(m_driveTrain, 24 , m_configEditor->getFloat("motorPower")));
+   //TODO: Change the ActionSpinFlywheels queue push to take in a flywheel power value that is calculated
+   // based on distance
+   m_queue.push(new ActionSpinFlywheels(m_flywheel, m_configEditor->getFloat("flywheelMotorPower")));
    m_state = ROBOT_AUTO;
 }
 void RobotController::setManual(){
