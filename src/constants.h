@@ -75,8 +75,8 @@ struct RobotConstants {
    constexpr static const float minPotentiometerV = 0;
    constexpr static const float maxPotentiometerV = 0;
    constexpr static const double armDeadZone = 2;
-   constexpr static const float maxSoftLimitLeft = 2.34;
-   constexpr static const float maxSoftLimitRight = 2.5;
+   constexpr static const float maxSoftLimitLeft = 3.6;
+   constexpr static const float maxSoftLimitRight = 3.7;
    constexpr static const float minSoftLimitLeft = 0.34;
    constexpr static const float minSoftLimitRight = 0.5;
 
