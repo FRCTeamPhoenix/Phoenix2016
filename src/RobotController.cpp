@@ -6,7 +6,6 @@
  */
 
 #include "RobotController.h"
-#include "ActionSpinFlywheels.h"
 
 RobotController::RobotController(DriveStation* ds,
       DriveTrainController* dt,
@@ -14,14 +13,16 @@ RobotController::RobotController(DriveStation* ds,
       LoaderController* loader,
       Flywheel* flywheel,
       ConfigEditor* configEditor,
-      Arm* arm):
+      Arm* arm,
+      Aiming* aiming):
       m_driveStation(ds),
       m_driveTrain(dt),
       m_shooterController(shooter),
       m_loaderController(loader),
       m_flywheel(flywheel),
       m_configEditor(configEditor),
-      m_arm(arm)
+      m_arm(arm),
+      m_aiming(aiming)
 {
    m_state = ROBOT_MANUAL;
 }
@@ -108,6 +109,7 @@ void RobotController::initAutonoumosModeQueue(){
    //TODO: Change the ActionSpinFlywheels queue push to take in a flywheel power value that is calculated
    // based on distance
    m_queue.push(new ActionSpinFlywheels(m_flywheel, m_configEditor->getFloat("flywheelMotorPower")));
+   m_queue.push(new ActionTargetAim(m_aiming));
    m_state = ROBOT_AUTO;
 }
 void RobotController::setManual(){
