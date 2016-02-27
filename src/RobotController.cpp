@@ -110,6 +110,7 @@ void RobotController::initAutonoumosModeQueue(){
    // based on distance
    m_queue.push(new ActionSpinFlywheels(m_flywheel, m_configEditor->getFloat("flywheelMotorPower")));
    m_queue.push(new ActionTargetAim(m_aiming));
+   m_queue.push(new ActionShoot(m_shooterController));
    m_state = ROBOT_AUTO;
 }
 void RobotController::setManual(){

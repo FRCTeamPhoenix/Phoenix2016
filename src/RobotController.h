@@ -20,6 +20,8 @@
 #include "Arm.h"
 #include "ActionSpinFlywheels.h"
 #include "ActionTargetAim.h"
+#include "ActionShoot.h"
+#include "ActionDrive.h"
 #include "Aiming.h"
 #include <queue>
 
