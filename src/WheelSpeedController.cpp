@@ -13,10 +13,10 @@ WheelSpeedController::WheelSpeedController(Talon* motor, Encoder* encoder):
 {
    m_encoder->SetPIDSourceType(PIDSourceType::kRate);
    m_encoder->SetDistancePerPulse(1.0);
-   m_controller = new PIDController(0.021, 0.00, 0.00, m_encoder, m_controledWheel);
-   m_controller->SetTolerance(0.05);
+   m_controller = new PIDController(0.00021, 0.00, 0.00, m_encoder, m_controledWheel);
+   m_controller->SetTolerance(0.0);
+   m_controller->SetPIDSourceType(PIDSourceType::kRate);
    m_controller->Enable();
-
 
 
 }
@@ -29,8 +29,7 @@ bool WheelSpeedController::atTarget(float tolerance) {
    double setPoint = m_controller->GetSetpoint();
    double rate = m_encoder->GetRate();
    std::ostringstream ratestr;
-   ratestr << "current setpoint: ";
-   ratestr << setPoint;
+   ratestr << "current setpoint: " << rate;
 
    SmartDashboard::PutString("DB/String 5", ratestr.str());
    return (rate > (setPoint - setPoint*tolerance)) && (rate < (setPoint + setPoint*tolerance));
