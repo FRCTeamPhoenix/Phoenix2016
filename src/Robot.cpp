@@ -91,7 +91,7 @@ public:
       m_loaderController(&m_intakeMotor, &m_stationaryMotor, &m_loadedSensor, &m_driveStation, &m_configEditor),
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor),
-      m_driveCamera("cam0",false),
+      m_driveCamera("cam0",false),//cam0 is nice camera cam1 is microsoft lifecam.
       m_aiming(&m_client, &m_driveTrainController, &m_driveStation, &m_lidarHandler, &m_shooterController),
       m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm)
@@ -99,13 +99,7 @@ public:
 
 
       //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
-      //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true);
-
-      // cout << "call init socket" << endl;
-      // client.initilizeSocket();
-      // if (client.m_initGood){
-      //         std::thread receiveThread(runClient, this, &client);
-      // }
+      //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true)
    }
    void RobotInit() override{
       SmartDashboard::init();
@@ -186,7 +180,7 @@ public:
          m_robotController.run();
          m_driveTrainController.run();
          m_shooterController.run();
-        m_aiming.run();
+         m_aiming.run();
          m_arm.run();
       }
    }

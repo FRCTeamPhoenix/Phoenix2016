@@ -57,10 +57,10 @@ void Aiming::getNewImageData() {
 // Turns robot to line up with target, once target is within field of vision
 void Aiming::centering() {
 
-   bool hasRotated =false;
+   //bool hasRotated =false;
    double m_targetCenter_x=10;
    double deviation;
-   double calculatedRotation;
+   //double calculatedRotation;
    double initialTargetCenterX;
 
    initialTargetCenterX=m_targetCenter_x;
@@ -234,11 +234,11 @@ void Aiming::run() {
       getNewImageData();
       approachTarget();
       break;
-   case REVERTING:
-      SmartDashboard::PutString("DB/String 0", "State: Reverting" );
-      getNewImageData();
-      revert();
-      break;
+//   case REVERTING:
+//      SmartDashboard::PutString("DB/String 0", "State: Reverting" );
+//      getNewImageData();
+//      revert();
+//      break;
    case SHOOTING:
       SmartDashboard::PutString("DB/String 0", "State: Shooting" );
       getNewImageData();
