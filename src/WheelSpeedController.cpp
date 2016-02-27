@@ -12,6 +12,7 @@ WheelSpeedController::WheelSpeedController(Talon* motor, Encoder* encoder):
         m_encoder(encoder)
 {
    m_encoder->SetPIDSourceType(PIDSourceType::kRate);
+   m_encoder->SetDistancePerPulse(1.0);
    m_controller = new PIDController(0.20, 0.00, 0.00, m_encoder, m_controledWheel);
    m_controller->SetTolerance(0.05);
 
