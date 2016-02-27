@@ -153,7 +153,7 @@ public:
          m_driveStation.snapShot();
          m_driveTrainController.run();
          m_robotController.run();
-         //m_shooterController.run();
+         m_shooterController.run();
          //m_arm.run();
       }
 
