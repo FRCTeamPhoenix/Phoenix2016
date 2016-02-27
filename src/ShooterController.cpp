@@ -5,7 +5,7 @@
  *      Author: Ian
  */
 
-#include <ShooterController.h>
+#include "ShooterController.h"
 
 ShooterController::ShooterController(LoaderController* loader, Flywheel * flywheel, ConfigEditor* configEditor):
 m_loaderController(loader),
@@ -25,12 +25,12 @@ void ShooterController::run(){
       //m_loaderController->stop();
       break;
    case ARMED:
-      m_flywheel->start(m_configEditor->getFloat("flywheelMotorPower"));
+      m_flywheel->start();
       break;
    case SHOOTING:
       if (m_loaderController->loaded()) {
          m_loaderController->start();
-         m_flywheel->start(m_configEditor->getFloat("flywheelMotorPower"));
+         m_flywheel->start();
       }
       else {
          setOff();
@@ -65,7 +65,7 @@ ShooterController::STATE ShooterController::getCurrentState(){
 
 
    if (currentGoal == ARMED){
-      if(flywheelState == Flywheel::ON && m_loaderController->loaded()){
+      if(flywheelState == Flywheel::READY && m_loaderController->loaded()){
          return ARMED;
       }
       else {
@@ -73,7 +73,7 @@ ShooterController::STATE ShooterController::getCurrentState(){
       }
    }
    else if(currentGoal == SHOOTING){
-      if(flywheelState == Flywheel::ON){
+      if(flywheelState == Flywheel::READY){
          return SHOOTING;
       }
       else{
