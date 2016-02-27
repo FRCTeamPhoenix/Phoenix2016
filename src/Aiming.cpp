@@ -64,8 +64,8 @@ void Aiming::centering() {
    double initialTargetCenterX;
    driveIdle=false;
    newCenter=false;
-   if ((m_driveTrainController->getCurrentState()==m_driveTrainController->IDLE
-         || m_driveTrainController->getCurrentState()==m_driveTrainController->TELEOP )){
+   if ((m_driveTrainController->getCurrentState()==DriveTrainController::IDLE
+         || m_driveTrainController->getCurrentState()==DriveTrainController::TELEOP )){
       driveIdle=true;
    }
 
