@@ -4,6 +4,8 @@
 
 #include <queue>
 
+class Action;
+
 class DriveStation;
 class DriveTrainController;
 class ShooterController;

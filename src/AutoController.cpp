@@ -13,8 +13,8 @@
 AutoController::AutoController(DriveStation* ds, DriveTrainController* dt, ShooterController* shooter, LoaderController* loader, Flywheel* flywheel, ConfigEditor* configEditor, Arm* arm)
    : m_driveStation(ds), m_driveTrain(dt), m_shooterController(shooter), m_loaderController(loader), m_flywheel(flywheel), m_configEditor(configEditor), m_arm(arm)
 {
-   // TODO: Insert any desired actions here.
-   // Example: m_queue.push(new ActionNone());
+   // TODO: Insert any desired actions for Autonomous mode here.
+   m_queue.push(new ActionDrive(m_driveTrain, 24 , m_configEditor->getFloat("motorPower")));
 }
 
 void AutoController::run(void)
