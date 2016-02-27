@@ -8,10 +8,10 @@
 #ifndef SRC_LOADERSENSE_H_
 #define SRC_LOADERSENSE_H_
 #define ARRAY_SIZE(array) (sizeof((array))/sizeof((array[0])))
-#include "Math.h"
+#include <cmath>
 #include "Client.h"
 #include "DriveTrainController.h"
-#include "Constants.h"
+#include "constants.h"
 
 class LoaderSense {
 

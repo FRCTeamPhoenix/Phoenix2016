@@ -48,10 +48,8 @@ class Robot: public SampleRobot
    Talon m_stationaryMotor;
    Client m_client;
    DriveStation m_driveStation;
-   LoaderSense m_loaderSense;
-   Aiming m_aiming;
-   ConfigEditor m_configEditor;
    Relay m_lidarOnSwitch;
+   ConfigEditor m_configEditor;
    LidarHandler m_lidarHandler;
    RobotDrive m_driveTrain;
    DriveTrainController m_driveTrainController;
@@ -60,9 +58,9 @@ class Robot: public SampleRobot
    ShooterController m_shooterController;
    Arm m_arm;
    USBCamera m_driveCamera;
+   Aiming m_aiming;
+   LoaderSense m_loaderSense;
    RobotController m_robotController;
-
-
 
 public:
    Robot() :
@@ -88,10 +86,8 @@ public:
       m_intakeMotor(PortAssign::intakeMotor),
       m_stationaryMotor(PortAssign::stationaryMotor),
       m_driveStation(&m_joystick, &m_gamepad),
-      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
-      m_aiming(&m_client, &m_driveTrainController, &m_driveStation),
-      m_configEditor(&m_driveStation),
       m_lidarOnSwitch(0),
+      m_configEditor(&m_driveStation),
       m_lidarHandler(&m_lidarOnSwitch, &m_configEditor, 9),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
       m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor, &m_lidarHandler),
@@ -99,28 +95,23 @@ public:
       m_loaderController(&m_intakeMotor, &m_stationaryMotor, &m_loadedSensor, &m_driveStation, &m_configEditor),
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor),
-      m_driveCamera("cam0",false),
+      m_driveCamera("cam0",false),//cam0 is nice camera cam1 is microsoft lifecam.
+      m_aiming(&m_client, &m_driveTrainController, &m_driveStation, &m_lidarHandler, &m_shooterController),
+      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm)
-      {
-
+{
+      //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
+      //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true)
+   }
+   void RobotInit() override{
       SmartDashboard::init();
       m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
       m_gyro.Calibrate();
       m_configEditor.showAllKeys();
 
-      //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
-      //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true);
-
-      // cout << "call init socket" << endl;
-      // client.initilizeSocket();
-      // if (client.m_initGood){
-      //         std::thread receiveThread(runClient, this, &client);
-      // }
-   }
-   void RobotInit() override{
       cout<<"run init socket function" << endl;
-      //m_client.initilizeSocket();
+      m_client.initilizeSocket();
       if (m_client.m_initGood){
          cout<<"init good start thread" << endl;
          std::thread receiveThread(runClient, this, &m_client);
@@ -191,6 +182,7 @@ public:
          m_robotController.run();
          m_driveTrainController.run();
          m_shooterController.run();
+         m_aiming.run();
          m_arm.run();
       }
    }
