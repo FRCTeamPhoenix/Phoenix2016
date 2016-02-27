@@ -104,13 +104,24 @@ void RobotController::performAction(void){
       m_queue.pop();
    }
 }
+
+// Push sequence of autonomous actions to the queue
 void RobotController::initAutonoumosModeQueue(){
+
+   // Drive forwards 5 feet
    m_queue.push(new ActionDrive(m_driveTrain, 60 , m_configEditor->getFloat("motorPower")));
-   //TODO: Change the ActionSpinFlywheels queue push to take in a flywheel power value that is calculated
-   // based on distance
+
+   // Start spinning flywheels to get them up to speed
+   //TODO: Only one parameter will be needed in the future, due to motor power calculation
+   // being handled by lidar/flywheels
    m_queue.push(new ActionSpinFlywheels(m_flywheel, m_configEditor->getFloat("flywheelMotorPower")));
+
+   // As soon as the flywheels are spinning, begin the aiming process
    m_queue.push(new ActionTargetAim(m_aiming));
+
+   // Shoot, after flywheels are up to speed and robot is centered
    m_queue.push(new ActionShoot(m_shooterController));
+
    m_state = ROBOT_AUTO;
 }
 void RobotController::setManual(){
