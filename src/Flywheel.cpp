@@ -5,14 +5,18 @@
  *      Author: ben
  */
 
-#include <Flywheel.h>
+#include "Flywheel.h"
 
-Flywheel::Flywheel(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor) :
-m_leftFlywheelMotor(leftFlywheelMotor),
-m_rightFlywheelMotor(rightFlywheelMotor),
-m_power(0),
-m_running(false)
+Flywheel::Flywheel(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor, Encoder* leftFlywheelEncoder, Encoder* rightFlywheelEncoder, LidarHandler* lidar) :
+   m_leftFlywheelMotor(leftFlywheelMotor),
+   m_rightFlywheelMotor(rightFlywheelMotor),
+   m_leftFlywheelEncoder(leftFlywheelEncoder),
+   m_rightFlywheelEncoder(rightFlywheelEncoder),
+   m_lidar(lidar),
+   m_leftFlywheelController(m_leftFlywheelMotor, m_leftFlywheelEncoder),
+   m_rightFlywheelController(m_rightFlywheelMotor, m_rightFlywheelEncoder)
 {
+   m_spinning = false;
 
 }
 
@@ -20,39 +24,90 @@ Flywheel::~Flywheel() {
 }
 
 void Flywheel::run(){
-   if(m_running){
-      m_leftFlywheelMotor->Set(-m_power);
-      m_rightFlywheelMotor->Set(m_power);
-   }
-   else{
-      m_leftFlywheelMotor->Set(0);
-      m_rightFlywheelMotor->Set(0);
+   switch(getCurrentState()){
+      case OFF:
+         setRate(0.0);
+         break;
+      case NOTREADY:
+      case READY:
+         setRate(calculateSpeed());
+         break;
    }
 }
 Flywheel::STATE Flywheel::getCurrentState(){
-   if(m_running){
+   if(!m_spinning){
+      SmartDashboard::PutString("DB/String 5", "OFF");
+      SmartDashboard::PutString("DB/String 6", " ");
 
-      if(m_timer.HasPeriodPassed(3.0)){
-         m_timer.Stop();
-         return ON;
-      }
-      else{
-         return STARTING;
-      }
-   }
-   else{
       return OFF;
    }
-}
-void Flywheel::start(float power){
-   m_power = power;
-   if(m_running == false){
-      m_timer.Reset();
-      m_timer.Start();
+
+   if(upToSpeed(0.05)){
+      SmartDashboard::PutString("DB/String 5", "Ready To Fire");
+      return READY;
    }
-   m_running = true;
+   else{
+      SmartDashboard::PutString("DB/String 5", "Not Ready To Fire");
+      return NOTREADY;
+   }
+
+
+
 }
+void Flywheel::start(){
+   m_spinning = true;
+}
+
 void Flywheel::stop(){
-   m_power = 0;
-   m_running = false;
+   m_spinning = false;
 }
+
+bool Flywheel::upToSpeed(float tolerance) {
+   return m_leftFlywheelController.atTarget(tolerance) && m_rightFlywheelController.atTarget(tolerance);
+}
+
+void Flywheel::setRate(float rate) {
+   m_leftFlywheelController.setRate(rate);
+   m_rightFlywheelController.setRate(rate);
+}
+
+
+float Flywheel::calculateSpeed() {
+   float currentDistance = m_lidar->getFastAverage();
+
+   if(currentDistance < m_minDistance){
+      SmartDashboard::PutString("DB/String 6", "To Close");
+      return m_minDistanceRate;
+   }
+   if(currentDistance > m_maxDistance){
+      SmartDashboard::PutString("DB/String 6", "To Far");
+      return m_maxDistanceRate;
+   }
+
+   SmartDashboard::PutString("DB/String 6", "Correct Range");
+
+   float deltaDistance = m_maxDistance - m_minDistance;
+   float maxToCurrent = m_maxDistance - currentDistance;
+   float minToCurrent = currentDistance - m_minDistance;
+
+
+   float maxFactor = 1 - (maxToCurrent / deltaDistance);
+   float minFactor = 1 - (minToCurrent / deltaDistance);
+
+   float speed = (maxFactor * m_maxDistanceRate) + (minFactor * m_minDistanceRate);
+
+   return speed;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
