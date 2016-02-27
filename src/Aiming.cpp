@@ -270,6 +270,7 @@ void Aiming::getNewImageData() {
 // Turns robot to line up with target, once target is within field of vision
 void Aiming::centering() {
 
+   getNewImageData();
    setCurrentState(CENTERING);
 
    //bool hasRotated =false;

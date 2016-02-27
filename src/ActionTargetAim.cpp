@@ -20,6 +20,7 @@ void ActionTargetAim::init(void)
 // Remove Aiming action from the queue if centering is no longer taking place
 bool ActionTargetAim::execute(void)
 {
+   m_aimer->getNewImageData();
    // Continue aiming process if still in centering phase
    if (m_aimer->getCurrentState() == Aiming::CENTERING) {
       return false;
