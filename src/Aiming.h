@@ -43,6 +43,7 @@ public:
    STATE getCurrentState();
    void setTargetCoordinateValue(AimingConstants::targetPositionData, int);
    void setCurrentState(STATE);
+   void setFullProcess(bool);
    void printCurrentCoordinates();
    void run();
    virtual ~Aiming();

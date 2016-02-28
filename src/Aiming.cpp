@@ -23,7 +23,6 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, Drive
 {
 
    // We have not yet rotated
-   hasRotated=false;
 
    // Nothing is happening
    setCurrentState(IDLE);
@@ -57,22 +56,19 @@ void Aiming::getNewImageData() {
 // Turns robot to line up with target, once target is within field of vision
 void Aiming::centering() {
 
-   //bool hasRotated =false;
    double m_targetCenter_x=10;
    double deviation;
-   //double calculatedRotation;
    double initialTargetCenterX;
    driveIdle=false;
    newCenter=false;
-   if ((m_driveTrainController->getCurrentState()==m_driveTrainController->IDLE
-         || m_driveTrainController->getCurrentState()==m_driveTrainController->TELEOP )){
+   if ((m_driveTrainController->getCurrentState()==DriveTrainController::IDLE
+         || m_driveTrainController->getCurrentState()==DriveTrainController::TELEOP )){
       driveIdle=true;
    }
 
 
 
    initialTargetCenterX=m_targetCenter_x;
-
    m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL] +m_currentTargetCoordinates[AimingConstants::xLR])/2.0);
    // Amount of offset from our desired center coordinate (w/ respect to current frame of vision)
    deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
@@ -113,22 +109,6 @@ void Aiming::centering() {
    }
 }
 
-//void Aiming::revert(){
-//
-//
-//   if (rotateCW){
-//      m_driveTrainController->aimRobotCounterclockwise(AimingConstants::rotateCorrect,0.5f);
-//   }
-//   else if  (rotateCCW){
-//      m_driveTrainController->aimRobotClockwise(AimingConstants::rotateCorrect,0.5f);
-//   }
-//
-//   rotateCW=false;
-//   rotateCCW=false;
-//
-//
-//}
-
 
 void Aiming::approachTarget() {
 
@@ -146,6 +126,7 @@ void Aiming::approachTarget() {
       hasApproached=true;
       if (fullProcess){
          setCurrentState(CENTERING);
+
       }
       else {
          setCurrentState(IDLE);
@@ -154,23 +135,6 @@ void Aiming::approachTarget() {
    }
 }
 
-void Aiming::shoot(){
-
-   // Do we need to start the timer?
-   if (m_timer.Get()==0){
-      m_timer.Start();
-   }
-
-   // Get the shooter ready, and then shoot if enough time has passed
-   m_shooter->setArmed();
-   if (m_timer.HasPeriodPassed(1.5)){
-      m_shooter->setShooting();
-      setCurrentState(IDLE);
-      m_timer.Stop();
-      m_timer.Reset();
-   }
-
-}
 
 void Aiming::setTargetCoordinateValue(AimingConstants::targetPositionData position, int newValue) {
    m_currentTargetCoordinates[position] = newValue;
@@ -178,6 +142,10 @@ void Aiming::setTargetCoordinateValue(AimingConstants::targetPositionData positi
 
 Aiming::STATE Aiming::getCurrentState() {
    return m_currentState;
+}
+
+void Aiming::setFullProcess(bool processVariant) {
+   fullProcess = processVariant;
 }
 
 void Aiming::setCurrentState(Aiming::STATE newState) {
@@ -210,7 +178,6 @@ void Aiming::run() {
    case IDLE:
       m_driveTrainController->setGoalState(m_driveTrainController->TELEOP);
       fullProcess=false;
-      hasRotated=false;
       hasApproached=false;
       getNewImageData();
 
@@ -241,15 +208,10 @@ void Aiming::run() {
       getNewImageData();
       approachTarget();
       break;
-//   case REVERTING:
-//      SmartDashboard::PutString("DB/String 0", "State: Reverting" );
+//   case SHOOTING:
+//      SmartDashboard::PutString("DB/String 0", "State: Shooting" );
 //      getNewImageData();
-//      revert();
-//      break;
-   case SHOOTING:
-      SmartDashboard::PutString("DB/String 0", "State: Shooting" );
-      getNewImageData();
-      shoot();
+//      shoot();
     break;
    default:
       break;

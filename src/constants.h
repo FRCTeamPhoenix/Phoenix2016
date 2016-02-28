@@ -132,6 +132,7 @@ const static std::string textBoxNames[13] = {
 const static uint32_t gamepadButtons = 12;
 };
 
+/*
 struct AimingConstants{
 
    //Deteced corners of target
@@ -220,6 +221,114 @@ namespace ConfigVariables {
          "PID_p",
          "PID_i",
          "PID_d"
+   };
+   const static std::string types[numberOfVars] = {
+         "float", //motorPower
+         "float", //degree
+         "float", //distance
+         "double", //leftDistancePerPulse
+         "double", //rightDistancePerPulse
+         "float", //armMotorPower
+         "float", //homingPower
+         "float", //outerIntakeMotorPower
+         "float", //innerIntakeMotorPower
+         "float", //flywheelMotorPower
+         "float", //potLeftValueLow
+         "float", //potRightValueLow
+         "float", //potLeftValueHigh
+         "float", //potRightValueHigh
+         "float", //wheelEncoderDistancePerDegree
+         "double", //fastAverageFactor
+         "double", //slowAverageFactor,
+         "double" //lidarOffset
+   };
+};
+*/
+
+struct AimingConstants{
+
+   //Deteced corners of target
+   enum targetPositionData {
+      xUL, // upper left x-coordinate
+      yUL, // upper left y-coordinate
+      xUR, // upper right x-coordinate
+      yUR, // upper right y-coordinate
+      xLL, // lower left x-coordinate
+      yLL, // lower left y-coordinate
+      xLR, // lower right x-coordinate
+      yLR, // lower right y-coordinate
+   };
+
+   const static int numTargetVals = 8;
+
+   // These are all educated guesses and may need to be changed,
+   // depending upon the chosen coordinate system
+   const static int leftTargetVisionBoundary = 30;
+   const static int rightTargetVisionBoundary = 290;
+   const static int maxTiltingFactor = 20;
+   const static int minTargetWidth = 250;
+   const static int maxTargetWidth = 350;
+
+   const static int desiredCenter = 275; //untuned value not correct
+   constexpr static double aimedDistance=84;//untuned value not correct
+
+   const static int distanceVariance = 12; //in inches
+   const static int rotationVariance = 15 ; //in pixels
+
+   constexpr static double rotateCorrect=15; // in degrees
+
+   // First array element passed in a target data array
+   const static int targetFlag = 1;
+
+};
+
+
+// BALL VALUES (LOADER)
+struct LoaderSenseConstants {
+
+   enum ballPositionData {
+      ballRadius,
+      ballCenterX,
+      ballCenterY
+   };
+
+   const static int numBallVals = 3;
+
+   // All of these are basically placeholder values (educated guesses)
+
+   const static int minGoodCenterX = 100;
+   const static int maxGoodCenterX = 220;
+
+   const static int minGoodRadius = 90;
+   const static int maxGoodRadius = 120;
+
+   const static int maxSafeRotationRadius = 50;
+
+   // First array element passed in a loader data array
+   const static int loaderFlag = 2;
+
+};
+namespace ConfigVariables {
+   const static int numberOfVars = 18;
+   const static std::string variables[numberOfVars] = {
+         "motorPower",
+         "degree",
+         "distance",
+         "leftDistancePerPulse",
+         "rightDistancePerPulse",
+         "armMotorPower",
+         "homingPower",
+         "outerIntakeMotorPower",
+         "innerIntakeMotorPower",
+         "flywheelMotorPower",
+         "potLeftValueLow",
+         "potRightValueLow",
+         "potLeftValueHigh",
+         "potRightValueHigh",
+         "wheelEncoderDistancePerDegree",
+         "fastAverageFactor",
+         "slowAverageFactor",
+         "lidarOffset"
    };
    const static std::string types[numberOfVars] = {
          "float", //motorPower

@@ -18,6 +18,11 @@
 #include "ConfigEditor.h"
 #include "constants.h"
 #include "Arm.h"
+#include "ActionSpinFlywheels.h"
+#include "ActionTargetAim.h"
+#include "ActionShoot.h"
+#include "ActionDrive.h"
+#include "Aiming.h"
 #include <queue>
 
 class RobotController : public BaseController
@@ -28,7 +33,8 @@ public:
       ROBOT_MANUAL
    };
 
-   RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, Flywheel*, ConfigEditor*, Arm*);
+   RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, Flywheel*,
+         ConfigEditor*, Arm*, Aiming*);
    virtual ~RobotController();
    void initAutonomousModeQueue();
    void setManual();
@@ -46,6 +52,7 @@ private:
    Flywheel * m_flywheel;
    ConfigEditor * m_configEditor;
    Arm* m_arm;
+   Aiming* m_aiming;
 };
 
 #endif /* SRC_ROBOTCONTROLLER_H_ */

@@ -4,6 +4,7 @@
 #define SRV_IP "10.23.42.142" //static ip of pi is 10.0.42.142
 
 
+
 Client::Client() {
 
 //   std::thread receiveThread(receivePacket);

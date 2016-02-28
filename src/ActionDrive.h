@@ -1,3 +1,6 @@
+// This class allows for integration of driving a specific distance
+// into the Action system.
+
 #pragma once
 
 #include "Action.h"
