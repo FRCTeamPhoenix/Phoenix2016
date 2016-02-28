@@ -12,7 +12,7 @@
  *
  */
 
-#include "Aiming.h"
+#include <Aiming.h>
 
 Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, DriveStation* driveStation,LidarHandler* lidar,ShooterController* shooter) :
    m_client(client),
@@ -23,6 +23,7 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, Drive
 {
 
    // We have not yet rotated
+
    // Nothing is happening
    setCurrentState(IDLE);
 
@@ -66,6 +67,8 @@ void Aiming::centering() {
 
    initialTargetCenterX=m_targetCenter_x;
    m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL] +m_currentTargetCoordinates[AimingConstants::xLR])/2);
+   // Amount of offset from our desired center coordinate (w/ respect to current frame of vision)
+
    deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
 
 //   if (m_targetCenter_x != initialTargetCenterX){
@@ -74,7 +77,6 @@ void Aiming::centering() {
 
    if (driveIdle && !m_client->checkPacketState()){
       if(deviation< -AimingConstants::rotationVariance){
-
          m_driveTrainController->aimRobotCounterclockwise(1, 0.6f);
 
       }
@@ -95,11 +97,9 @@ void Aiming::centering() {
             setCurrentState(IDLE);
 
          }
-
       }
    }
 }
-
 
 
 void Aiming::approachTarget() {
@@ -118,12 +118,15 @@ void Aiming::approachTarget() {
       hasApproached=true;
       if (fullProcess){
          setCurrentState(CENTERING);
+
       }
       else {
          setCurrentState(IDLE);
       }
+
    }
 }
+
 void Aiming::shoot(){
 
    //start Timer
@@ -217,6 +220,10 @@ void Aiming::run() {
       else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonY)) {
          setCurrentState(CENTERING);
       }
+      else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonX)) {
+         setCurrentState(SHOOTING);
+      }
+
       break;
    case CENTERING:
       SmartDashboard::PutString("DB/String 0", "State: Centering" );
@@ -236,7 +243,6 @@ void Aiming::run() {
    default:
       break;
    }
-
 
 }
 

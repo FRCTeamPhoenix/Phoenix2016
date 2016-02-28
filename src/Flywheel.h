@@ -23,6 +23,8 @@ private:
    WheelSpeedController m_leftFlywheelController;
    WheelSpeedController m_rightFlywheelController;
 
+   ConfigEditor * m_configEditor;
+
    bool m_spinning;
    float m_maxDistance;
    float m_maxDistanceRate;
@@ -30,7 +32,7 @@ private:
    float m_minDistance;
    float m_minDistanceRate;
 
-   ConfigEditor * m_configEditor;
+
 
    void setRate(float rate);
    float calculateSpeed();

@@ -37,18 +37,18 @@ void Flywheel::run(){
 }
 Flywheel::STATE Flywheel::getCurrentState(){
    if(!m_spinning){
-      //SmartDashboard::PutString("DB/String 5", "OFF");
-      //SmartDashboard::PutString("DB/String 6", " ");
+      SmartDashboard::PutString("DB/String 5", "OFF");
+      SmartDashboard::PutString("DB/String 6", " ");
 
       return OFF;
    }
 
-   if(upToSpeed(0.0)){
-      //SmartDashboard::PutString("DB/String 5", "Ready To Fire");
+   if(upToSpeed(0.05)){
+      SmartDashboard::PutString("DB/String 5", "Ready To Fire");
       return READY;
    }
    else{
-      //SmartDashboard::PutString("DB/String 5", "Not Ready To Fire");
+      SmartDashboard::PutString("DB/String 5", "Not Ready To Fire");
       return NOTREADY;
    }
 

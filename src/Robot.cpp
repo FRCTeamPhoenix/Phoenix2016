@@ -59,13 +59,11 @@ class Robot: public SampleRobot
    LoaderController m_loaderController;
    ShooterController m_shooterController;
    Arm m_arm;
-   RobotController m_robotController;
    Aiming m_aiming;
-
+   RobotController m_robotController;
 
 public:
    Robot() :
-
       m_gyro(PortAssign::gyroscope),
       m_leftPotentiometer(PortAssign::leftPotentiometer),
       m_rightPotentiometer(PortAssign::rightPotentiometer),
@@ -98,13 +96,11 @@ public:
       m_loaderController(&m_intakeMotor, &m_stationaryMotor, &m_loadedSensor, &m_driveStation, &m_configEditor),
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor),
-      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm, &m_aiming),
-      m_aiming(&m_client, &m_driveTrainController, &m_driveStation, &m_lidarHandler, &m_shooterController){
-
-      //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
-      //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true)
-   }
-   void RobotInit() override {
+      m_aiming(&m_client, &m_driveTrainController, &m_driveStation, &m_lidarHandler, &m_shooterController),
+      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm, &m_aiming)
+{
+}
+   void RobotInit() override{
       SmartDashboard::init();
       m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
@@ -112,7 +108,7 @@ public:
       m_configEditor.showAllKeys();
 
       cout<<"run init socket function" << endl;
-      m_client.initilizeSocket();//This line inits coms with the pi comment it out if not using pi saves 25 seconds on code start
+      m_client.initilizeSocket();
       if (m_client.m_initGood){
          cout<<"init good start thread" << endl;
          std::thread receiveThread(runClient, this, &m_client);
@@ -122,7 +118,7 @@ public:
       m_driveCamera.SetExposureManual(20);
       m_driveCamera.SetWhiteBalanceAuto();
       CameraServer::GetInstance()->SetQuality(50);
-      CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+      CameraServer::GetInstance()->StartAutomaticCapture("cam1");
 
       std::thread lidarRun(lidarThread, this, &m_lidarHandler);
       lidarRun.detach();
@@ -144,19 +140,19 @@ public:
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
 
       while (IsAutonomous()&& IsEnabled()){
+
          if(!addedToQueue){
-            m_robotController.initAutonoumosModeQueue();
+            m_robotController.initAutonomousModeQueue();
             addedToQueue = true;
          }
-
          m_driveStation.snapShot();
          m_driveTrainController.run();
          m_robotController.run();
-         m_shooterController.run();
+         //m_shooterController.run();
          //m_arm.run();
       }
-
    }
+
    void OperatorControl(){
       SmartDashboard::PutString("DB/String 0", "Teleop ");
       SmartDashboard::PutString("DB/String 0", " ");
@@ -179,13 +175,20 @@ public:
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
 
       while(IsOperatorControl() && IsEnabled()){
+         std::ostringstream LE;
+         LE << m_leftWheelEncoder.GetDistance();
+         SmartDashboard::PutString("DB/String 7", LE.str());
+
+         std::ostringstream RE;
+         RE << m_rightWheelEncoder.GetDistance();
+         SmartDashboard::PutString("DB/String 8", RE.str());
+
          m_driveStation.snapShot();
          m_robotController.run();
          m_driveTrainController.run();
          m_shooterController.run();
          m_aiming.run();
          m_arm.run();
-         m_aiming.run();
       }
    }
 

@@ -31,8 +31,6 @@ RobotController::~RobotController() {}
 
 void RobotController::run(){
    if (m_state == ROBOT_AUTO){
-
-
       // Y button cancels autonomous mode, resetting it to manual controls.
       if (m_driveStation->getGamepadButton(DriveStationConstants::buttonY)){
          // Simplest way to empty queue while destroying everything.
@@ -51,7 +49,7 @@ void RobotController::run(){
 
       //      //Moving Backwards
       //      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
-      //         m_queue.push(m_queue.begin(), new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), -(m_configEditor->getFloat("motorPower"))));
+      //         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), -(m_configEditor->getFloat("motorPower"))));
       //      }
       //
       //      //Moving Forwards
@@ -83,7 +81,31 @@ void RobotController::run(){
 
       m_arm->move(m_driveStation->deadzoneOfGamepadJoystick() / 2);
       m_state = ROBOT_MANUAL;
-
+      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
+         SmartDashboard::PutString("DB/String 5", "Adding to queue ");
+         m_state = ROBOT_AUTO;
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
+         //m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
+         //m_queue.push( new ActionTurn(m_driveTrain, -m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
+         //m_queue.push( new ActionDrive(m_driveTrain, -m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
+      }
+      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonB)){
+         SmartDashboard::PutString("DB/String 5", "Adding to queue ");
+         m_state = ROBOT_AUTO;
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
+      }
+      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonX)){
+         m_queue.push( new ActionDrive(m_driveTrain, 80, 0.8)); //Goes to defense
+         m_queue.push( new ActionDrive(m_driveTrain, 44, 0.6)); //Goes over defense
+         m_queue.push( new ActionDrive(m_driveTrain, 51.5, 0.8)); //Goes to alignment line
+      }
       return;
    }
 }
@@ -106,7 +128,7 @@ void RobotController::performAction(void){
 }
 
 // Push sequence of autonomous actions to the queue
-void RobotController::initAutonoumosModeQueue(){
+void RobotController::initAutonomousModeQueue(){
 
    // Drive forwards 5 feet
    m_queue.push(new ActionDrive(m_driveTrain, 144, m_configEditor->getFloat("motorPower")));
@@ -114,16 +136,16 @@ void RobotController::initAutonoumosModeQueue(){
    // Start spinning flywheels to get them up to speed
    //TODO: Only one parameter will be needed in the future, due to motor power calculation
    // being handled by lidar/flywheels
-
-   //m_queue.push(new ActionSpinFlywheels(m_flywheel, m_configEditor->getFloat("flywheelMotorPower")));
+   m_queue.push(new ActionSpinFlywheels(m_flywheel, m_configEditor->getFloat("flywheelMotorPower")));
 
    // As soon as the flywheels are spinning, begin the aiming process
    m_queue.push(new ActionTargetAim(m_aiming));
 
    // Shoot, after flywheels are up to speed and robot is centered
    m_queue.push(new ActionShoot(m_loaderController));
-
    m_state = ROBOT_AUTO;
+   m_queue.push(new ActionDrive(m_driveTrain, 72 , m_configEditor->getFloat("motorPower")));
+
 }
 void RobotController::setManual(){
    m_state = ROBOT_MANUAL;
