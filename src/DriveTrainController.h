@@ -23,7 +23,8 @@ public:
       TELEOP,
       ENCODERDRIVE,
       GYROTURN,
-      LIDARDRIVE
+      LIDARDRIVE,
+      CONTINUOUSDRIVE
    };
    DriveTrainController(RobotDrive* m_driveTrain,
          DriveStation* m_driveStation,
@@ -33,6 +34,10 @@ public:
          ConfigEditor* configEditor,
          LidarHandler* lidar);
    virtual ~DriveTrainController();
+
+//   PIDController* m_leftDriveTrainController;
+//   PIDController* m_rightDriveTrainController;
+
    void run();
    void manualDrive();
    void aimRobotClockwise(float degree, float motorSpeed);
@@ -40,6 +45,8 @@ public:
    void moveRobotStraight(float distance, float motorSpeed);
    void stopRobot();
    void driveLidar(float meters, float motorSpeed);
+   void continuousDrive(float motorSpeed);
+//   void PIDWrite(float output);
 
    STATE getCurrentState();
 
@@ -55,6 +62,7 @@ private:
    AnalogGyro* m_gyro;
    ConfigEditor* m_configEditor;
    LidarHandler* m_lidar;
+   Timer m_continuousDriveTimer;
    double m_initalEncoderDistanceLeft;
    double m_initalEncoderDistanceRight;
    double m_targetDistanceRight;

@@ -30,11 +30,17 @@ DriveTrainController::DriveTrainController(
    m_goalState = IDLE;
    m_rightMotorPower = 0.0f;
    m_leftMotorPower = 0.0f;
+   m_targetDistanceRight = 0;
+   m_targetDistanceLeft = 0;
    m_rightEncoderComplete = true;
    m_leftEncoderComplete = true;
    m_gyroTargetDegree = 0.0f;
    clockwise = false;
    lidarInches = 0.0f;
+
+
+//   m_leftDriveTrainController = new PIDController(0.2, 0, 0, m_leftWheelEncoder, this);
+//   m_rightDriveTrainController = new PIDController(0.2, 0, 0, m_rightWheelEncoder, this);
 }
 
 DriveTrainController::~DriveTrainController() {
@@ -50,9 +56,9 @@ void DriveTrainController::manualDrive() {
    float twistRatio = 1 - throttleRatio;
 
    std::ostringstream t;
-   t << "Throttle: ";
-   t << throttleRatio;
-   SmartDashboard::PutString("DB/String 5", t.str());
+   t<<"Twist: ";
+   t<<twistRatio;
+   SmartDashboard::PutString("DB/String 9", t.str());
 
    m_leftMotorPower = (throttle * throttleRatio) + (twist * twistRatio);
    m_rightMotorPower = (throttle * throttleRatio) - (twist * twistRatio);
@@ -140,17 +146,22 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
 
    }
    else{
-
-
       m_initalEncoderDistanceRight = m_rightWheelEncoder->GetDistance();
       m_initalEncoderDistanceLeft = m_leftWheelEncoder->GetDistance();
       float distance = degree * m_configEditor->getFloat("wheelEncoderDistancePerDegree");
-
 
       m_targetDistanceRight = m_initalEncoderDistanceRight - distance;
       m_targetDistanceLeft = m_initalEncoderDistanceLeft + distance;
       m_rightEncoderComplete = false;
       m_leftEncoderComplete = false;
+
+      std::ostringstream outputTR;
+      outputTR << "Target Right Tick " << m_targetDistanceRight;
+      SmartDashboard::PutString("DB/String 8", outputTR.str());
+
+      std::ostringstream outputTL;
+      outputTL << "Target Left Tick " << m_targetDistanceLeft;
+      SmartDashboard::PutString("DB/String 9", outputTL.str());
 
       if (degree > 0) {
          m_rightMotorPower = -motorSpeed;
@@ -169,13 +180,18 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
 void DriveTrainController::aimRobotCounterclockwise(float degree, float motorSpeed) {
    aimRobotClockwise(-degree, motorSpeed);
 }
-
+void DriveTrainController::continuousDrive(float motorSpeed){
+   m_continuousDriveTimer.Reset();
+   m_rightMotorPower = m_configEditor->getFloat("motorPower");
+   m_leftMotorPower = m_configEditor->getFloat("motorPower");
+   m_goalState = CONTINUOUSDRIVE;
+}
 //Moves the robot a desired distance and at a desired motor speed
 void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
 
-   if (m_goalState == ENCODERDRIVE)
+   if (m_goalState == ENCODERDRIVE){
       return;
-
+   }
    m_initalEncoderDistanceRight = m_rightWheelEncoder->GetDistance();
    m_initalEncoderDistanceLeft = m_leftWheelEncoder->GetDistance();
    m_targetDistanceRight = m_initalEncoderDistanceRight + distance;
@@ -216,37 +232,37 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
    case TELEOP:
       return TELEOP;
       //Goal state of ENCODERDRIVE, tests if the encoders are where they are supposed to be
-   case ENCODERDRIVE:
-//      std::ostringstream j;
-//      j<<"TargetRight";
-//      j<<m_targetDistanceRight;
-//      SmartDashboard::PutString("DB/String 5", j.str());
-   {
+   case ENCODERDRIVE:{
       std::ostringstream ku;
       ku<<"realRight: ";
       ku<<m_rightWheelEncoder->GetDistance();
       SmartDashboard::PutString("DB/String 6", ku.str());}
-      if ((((m_rightMotorPower < 0) && (m_rightWheelEncoder->GetDistance() <= m_targetDistanceRight))) || (
-            ((m_rightMotorPower >= 0) && (m_rightWheelEncoder->GetDistance() >= m_targetDistanceRight)))){
-         m_rightEncoderComplete = true;
-      }
-      if ((((m_leftMotorPower < 0) && (m_leftWheelEncoder->GetDistance() <= m_targetDistanceLeft))) ||
-            (((m_leftMotorPower >= 0) && (m_leftWheelEncoder->GetDistance() >= m_targetDistanceLeft)))){
-         m_leftEncoderComplete = true;
-      }
-      if (m_rightEncoderComplete || m_leftEncoderComplete){
-         m_goalState = IDLE;
-         SmartDashboard::PutString("DB/String 7", "In enc cmplt");
-         return IDLE;
-      }
-      else {
-         m_goalState = ENCODERDRIVE;
-         return ENCODERDRIVE;
-      }
+   if ((((m_rightMotorPower < 0) && (m_rightWheelEncoder->GetDistance() <= m_targetDistanceRight))) || (
+         ((m_rightMotorPower >= 0) && (m_rightWheelEncoder->GetDistance() >= m_targetDistanceRight)))){
+      m_rightEncoderComplete = true;
+   }
+   if ((((m_leftMotorPower < 0) && (m_leftWheelEncoder->GetDistance() <= m_targetDistanceLeft))) ||
+         (((m_leftMotorPower >= 0) && (m_leftWheelEncoder->GetDistance() >= m_targetDistanceLeft)))){
+      m_leftEncoderComplete = true;
+   }
+   if (m_rightEncoderComplete || m_leftEncoderComplete){
+      m_goalState = IDLE;
+      SmartDashboard::PutString("DB/String 7", "In enc cmplt");
+      return IDLE;
+   }
+   else {
+      m_goalState = ENCODERDRIVE;
+      return ENCODERDRIVE;
+   }
    case GYROTURN:
       return GYROTURN;
    case LIDARDRIVE:
       return LIDARDRIVE;
+   case CONTINUOUSDRIVE:
+      if(m_continuousDriveTimer.HasPeriodPassed(.1)){
+         return IDLE;
+      }
+      break;
    default:
       return IDLE;
    }

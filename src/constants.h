@@ -22,10 +22,10 @@ struct PortAssign {
    const static uint32_t rightWheelEncoderChannelB = 3;
 
    //Flywheels
-   const static uint32_t leftFlywheelEncoderChannelA = 4;
-   const static uint32_t leftFlywheelEncoderChannelB = 5;
-   const static uint32_t rightFlywheelEncoderChannelA = 6;
-   const static uint32_t rightFlywheelEncoderChannelB = 7;
+   const static uint32_t leftFlywheelEncoderChannelA = 12;
+   const static uint32_t leftFlywheelEncoderChannelB = 13;
+   const static uint32_t rightFlywheelEncoderChannelA = 14;
+   const static uint32_t rightFlywheelEncoderChannelB = 15;
 
 
    //Loader
@@ -46,8 +46,8 @@ struct PortAssign {
    const static uint32_t leftPotentiometer = 2;
 
    //DIO
-   const static uint32_t rightLowerLimitSwitch = 13;
-   const static uint32_t rightUpperLimitSwitch = 12;
+   const static uint32_t rightLowerLimitSwitch = 6;
+   const static uint32_t rightUpperLimitSwitch = 7;
    const static uint32_t leftLowerLimitSwitch = 10; //how do you do extensions
    const static uint32_t leftUpperLimitSwitch = 11; //how do you do extensions
 };
@@ -60,6 +60,7 @@ struct RobotConstants {
    constexpr static float flywheelMotorSpeed = 1.0f;
    constexpr static bool gyro = false; //Determines which mode we use for turning.
 
+   constexpr static double distancePerDegree = 0.2093;
    //constexpr static double rightDistancePerPulse = (66.0/1720.0); //0.0384
    //constexpr static double leftDistancePerPulse = (66.0/2475.0); //0.0267
    constexpr static int lidarErrorRange = 4;
@@ -75,8 +76,8 @@ struct RobotConstants {
    constexpr static const float minPotentiometerV = 0;
    constexpr static const float maxPotentiometerV = 0;
    constexpr static const double armDeadZone = 2;
-   constexpr static const float maxSoftLimitLeft = 3.6;
-   constexpr static const float maxSoftLimitRight = 3.7;
+   constexpr static const float maxSoftLimitLeft = 2.34;
+   constexpr static const float maxSoftLimitRight = 2.5;
    constexpr static const float minSoftLimitLeft = 0.34;
    constexpr static const float minSoftLimitRight = 0.5;
 
@@ -196,7 +197,7 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-   const static int numberOfVars = 18;
+   const static int numberOfVars = 22;
    const static std::string variables[numberOfVars] = {
          "motorPower",
          "degree",
@@ -216,6 +217,10 @@ namespace ConfigVariables {
          "fastAverageFactor",
          "slowAverageFactor",
          "lidarOffset"
+         "slipConstant",
+         "PID_p",
+         "PID_i",
+         "PID_d"
    };
    const static std::string types[numberOfVars] = {
          "float", //motorPower
@@ -304,7 +309,7 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-   const static int numberOfVars = 19;
+   const static int numberOfVars = 18;
    const static std::string variables[numberOfVars] = {
          "motorPower",
          "degree",
@@ -323,8 +328,7 @@ namespace ConfigVariables {
          "wheelEncoderDistancePerDegree",
          "fastAverageFactor",
          "slowAverageFactor",
-         "lidarOffset",
-         "shooterPower"
+         "lidarOffset"
    };
    const static std::string types[numberOfVars] = {
          "float", //motorPower
@@ -344,8 +348,7 @@ namespace ConfigVariables {
          "float", //wheelEncoderDistancePerDegree
          "double", //fastAverageFactor
          "double", //slowAverageFactor,
-         "double", //lidarOffset
-         "float" //shooterPower
+         "double" //lidarOffset
    };
 };
 

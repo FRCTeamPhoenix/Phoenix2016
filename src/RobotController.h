@@ -27,7 +27,7 @@
 
 class RobotController : public BaseController
 {
- public:
+public:
    enum STATE {
       ROBOT_AUTO,
       ROBOT_MANUAL
@@ -36,11 +36,11 @@ class RobotController : public BaseController
    RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, Flywheel*,
          ConfigEditor*, Arm*, Aiming*);
    virtual ~RobotController();
-   void initAutonoumosModeQueue();
+   void initAutonomousModeQueue();
    void setManual();
    void run();
    void performAction(void);
- private:
+private:
    STATE m_state;
 
    std::queue<Action*> m_queue;
