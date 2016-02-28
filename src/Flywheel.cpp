@@ -7,14 +7,15 @@
 
 #include "Flywheel.h"
 
-Flywheel::Flywheel(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor, Encoder* leftFlywheelEncoder, Encoder* rightFlywheelEncoder, LidarHandler* lidar) :
+Flywheel::Flywheel(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor, Encoder* leftFlywheelEncoder, Encoder* rightFlywheelEncoder, LidarHandler* lidar, ConfigEditor * configEditor) :
    m_leftFlywheelMotor(leftFlywheelMotor),
    m_rightFlywheelMotor(rightFlywheelMotor),
    m_leftFlywheelEncoder(leftFlywheelEncoder),
    m_rightFlywheelEncoder(rightFlywheelEncoder),
    m_lidar(lidar),
    m_leftFlywheelController(m_leftFlywheelMotor, m_leftFlywheelEncoder),
-   m_rightFlywheelController(m_rightFlywheelMotor, m_rightFlywheelEncoder)
+   m_rightFlywheelController(m_rightFlywheelMotor, m_rightFlywheelEncoder),
+   m_configEditor(configEditor)
 {
    m_spinning = false;
 
@@ -36,18 +37,18 @@ void Flywheel::run(){
 }
 Flywheel::STATE Flywheel::getCurrentState(){
    if(!m_spinning){
-      SmartDashboard::PutString("DB/String 5", "OFF");
-      SmartDashboard::PutString("DB/String 6", " ");
+      //SmartDashboard::PutString("DB/String 5", "OFF");
+      //SmartDashboard::PutString("DB/String 6", " ");
 
       return OFF;
    }
 
-   if(upToSpeed(0.05)){
-      SmartDashboard::PutString("DB/String 5", "Ready To Fire");
+   if(upToSpeed(0.0)){
+      //SmartDashboard::PutString("DB/String 5", "Ready To Fire");
       return READY;
    }
    else{
-      SmartDashboard::PutString("DB/String 5", "Not Ready To Fire");
+      //SmartDashboard::PutString("DB/String 5", "Not Ready To Fire");
       return NOTREADY;
    }
 
@@ -67,12 +68,13 @@ bool Flywheel::upToSpeed(float tolerance) {
 }
 
 void Flywheel::setRate(float rate) {
-   m_leftFlywheelController.setRate(rate);
+   m_leftFlywheelController.setRate(-rate);
    m_rightFlywheelController.setRate(rate);
 }
 
 
 float Flywheel::calculateSpeed() {
+   return m_configEditor->getFloat("shooterPower");
    float currentDistance = m_lidar->getFastAverage();
 
    if(currentDistance < m_minDistance){

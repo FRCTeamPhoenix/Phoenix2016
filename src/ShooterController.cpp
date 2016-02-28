@@ -19,28 +19,28 @@ ShooterController::~ShooterController() {
 }
 
 void ShooterController::run(){
-   switch(getGoalState()){
-   case OFF:
-      m_flywheel->stop();
-      //m_loaderController->stop();
-      break;
-   case ARMED:
-      m_flywheel->start();
-      break;
-   case SHOOTING:
-      if (m_loaderController->loaded()) {
-         m_loaderController->start();
-         m_flywheel->start();
-      }
-      else {
-         setOff();
-      }
-      break;
-   case ARMING:
-   case STOPPING:
-   case PREPARINGTOSHOOT:
-      break;
-   }
+//   switch(getGoalState()){
+//   case OFF:
+//      m_flywheel->stop();
+//      //m_loaderController->stop();
+//      break;
+//   case ARMED:
+//      m_flywheel->start();
+//      break;
+//   case SHOOTING:
+//      if (m_loaderController->loaded()) {
+//         m_loaderController->start();
+//         m_flywheel->start();
+//      }
+//      else {
+//         setOff();
+//      }
+//      break;
+//   case ARMING:
+//   case STOPPING:
+//   case PREPARINGTOSHOOT:
+//      break;
+//   }
 
    m_flywheel->run();
    m_loaderController->run();
