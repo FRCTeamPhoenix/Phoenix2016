@@ -13,7 +13,7 @@
 #include "constants.h"
 #include "DriveStation.h"
 #include "ConfigEditor.h"
-#include "Math.h"
+#include <cmath>
 #include "LidarHandler.h"
 
 class DriveTrainController: public BaseController {
@@ -55,10 +55,10 @@ private:
    AnalogGyro* m_gyro;
    ConfigEditor* m_configEditor;
    LidarHandler* m_lidar;
-   int32_t m_initalEncoderDistanceLeft;
-   int32_t m_initalEncoderDistanceRight;
-   int32_t m_targetDistanceRight;
-   int32_t m_targetDistanceLeft;
+   double m_initalEncoderDistanceLeft;
+   double m_initalEncoderDistanceRight;
+   double m_targetDistanceRight;
+   double m_targetDistanceLeft;
    float m_rightMotorPower;
    float m_leftMotorPower;
    bool m_rightEncoderComplete;

@@ -15,27 +15,31 @@
 #ifndef SRC_AIMING_H_
 #define SRC_AIMING_H_
 #define ARRAY_SIZE(array) (sizeof((array))/sizeof((array[0])))
-#include "Math.h"
+#include <cmath>
 #include "Client.h"
 #include "DriveTrainController.h"
-#include "Constants.h"
+#include "ShooterController.h"
+#include "constants.h"
+#include <cmath>
 
 class Aiming {
 public:
 
    enum STATE {
          IDLE,
-         FINDING_TARGET,
-         ROTATING,
-         APPROACHING
+         CENTERING,
+         APPROACHING,
+         REVERTING,
+         SHOOTING
       };
 
-   Aiming(Client*, DriveTrainController*, DriveStation*);
+   Aiming(Client*, DriveTrainController*, DriveStation*,LidarHandler*,ShooterController*);
    void getNewImageData();
    void beginAiming();
-   void findTarget();
-   void rotate();
+   void centering();
    void approachTarget();
+   void revert();
+   void shoot();
    STATE getCurrentState();
    void setTargetCoordinateValue(AimingConstants::targetPositionData, int);
    void setCurrentState(STATE);
@@ -48,9 +52,24 @@ private:
    Client* m_client;
    DriveTrainController* m_driveTrainController;
    DriveStation* m_driveStation;
-   int m_currentTargetCoordinates[9];
+   LidarHandler * m_lidar;
+   ShooterController *m_shooter;
+   Timer m_timer;
+   int m_currentTargetCoordinates[8];
    STATE m_currentState;
    bool lastArrayWasNull;
+   bool hasApproached;
+   bool hasRotated;
+   bool fullProcess;
+   double initialTargetCenterX;
+   double m_targetCenter_x;
+   double deviation;
+   bool driveIdle;
+   bool newCenter;
+
+
+
+
    int nullArraysInARow;
 
 };

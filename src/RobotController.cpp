@@ -29,7 +29,6 @@ RobotController::~RobotController() {}
 
 void RobotController::run(){
    if (m_state == ROBOT_AUTO){
-
       // Y button cancels autonomous mode, resetting it to manual controls.
       if (m_driveStation->getGamepadButton(DriveStationConstants::buttonY)){
          // Simplest way to empty queue while destroying everything.
@@ -70,13 +69,13 @@ void RobotController::run(){
          m_loaderController->stop();
       }
 
-      //Hold down to run flywheels
       if(m_driveStation->getGamepadButton(DriveStationConstants::triggerRT)){
-         m_flywheel->start(1.0f);
+         m_flywheel->start();
       }
-      else{
+      if(m_driveStation->getGamepadButton(DriveStationConstants::triggerLT)){
          m_flywheel->stop();
       }
+
 
       m_arm->move(m_driveStation->deadzoneOfGamepadJoystick() / 2);
       m_state = ROBOT_MANUAL;
@@ -101,11 +100,12 @@ void RobotController::performAction(void){
       m_queue.pop();
    }
 }
-void RobotController::setAuto(){
+void RobotController::initAutonomousModeQueue(){
+   m_queue.push(new ActionDrive(m_driveTrain, 24 , m_configEditor->getFloat("motorPower")));
    m_state = ROBOT_AUTO;
    m_queue.push(new ActionDrive(m_driveTrain, 72 , m_configEditor->getFloat("motorPower")));
 
 }
-void  RobotController::setManual(){
+void RobotController::setManual(){
    m_state = ROBOT_MANUAL;
 }

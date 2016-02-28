@@ -5,7 +5,7 @@
  *      Author: Ian
  */
 
-#include <ShooterController.h>
+#include "ShooterController.h"
 
 ShooterController::ShooterController(LoaderController* loader, Flywheel * flywheel, ConfigEditor* configEditor):
 m_loaderController(loader),
@@ -19,28 +19,28 @@ ShooterController::~ShooterController() {
 }
 
 void ShooterController::run(){
-//   switch(getGoalState()){
-//   case OFF:
-//      m_flywheel->stop();
-//      //m_loaderController->stop();
-//      break;
-//   case ARMED:
-//      m_flywheel->start(m_configEditor->getFloat("flywheelMotorPower"));
-//      break;
-//   case SHOOTING:
-//      if (m_loaderController->loaded()) {
-//         m_loaderController->start();
-//         m_flywheel->start(m_configEditor->getFloat("flywheelMotorPower"));
-//      }
-//      else {
-//         setOff();
-//      }
-//      break;
-//   case ARMING:
-//   case STOPPING:
-//   case PREPARINGTOSHOOT:
-//      break;
-  // }
+   switch(getGoalState()){
+   case OFF:
+      m_flywheel->stop();
+      //m_loaderController->stop();
+      break;
+   case ARMED:
+      m_flywheel->start();
+      break;
+   case SHOOTING:
+      if (m_loaderController->loaded()) {
+         m_loaderController->start();
+         m_flywheel->start();
+      }
+      else {
+         setOff();
+      }
+      break;
+   case ARMING:
+   case STOPPING:
+   case PREPARINGTOSHOOT:
+      break;
+   }
 
    m_flywheel->run();
    m_loaderController->run();
@@ -65,7 +65,7 @@ ShooterController::STATE ShooterController::getCurrentState(){
 
 
    if (currentGoal == ARMED){
-      if(flywheelState == Flywheel::ON && m_loaderController->loaded()){
+      if(flywheelState == Flywheel::READY && m_loaderController->loaded()){
          return ARMED;
       }
       else {
@@ -73,7 +73,7 @@ ShooterController::STATE ShooterController::getCurrentState(){
       }
    }
    else if(currentGoal == SHOOTING){
-      if(flywheelState == Flywheel::ON){
+      if(flywheelState == Flywheel::READY){
          return SHOOTING;
       }
       else{

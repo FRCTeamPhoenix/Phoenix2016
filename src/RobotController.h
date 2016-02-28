@@ -30,7 +30,7 @@ public:
 
    RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, Flywheel*, ConfigEditor*, Arm*);
    virtual ~RobotController();
-   void setAuto();
+   void initAutonomousModeQueue();
    void setManual();
    void run();
    void performAction(void);
