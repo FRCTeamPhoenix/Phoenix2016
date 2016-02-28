@@ -43,6 +43,7 @@ public:
    STATE getCurrentState();
    void setTargetCoordinateValue(AimingConstants::targetPositionData, int);
    void setCurrentState(STATE);
+   void setFullProcess(bool);
    void printCurrentCoordinates();
    void run();
    virtual ~Aiming();
@@ -57,20 +58,16 @@ private:
    Timer m_timer;
    int m_currentTargetCoordinates[8];
    STATE m_currentState;
-   bool lastArrayWasNull;
    bool hasApproached;
-   bool hasRotated;
    bool fullProcess;
    double initialTargetCenterX;
    double m_targetCenter_x;
    double deviation;
    bool driveIdle;
    bool newCenter;
-
-
-
-
    int nullArraysInARow;
+
+
 
 };
 

@@ -1,3 +1,6 @@
+// This class allows for integration of driving a specific distance
+// into the Action system.
+
 #include "ActionDrive.h"
 #include "DriveTrainController.h"
 
@@ -6,15 +9,15 @@ ActionDrive::ActionDrive(DriveTrainController* dt, float distance, float power)
 {
 }
 
-void
-ActionDrive::init(void)
+// Start the drive process
+void ActionDrive::init(void)
 {
    m_driveTrain->moveRobotStraight(m_distance, m_power);
    m_initialized = true;
 }
 
-bool
-ActionDrive::execute(void)
+// Stop executing and remove from queue when the drive sequence is done
+bool ActionDrive::execute(void)
 {
    return m_driveTrain->getCurrentState() == DriveTrainController::IDLE;
 }
