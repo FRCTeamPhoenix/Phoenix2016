@@ -68,7 +68,6 @@ private:
    int nullArraysInARow;
 
 
-
 };
 
 #endif /* SRC_AIMING_H_ */

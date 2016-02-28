@@ -35,7 +35,6 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, Drive
 
    // "Clean slate" for the target coordinate array!
    memset(m_currentTargetCoordinates,0,8);
-
 }
 
 // Call this method to begin aiming process - same as manually setting state to first phase of aiming process
@@ -46,64 +45,58 @@ void Aiming::beginAiming() {
 // Gives Aiming class access to image data sent over to client from Raspberry Pi
 void Aiming::getNewImageData() {
 
+   if (m_client->checkPacketState()){
    // Updates array of current coordinates with data received by client
-   for(int i = 0; i < AimingConstants::numTargetVals; i++) {
-      m_currentTargetCoordinates[i] = m_client->getTargetData(i+1);
+      for(int i = 0; i < AimingConstants::numTargetVals; i++) {
+         m_currentTargetCoordinates[i] = m_client->getTargetData(i+1);
+      }
    }
 }
 
 // Turns robot to line up with target, once target is within field of vision
 void Aiming::centering() {
 
-   double m_targetCenter_x=10;
-   double deviation;
-   double initialTargetCenterX;
    driveIdle=false;
    newCenter=false;
+
    if ((m_driveTrainController->getCurrentState()==DriveTrainController::IDLE
          || m_driveTrainController->getCurrentState()==DriveTrainController::TELEOP )){
       driveIdle=true;
    }
 
-
-
    initialTargetCenterX=m_targetCenter_x;
-
    m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL] +m_currentTargetCoordinates[AimingConstants::xLR])/2);
    deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
 
-   if (m_targetCenter_x != initialTargetCenterX){
-      newCenter=true;
-   }
+//   if (m_targetCenter_x != initialTargetCenterX){
+//      newCenter=true;
+//   }
 
-   ostringstream aimingPrints;
-   aimingPrints<< "C: " << m_targetCenter_x << ", " << "D: " << deviation;
-   SmartDashboard::PutString("DB/String 9",aimingPrints.str());
+   if (driveIdle && !m_client->checkPacketState()){
+      if(deviation< -AimingConstants::rotationVariance){
 
-
-   if(deviation< -AimingConstants::rotationVariance && driveIdle && newCenter){
-
-      m_driveTrainController->aimRobotCounterclockwise(1, 0.6f);
-
-   }
-   else if (deviation > AimingConstants::rotationVariance && newCenter && driveIdle){
-
-      m_driveTrainController->aimRobotClockwise(1, 0.6f);
-
-   }
-   else if (deviation <  AimingConstants::rotationVariance && deviation > -AimingConstants::rotationVariance && driveIdle){
-
-      if (!hasApproached && fullProcess){
-         setCurrentState(APPROACHING);
-      }
-      else if (hasApproached && fullProcess){
-         setCurrentState(SHOOTING);
-      }
-      else {
-         setCurrentState(IDLE);
+         m_driveTrainController->aimRobotCounterclockwise(1, 0.6f);
 
       }
+      else if (deviation > AimingConstants::rotationVariance){
 
+         m_driveTrainController->aimRobotClockwise(1, 0.6f);
+
+      }
+      else if (deviation <  AimingConstants::rotationVariance && deviation > -AimingConstants::rotationVariance){
+
+         if (!hasApproached && fullProcess){
+            setCurrentState(APPROACHING);
+         }
+         else if (hasApproached && fullProcess){
+            setCurrentState(SHOOTING);
+         }
+         else {
+            setCurrentState(IDLE);
+
+         }
+
+      }
    }
 }
 
@@ -186,6 +179,24 @@ void Aiming::run() {
    if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonA)) {
          setCurrentState(IDLE);
    }
+   getNewImageData();
+   printCurrentCoordinates();
+   m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL] +m_currentTargetCoordinates[AimingConstants::xLR])/2);
+   deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
+
+   ostringstream aimingPrints;
+   aimingPrints<< "C: " << m_targetCenter_x << ", " << "D: " << deviation;
+   SmartDashboard::PutString("DB/String 9",aimingPrints.str());
+
+   ostringstream data;
+   data << m_currentTargetCoordinates[0] << ";" << m_currentTargetCoordinates[6];
+   SmartDashboard::PutString("DB/String 6",data.str());
+
+
+   ostringstream dataprint;
+   dataprint<< "unread="<<m_client->checkPacketState();
+   SmartDashboard::PutString("DB/String 8",dataprint.str());
+
 
    switch(m_currentState) {
    case IDLE:

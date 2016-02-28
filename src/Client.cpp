@@ -80,10 +80,11 @@ void Client::receivePacket(){
            }
 
            else {
-               cout << "packet received in thread" <<endl;
-               byteToInt(m_receivedData,m_targetData);
+               //cout << "packet received in thread" <<endl;
+               byteToInt(m_receivedData,m_convertedData);
                //Target has flag 1 in first place of array ball has flag 2, lydar has flag 3
                if (m_convertedData[0]==1){
+                   m_unreadTargetData=true;
                    copyArray(m_convertedData,m_targetData);
 
                }
@@ -95,7 +96,7 @@ void Client::receivePacket(){
                    copyArray(m_convertedData,m_distanceData);
                }
                else {
-                   cout << "no valid flag found" <<endl;
+                   //cout << "no valid flag found" <<endl;
                 }
            }
      }
@@ -121,6 +122,9 @@ int Client::getBallData(int element){
 }
 
 int Client::getTargetData(int element){
+     if (element == 8){
+         m_unreadTargetData=false;
+     }
     return m_targetData[element];
 
 }
@@ -141,6 +145,10 @@ void Client::copyArray(int *array1, int *array2){
             array2[i]=array1[i];
       }
    }
+}
+
+bool Client::checkPacketState(){
+   return m_unreadTargetData;
 }
 
 Client::~Client() {

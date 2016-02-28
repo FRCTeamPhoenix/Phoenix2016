@@ -39,6 +39,8 @@ public:
 
     void initilizeSocket();
 
+    bool checkPacketState();
+
     void receivePacket();
 
     void byteToInt(char *byteArray,int *intArray);
