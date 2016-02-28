@@ -22,10 +22,10 @@ struct PortAssign {
    const static uint32_t rightWheelEncoderChannelB = 3;
 
    //Flywheels
-   const static uint32_t leftFlywheelEncoderChannelA = 12;
-   const static uint32_t leftFlywheelEncoderChannelB = 13;
-   const static uint32_t rightFlywheelEncoderChannelA = 14;
-   const static uint32_t rightFlywheelEncoderChannelB = 15;
+   const static uint32_t leftFlywheelEncoderChannelA = 4;
+   const static uint32_t leftFlywheelEncoderChannelB = 5;
+   const static uint32_t rightFlywheelEncoderChannelA = 6;
+   const static uint32_t rightFlywheelEncoderChannelB = 7;
 
 
    //Loader
@@ -46,8 +46,8 @@ struct PortAssign {
    const static uint32_t leftPotentiometer = 2;
 
    //DIO
-   const static uint32_t rightLowerLimitSwitch = 6;
-   const static uint32_t rightUpperLimitSwitch = 7;
+   const static uint32_t rightLowerLimitSwitch = 12;
+   const static uint32_t rightUpperLimitSwitch = 13;
    const static uint32_t leftLowerLimitSwitch = 10; //how do you do extensions
    const static uint32_t leftUpperLimitSwitch = 11; //how do you do extensions
 };
@@ -309,7 +309,7 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-   const static int numberOfVars = 18;
+   const static int numberOfVars = 19;
    const static std::string variables[numberOfVars] = {
          "motorPower",
          "degree",
@@ -329,6 +329,7 @@ namespace ConfigVariables {
          "fastAverageFactor",
          "slowAverageFactor",
          "lidarOffset"
+         "shooterPower"
    };
    const static std::string types[numberOfVars] = {
          "float", //motorPower
@@ -349,6 +350,7 @@ namespace ConfigVariables {
          "double", //fastAverageFactor
          "double", //slowAverageFactor,
          "double" //lidarOffset
+         "float", //shooterPower
    };
 };
 
