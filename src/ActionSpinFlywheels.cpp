@@ -24,7 +24,7 @@ void ActionSpinFlywheels::init(void)
 {
    // won't need a parameter later (the start function will be changed so that the proper
    // speed will be selected, based on distance from the target
-   m_flywheel->start(m_motorPower);
+   m_flywheel->start();
    m_initialized = true;
 }
 

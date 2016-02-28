@@ -22,6 +22,10 @@ struct PortAssign {
    const static uint32_t rightWheelEncoderChannelB = 3;
 
    //Flywheels
+   const static uint32_t leftFlywheelEncoderChannelA = 12;
+   const static uint32_t leftFlywheelEncoderChannelB = 13;
+   const static uint32_t rightFlywheelEncoderChannelA = 14;
+   const static uint32_t rightFlywheelEncoderChannelB = 15;
 
 
    //Loader
@@ -151,6 +155,14 @@ struct AimingConstants{
    const static int maxTiltingFactor = 20;
    const static int minTargetWidth = 250;
    const static int maxTargetWidth = 350;
+
+   const static int desiredCenter = 275; //untuned value not correct
+   constexpr static double aimedDistance=84;//untuned value not correct
+
+   const static int distanceVariance = 12; //in inches
+   const static int rotationVariance = 15 ; //in pixels
+
+   constexpr static double rotateCorrect=15; // in degrees
 
    // First array element passed in a target data array
    const static int targetFlag = 1;

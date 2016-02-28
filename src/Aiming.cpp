@@ -23,8 +23,6 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, Drive
 {
 
    // We have not yet rotated
-   hasRotated=false;
-
    // Nothing is happening
    setCurrentState(IDLE);
 
@@ -57,10 +55,8 @@ void Aiming::getNewImageData() {
 // Turns robot to line up with target, once target is within field of vision
 void Aiming::centering() {
 
-   //bool hasRotated =false;
    double m_targetCenter_x=10;
    double deviation;
-   //double calculatedRotation;
    double initialTargetCenterX;
    driveIdle=false;
    newCenter=false;
@@ -79,8 +75,6 @@ void Aiming::centering() {
    if (m_targetCenter_x != initialTargetCenterX){
       newCenter=true;
    }
-   // Amount of offset from our desired center coordinate (w/ respect to current frame of vision)
-   deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
 
    ostringstream aimingPrints;
    aimingPrints<< "C: " << m_targetCenter_x << ", " << "D: " << deviation;
@@ -113,6 +107,8 @@ void Aiming::centering() {
    }
 }
 
+
+
 void Aiming::approachTarget() {
 
 
@@ -133,13 +129,11 @@ void Aiming::approachTarget() {
       else {
          setCurrentState(IDLE);
       }
-
    }
 }
-
 void Aiming::shoot(){
 
-   // Do we need to start the timer?
+   //start Timer
    if (m_timer.Get()==0){
       m_timer.Start();
    }
@@ -197,7 +191,6 @@ void Aiming::run() {
    case IDLE:
       m_driveTrainController->setGoalState(m_driveTrainController->TELEOP);
       fullProcess=false;
-      hasRotated=false;
       hasApproached=false;
       getNewImageData();
 
@@ -232,6 +225,7 @@ void Aiming::run() {
    default:
       break;
    }
+
 
 }
 

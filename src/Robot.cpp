@@ -36,29 +36,32 @@ class Robot: public SampleRobot
    DigitalInput m_rightLowerLimitSwitch;
    Encoder m_leftWheelEncoder;
    Encoder m_rightWheelEncoder;
+   Encoder m_leftFlywheelEncoder;
+   Encoder m_rightFlywheelEncoder;
    Joystick m_joystick;
    Joystick m_gamepad;
-   Talon m_flywheelLeftMotor;
-   Talon m_flywheelRightMotor;
+   Talon m_leftFlywheelMotor;
+   Talon m_rightFlywheelMotor;
    Talon m_armMotorLeft;
    Talon m_armMotorRight;
    Talon m_intakeMotor;
    Talon m_stationaryMotor;
    Client m_client;
    DriveStation m_driveStation;
-   LoaderSense m_loaderSense;
+   Relay m_lidarOnSwitch;
    ConfigEditor m_configEditor;
+   LidarHandler m_lidarHandler;
    RobotDrive m_driveTrain;
    DriveTrainController m_driveTrainController;
+   USBCamera m_driveCamera;
+   LoaderSense m_loaderSense;
    Flywheel m_flywheel;
    LoaderController m_loaderController;
    ShooterController m_shooterController;
    Arm m_arm;
-   USBCamera m_driveCamera;
    RobotController m_robotController;
-   Relay m_lidarOnSwitch;
-   LidarHandler m_lidarHandler;
    Aiming m_aiming;
+
 
 public:
    Robot() :
@@ -73,45 +76,41 @@ public:
       m_rightLowerLimitSwitch(PortAssign::rightLowerLimitSwitch),
       m_leftWheelEncoder(PortAssign::leftWheelEncoderChannelA, PortAssign::leftWheelEncoderChannelB),
       m_rightWheelEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
+      m_leftFlywheelEncoder(PortAssign::leftFlywheelEncoderChannelA, PortAssign::leftFlywheelEncoderChannelB),
+      m_rightFlywheelEncoder(PortAssign::rightFlywheelEncoderChannelA, PortAssign::rightFlywheelEncoderChannelB),
       m_joystick(PortAssign::joystick),
       m_gamepad(PortAssign::gamepad),
-      m_flywheelLeftMotor(PortAssign::flywheelLeftMotor),
-      m_flywheelRightMotor(PortAssign::flywheelRightMotor),
+      m_leftFlywheelMotor(PortAssign::flywheelLeftMotor),
+      m_rightFlywheelMotor(PortAssign::flywheelRightMotor),
       m_armMotorLeft(PortAssign::armMotorLeft),
       m_armMotorRight(PortAssign::armMotorRight),
       m_intakeMotor(PortAssign::intakeMotor),
       m_stationaryMotor(PortAssign::stationaryMotor),
       m_driveStation(&m_joystick, &m_gamepad),
-      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
+      m_lidarOnSwitch(0),
       m_configEditor(&m_driveStation),
+      m_lidarHandler(&m_lidarOnSwitch, &m_configEditor, 9),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
       m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor, &m_lidarHandler),
-      m_flywheel(&m_flywheelLeftMotor, &m_flywheelRightMotor),
+      m_driveCamera("cam0",false),//cam0 is nice camera cam1 is microsoft lifecam.
+      m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
+      m_flywheel(&m_leftFlywheelMotor, &m_rightFlywheelMotor, &m_leftFlywheelEncoder, &m_rightFlywheelEncoder, &m_lidarHandler),
       m_loaderController(&m_intakeMotor, &m_stationaryMotor, &m_loadedSensor, &m_driveStation, &m_configEditor),
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor),
-      m_driveCamera("cam0",false),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm, &m_aiming),
-      m_lidarOnSwitch(0),
-      m_lidarHandler(&m_lidarOnSwitch, &m_configEditor, 9),
       m_aiming(&m_client, &m_driveTrainController, &m_driveStation, &m_lidarHandler, &m_shooterController){
 
+      //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
+      //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true)
+   }
+   void RobotInit() override {
       SmartDashboard::init();
       m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
       m_gyro.Calibrate();
       m_configEditor.showAllKeys();
 
-      //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kFrontLeftMotor, true);
-      //      m_driveTrain.SetInvertedMotor(RobotDrive::MotorType::kRearLeftMotor, true);
-
-      // cout << "call init socket" << endl;
-      // client.initilizeSocket();
-      // if (client.m_initGood){
-      //         std::thread receiveThread(runClient, this, &client);
-      // }
-   }
-   void RobotInit() override{
       cout<<"run init socket function" << endl;
       m_client.initilizeSocket();//This line inits coms with the pi comment it out if not using pi saves 25 seconds on code start
       if (m_client.m_initGood){
@@ -184,6 +183,7 @@ public:
          m_robotController.run();
          m_driveTrainController.run();
          m_shooterController.run();
+         m_aiming.run();
          m_arm.run();
          m_aiming.run();
       }

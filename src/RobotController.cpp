@@ -73,13 +73,13 @@ void RobotController::run(){
          m_loaderController->stop();
       }
 
-      //Hold down to run flywheels
       if(m_driveStation->getGamepadButton(DriveStationConstants::triggerRT)){
-         m_flywheel->start(1.0f);
+         m_flywheel->start();
       }
-      else{
+      if(m_driveStation->getGamepadButton(DriveStationConstants::triggerLT)){
          m_flywheel->stop();
       }
+
 
       m_arm->move(m_driveStation->deadzoneOfGamepadJoystick() / 2);
       m_state = ROBOT_MANUAL;
