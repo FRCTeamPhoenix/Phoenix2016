@@ -113,23 +113,6 @@ void Aiming::centering() {
    }
 }
 
-//void Aiming::revert(){
-//
-//
-//   if (rotateCW){
-//      m_driveTrainController->aimRobotCounterclockwise(AimingConstants::rotateCorrect,0.5f);
-//   }
-//   else if  (rotateCCW){
-//      m_driveTrainController->aimRobotClockwise(AimingConstants::rotateCorrect,0.5f);
-//   }
-//
-//   rotateCW=false;
-//   rotateCCW=false;
-//
-//
-//}
-
-
 void Aiming::approachTarget() {
 
 
@@ -230,10 +213,6 @@ void Aiming::run() {
       else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonY)) {
          setCurrentState(CENTERING);
       }
-      else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonX)) {
-         setCurrentState(SHOOTING);
-      }
-
       break;
    case CENTERING:
       SmartDashboard::PutString("DB/String 0", "State: Centering" );
@@ -245,11 +224,6 @@ void Aiming::run() {
       getNewImageData();
       approachTarget();
       break;
-//   case REVERTING:
-//      SmartDashboard::PutString("DB/String 0", "State: Reverting" );
-//      getNewImageData();
-//      revert();
-//      break;
    case SHOOTING:
       SmartDashboard::PutString("DB/String 0", "State: Shooting" );
       getNewImageData();

@@ -113,7 +113,7 @@ public:
    }
    void RobotInit() override{
       cout<<"run init socket function" << endl;
-      //m_client.initilizeSocket();
+      m_client.initilizeSocket();//This line inits coms with the pi comment it out if not using pi saves 25 seconds on code start
       if (m_client.m_initGood){
          cout<<"init good start thread" << endl;
          std::thread receiveThread(runClient, this, &m_client);
@@ -185,6 +185,7 @@ public:
          m_driveTrainController.run();
          m_shooterController.run();
          m_arm.run();
+         m_aiming.run();
       }
    }
 
