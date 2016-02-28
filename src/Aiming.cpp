@@ -135,6 +135,23 @@ void Aiming::approachTarget() {
    }
 }
 
+void Aiming::shoot(){
+
+   //start Timer
+   if (m_timer.Get()==0){
+      m_timer.Start();
+   }
+
+   // Get the shooter ready, and then shoot if enough time has passed
+   m_shooter->setArmed();
+   if (m_timer.HasPeriodPassed(1.5)){
+      m_shooter->setShooting();
+      setCurrentState(IDLE);
+      m_timer.Stop();
+      m_timer.Reset();
+   }
+
+}
 
 void Aiming::setTargetCoordinateValue(AimingConstants::targetPositionData position, int newValue) {
    m_currentTargetCoordinates[position] = newValue;
@@ -208,10 +225,10 @@ void Aiming::run() {
       getNewImageData();
       approachTarget();
       break;
-//   case SHOOTING:
-//      SmartDashboard::PutString("DB/String 0", "State: Shooting" );
-//      getNewImageData();
-//      shoot();
+   case SHOOTING:
+      SmartDashboard::PutString("DB/String 0", "State: Shooting" );
+      getNewImageData();
+      shoot();
     break;
    default:
       break;
