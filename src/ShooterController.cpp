@@ -5,7 +5,7 @@
  *      Author: Ian
  */
 
-#include <ShooterController.h>
+#include "ShooterController.h"
 
 ShooterController::ShooterController(LoaderController* loader, Flywheel * flywheel, ConfigEditor* configEditor):
 m_loaderController(loader),
@@ -21,16 +21,16 @@ ShooterController::~ShooterController() {
 void ShooterController::run(){
    switch(getGoalState()){
    case OFF:
-      m_flywheel->stopMotors();
-      m_loaderController->setIdle();
+      m_flywheel->stop();
+      //m_loaderController->stop();
       break;
    case ARMED:
-      m_flywheel->startMotors(m_configEditor->getFloat("flywheelMotorPower"));
+      m_flywheel->start();
       break;
    case SHOOTING:
-      if (m_loaderController->getCurrentState() == LoaderController::STATE::LOADED) {
-         m_loaderController->setShooting();
-         m_flywheel->startMotors(m_configEditor->getFloat("flywheelMotorPower"));
+      if (m_loaderController->loaded()) {
+         m_loaderController->start();
+         m_flywheel->start();
       }
       else {
          setOff();
@@ -41,6 +41,10 @@ void ShooterController::run(){
    case PREPARINGTOSHOOT:
       break;
    }
+
+   m_flywheel->run();
+   m_loaderController->run();
+
 }
 
 void ShooterController::setArmed(){
@@ -58,9 +62,10 @@ void ShooterController::setShooting(){
 ShooterController::STATE ShooterController::getCurrentState(){
    STATE currentGoal = getGoalState();
    Flywheel::STATE flywheelState = m_flywheel->getCurrentState();
-   LoaderController::STATE loaderState = m_loaderController->getCurrentState();
+
+
    if (currentGoal == ARMED){
-      if(flywheelState == Flywheel::ON && loaderState == LoaderController::LOADED){
+      if(flywheelState == Flywheel::READY && m_loaderController->loaded()){
          return ARMED;
       }
       else {
@@ -68,7 +73,7 @@ ShooterController::STATE ShooterController::getCurrentState(){
       }
    }
    else if(currentGoal == SHOOTING){
-      if(flywheelState == Flywheel::ON){
+      if(flywheelState == Flywheel::READY){
          return SHOOTING;
       }
       else{

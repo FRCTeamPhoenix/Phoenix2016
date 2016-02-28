@@ -22,13 +22,17 @@ struct PortAssign {
    const static uint32_t rightWheelEncoderChannelB = 3;
 
    //Flywheels
+   const static uint32_t leftFlywheelEncoderChannelA = 12;
+   const static uint32_t leftFlywheelEncoderChannelB = 13;
+   const static uint32_t rightFlywheelEncoderChannelA = 14;
+   const static uint32_t rightFlywheelEncoderChannelB = 15;
 
 
    //Loader
    //Redo lifter motors
    const static uint32_t upperLimit = 4;
    const static uint32_t lowerLimit = 5;
-   const static uint32_t loadedSensor = 6;
+   const static uint32_t loadedSensor = 8;
    const static uint32_t armEncoderChannelA = 7;
    const static uint32_t armEncoderChannelB = 8;
 
@@ -38,70 +42,94 @@ struct PortAssign {
 
    //Analog
    const static uint32_t gyroscope = 0;
-   const static uint32_t potentiometer = 1;
+   const static uint32_t rightPotentiometer = 1;
+   const static uint32_t leftPotentiometer = 2;
 
-
+   //DIO
+   const static uint32_t rightLowerLimitSwitch = 6;
+   const static uint32_t rightUpperLimitSwitch = 7;
+   const static uint32_t leftLowerLimitSwitch = 10; //how do you do extensions
+   const static uint32_t leftUpperLimitSwitch = 11; //how do you do extensions
 };
 
 struct RobotConstants {
-   constexpr static float wheelEncoderTicksPerDegree = 4.5f;
+   constexpr static float wheelEncoderDistancePerDegree = 0.1406f;//4.5
    constexpr static float ticksPerInch = 32;
    // 384ticks per wheel rev. three rev. for 360 degrees.
    // (384 *3) / 360 = 3.2
    constexpr static float flywheelMotorSpeed = 1.0f;
-   constexpr static bool gyro = true;
+   constexpr static bool gyro = false; //Determines which mode we use for turning.
 
-   constexpr static double rightDistancePerPulse = 1720/66;
-   constexpr static double leftDistancePerPulse = 2475/66;
    constexpr static double distancePerDegree = 0.2093;
+   //constexpr static double rightDistancePerPulse = (66.0/1720.0); //0.0384
+   //constexpr static double leftDistancePerPulse = (66.0/2475.0); //0.0267
    constexpr static int lidarErrorRange = 4;
+
+   constexpr static const float armMotorLeftPower = 1.0f;
+   constexpr static const float armMotorRightPower = 1.0f;
+   constexpr static const float homingPower = -0.1f;
+
+   //Constants for potentiometer
+   constexpr static const float angleOffset = 9.14;
+   constexpr static const float minTheta = 9.14;
+   constexpr static const float maxTheta = 20.02;
+   constexpr static const float minPotentiometerV = 0;
+   constexpr static const float maxPotentiometerV = 0;
+   constexpr static const double armDeadZone = 2;
+   constexpr static const float maxSoftLimitLeft = 2.34;
+   constexpr static const float maxSoftLimitRight = 2.5;
+   constexpr static const float minSoftLimitLeft = 0.34;
+   constexpr static const float minSoftLimitRight = 0.5;
+
+
 };
 
 struct LidarConstants {
    const static int numberStoredValues = 100;
+   constexpr static double periodToInches = 100000.0 / 2.54;
 };
 
 namespace DriveStationConstants {
-   enum buttonNames {
-      buttonX = 0,
-      buttonA = 1,
-      buttonB = 2,
-      buttonY = 3,
-      buttonLB = 4,
-      buttonRB = 5,
-      triggerLT = 6,
-      triggerRT = 7,
-      buttonBack = 8,
-      buttonStart = 9,
-      joystickLeftButton = 10,
-      joystickRightButton = 11
+enum buttonNames {
+   buttonX = 0,
+   buttonA = 1,
+   buttonB = 2,
+   buttonY = 3,
+   buttonLB = 4,
+   buttonRB = 5,
+   triggerLT = 6,
+   triggerRT = 7,
+   buttonBack = 8,
+   buttonStart = 9,
+   joystickLeftButton = 10,
+   joystickRightButton = 11
 
-   };
-   const static std::string dashButtonNames[6] = {
-            "New Name",
-            "DB/Button 1",
-            "DB/Button 2",
-            "DB/Button 3",
-            "Get Value",
-            "Set Value"
-      };
+};
+const static std::string dashButtonNames[6] = {
+      "New Name",
+      "DB/Button 1",
+      "DB/Button 2",
+      "DB/Button 3",
+      "Get Value",
+      "Set Value"
+};
 
-      const static std::string textBoxNames[13] = {
-            "DB/String 0",
-            "DB/String 1",
-            "DB/String 2",
-            "DB/String 3",
-            "DB/String 4",
-            "DB/String 5",
-            "DB/String 6",
-            "DB/String 7",
-            "DB/String 8",
-            "DB/String 9",
-            "Key Name",
-            "Key Value",
-            "New Value"
-      };
-   const static uint32_t gamepadButtons = 12;
+const static std::string textBoxNames[13] = {
+      "DB/String 0",
+      "DB/String 1",
+      "DB/String 2",
+      "DB/String 3",
+      "DB/String 4",
+      "DB/String 5",
+      "DB/String 6",
+      "DB/String 7",
+      "DB/String 8",
+      "DB/String 9",
+      "Key Name",
+      "Key Value",
+      "New Value"
+};
+const static uint32_t gamepadButtons = 12;
 };
 
 struct AimingConstants{
@@ -127,6 +155,14 @@ struct AimingConstants{
    const static int maxTiltingFactor = 20;
    const static int minTargetWidth = 250;
    const static int maxTargetWidth = 350;
+
+   const static int desiredCenter = 275; //untuned value not correct
+   constexpr static double aimedDistance=84;//untuned value not correct
+
+   const static int distanceVariance = 12; //in inches
+   const static int rotationVariance = 15 ; //in pixels
+
+   constexpr static double rotateCorrect=15; // in degrees
 
    // First array element passed in a target data array
    const static int targetFlag = 1;
@@ -160,7 +196,7 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-const static int numberOfVars = 14;
+   const static int numberOfVars = 22;
    const static std::string variables[numberOfVars] = {
          "motorPower",
          "degree",
@@ -170,13 +206,20 @@ const static int numberOfVars = 14;
          "armMotorPower",
          "homingPower",
          "outerIntakeMotorPower",
-         "innnerIntakeMotorPower",
+         "innerIntakeMotorPower",
          "flywheelMotorPower",
+         "potLeftValueLow",
+         "potRightValueLow",
+         "potLeftValueHigh",
+         "potRightValueHigh",
+         "wheelEncoderDistancePerDegree",
+         "fastAverageFactor",
+         "slowAverageFactor",
+         "lidarOffset"
          "slipConstant",
          "PID_p",
          "PID_i",
          "PID_d"
-
    };
    const static std::string types[numberOfVars] = {
          "float", //motorPower
@@ -189,10 +232,14 @@ const static int numberOfVars = 14;
          "float", //outerIntakeMotorPower
          "float", //innerIntakeMotorPower
          "float", //flywheelMotorPower
-         "float", //slipConstant
-         "float", //PID_p
-         "float", //PID_i
-         "float" //PID_d
+         "float", //potLeftValueLow
+         "float", //potRightValueLow
+         "float", //potLeftValueHigh
+         "float", //potRightValueHigh
+         "float", //wheelEncoderDistancePerDegree
+         "double", //fastAverageFactor
+         "double", //slowAverageFactor,
+         "double" //lidarOffset
    };
 };
 

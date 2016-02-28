@@ -13,10 +13,10 @@
 #include "constants.h"
 #include "DriveStation.h"
 #include "ConfigEditor.h"
-#include "Math.h"
+#include <cmath>
 #include "LidarHandler.h"
 
-class DriveTrainController: public BaseController, public PIDOutput {
+class DriveTrainController: public BaseController {
 public:
    enum STATE {
       IDLE,
@@ -39,7 +39,7 @@ public:
 //   PIDController* m_rightDriveTrainController;
 
    void run();
-   void manualDrive(float throttleRatio);
+   void manualDrive();
    void aimRobotClockwise(float degree, float motorSpeed);
    void aimRobotCounterclockwise(float degree, float motorSpeed);
    void moveRobotStraight(float distance, float motorSpeed);
@@ -62,11 +62,11 @@ private:
    AnalogGyro* m_gyro;
    ConfigEditor* m_configEditor;
    LidarHandler* m_lidar;
-   int32_t m_initalDistanceLeft;
-   int32_t m_initalDistanceRight;
-   int32_t m_targetDistanceRight;
-   int32_t m_targetDistanceLeft;
    Timer m_continuousDriveTimer;
+   double m_initalEncoderDistanceLeft;
+   double m_initalEncoderDistanceRight;
+   double m_targetDistanceRight;
+   double m_targetDistanceLeft;
    float m_rightMotorPower;
    float m_leftMotorPower;
    bool m_rightEncoderComplete;

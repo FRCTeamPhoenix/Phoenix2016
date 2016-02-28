@@ -17,30 +17,35 @@
 #include "Actions.h"
 #include "ConfigEditor.h"
 #include "constants.h"
+#include "Arm.h"
+#include <queue>
 
 class RobotController : public BaseController
 {
- public:
+public:
    enum STATE {
       ROBOT_AUTO,
       ROBOT_MANUAL
    };
 
-   RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, ConfigEditor*);
+   RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, Flywheel*, ConfigEditor*, Arm*);
    virtual ~RobotController();
-
+   void initAutonomousModeQueue();
+   void setManual();
    void run();
    void performAction(void);
- private:
+private:
    STATE m_state;
 
-   std::vector<Action*> m_queue;
+   std::queue<Action*> m_queue;
 
    DriveStation* m_driveStation;
    DriveTrainController* m_driveTrain;
    ShooterController * m_shooterController;
    LoaderController * m_loaderController;
+   Flywheel * m_flywheel;
    ConfigEditor * m_configEditor;
+   Arm* m_arm;
 };
 
 #endif /* SRC_ROBOTCONTROLLER_H_ */
