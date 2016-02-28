@@ -23,6 +23,8 @@ private:
    WheelSpeedController m_leftFlywheelController;
    WheelSpeedController m_rightFlywheelController;
 
+   ConfigEditor * m_configEditor;
+
    bool m_spinning;
    float m_maxDistance;
    float m_maxDistanceRate;
@@ -36,7 +38,7 @@ private:
    float calculateSpeed();
 
 public:
-   Flywheel(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor, Encoder* leftFlywheelEncoder, Encoder* rigtFlywheelEncoder, LidarHandler* lidar);
+   Flywheel(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor, Encoder* leftFlywheelEncoder, Encoder* rigtFlywheelEncoder, LidarHandler* lidar, ConfigEditor * configEditor);
    virtual ~Flywheel();
 
    enum STATE{
