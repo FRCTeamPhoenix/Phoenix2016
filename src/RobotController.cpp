@@ -13,14 +13,16 @@ RobotController::RobotController(DriveStation* ds,
       LoaderController* loader,
       Flywheel* flywheel,
       ConfigEditor* configEditor,
-      Arm* arm):
+      Arm* arm,
+      Aiming* aiming):
       m_driveStation(ds),
       m_driveTrain(dt),
       m_shooterController(shooter),
       m_loaderController(loader),
       m_flywheel(flywheel),
       m_configEditor(configEditor),
-      m_arm(arm)
+      m_arm(arm),
+      m_aiming(aiming)
 {
    m_state = ROBOT_MANUAL;
 }
@@ -102,8 +104,25 @@ void RobotController::performAction(void){
       m_queue.pop();
    }
 }
+
+// Push sequence of autonomous actions to the queue
 void RobotController::initAutonoumosModeQueue(){
-   m_queue.push(new ActionDrive(m_driveTrain, 24 , m_configEditor->getFloat("motorPower")));
+
+   // Drive forwards 5 feet
+   m_queue.push(new ActionDrive(m_driveTrain, 144, m_configEditor->getFloat("motorPower")));
+
+   // Start spinning flywheels to get them up to speed
+   //TODO: Only one parameter will be needed in the future, due to motor power calculation
+   // being handled by lidar/flywheels
+
+   //m_queue.push(new ActionSpinFlywheels(m_flywheel, m_configEditor->getFloat("flywheelMotorPower")));
+
+   // As soon as the flywheels are spinning, begin the aiming process
+   m_queue.push(new ActionTargetAim(m_aiming));
+
+   // Shoot, after flywheels are up to speed and robot is centered
+   m_queue.push(new ActionShoot(m_loaderController));
+
    m_state = ROBOT_AUTO;
 }
 void RobotController::setManual(){
