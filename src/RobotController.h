@@ -18,10 +18,11 @@
 #include "ConfigEditor.h"
 #include "constants.h"
 #include "Arm.h"
+#include <queue>
 
 class RobotController : public BaseController
 {
- public:
+public:
    enum STATE {
       ROBOT_AUTO,
       ROBOT_MANUAL
@@ -29,13 +30,14 @@ class RobotController : public BaseController
 
    RobotController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, Flywheel*, ConfigEditor*, Arm*);
    virtual ~RobotController();
-
+   void setAuto();
+   void setManual();
    void run();
    void performAction(void);
- private:
+private:
    STATE m_state;
 
-   std::vector<Action*> m_queue;
+   std::queue<Action*> m_queue;
 
    DriveStation* m_driveStation;
    DriveTrainController* m_driveTrain;

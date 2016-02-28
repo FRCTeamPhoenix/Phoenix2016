@@ -11,6 +11,7 @@
 #include "WPILib.h"
 
 #include "constants.h"
+#include "ConfigEditor.h"
 
 #define HIGH 1
 #define LOW 0
@@ -19,6 +20,9 @@ class LidarHandler {
 
    //Relay controlling power cycles
    Relay * m_onSwitch;
+
+   //Interfaces with the preferences file
+   ConfigEditor * m_configEditor;
 
    //Counter that gets lidar period
    Counter m_counter;
@@ -47,7 +51,7 @@ public:
    /**
     * Constructor. Takes in onSwitch analog relay, offset double, and the port number for the lidar.
     */
-   LidarHandler(Relay * m_onSwitch, double offset, uint32_t lidarPort);
+   LidarHandler(Relay * m_onSwitch, ConfigEditor * configEditor, uint32_t lidarPort);
 
    /**
     * Updates the public current distance based on lidar input.
@@ -69,7 +73,7 @@ public:
     * Return fast, medium, and slow averages
     */
    double getFastAverage();
-   double getMediumAverage();
+   double getMediumAverageDEPRECATED();
    double getSlowAverage();
 
    virtual ~LidarHandler();

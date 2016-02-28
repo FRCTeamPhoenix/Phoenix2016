@@ -49,15 +49,15 @@ struct PortAssign {
 };
 
 struct RobotConstants {
-   constexpr static float wheelEncoderTicksPerDegree = 4.5f;
+   constexpr static float wheelEncoderDistancePerDegree = 0.1406f;//4.5
    constexpr static float ticksPerInch = 32;
    // 384ticks per wheel rev. three rev. for 360 degrees.
    // (384 *3) / 360 = 3.2
    constexpr static float flywheelMotorSpeed = 1.0f;
-   constexpr static bool gyro = true;
+   constexpr static bool gyro = false; //Determines which mode we use for turning.
 
-   constexpr static double rightDistancePerPulse = (66/1720); //0.0384
-   constexpr static double leftDistancePerPulse = 66/2475; //0.0267
+   //constexpr static double rightDistancePerPulse = (66.0/1720.0); //0.0384
+   //constexpr static double leftDistancePerPulse = (66.0/2475.0); //0.0267
    constexpr static int lidarErrorRange = 4;
 
    constexpr static const float armMotorLeftPower = 1.0f;
@@ -81,6 +81,7 @@ struct RobotConstants {
 
 struct LidarConstants {
    const static int numberStoredValues = 100;
+   constexpr static double periodToInches = 100000.0 / 2.54;
 };
 
 namespace DriveStationConstants {
@@ -182,40 +183,47 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-const static int numberOfVars = 14;
-const static std::string variables[numberOfVars] = {
-      "motorPower",
-      "degree",
-      "distance",
-      "leftDistancePerPulse",
-      "rightDistancePerPulse",
-      "armMotorPower",
-      "homingPower",
-      "outerIntakeMotorPower",
-      "innerIntakeMotorPower",
-      "flywheelMotorPower",
-      "potLeftValueLow",
-      "potRightValueLow",
-      "potLeftValueHigh",
-      "potRightValueHigh"
-
-};
-const static std::string types[numberOfVars] = {
-      "float", //motorPower
-      "float", //degree
-      "float", //distance
-      "double", //leftDistancePerPulse
-      "double", //rightDistancePerPulse
-      "float", //armMotorPower
-      "float", //homingPower
-      "float", //outerIntakeMotorPower
-      "float", //innerIntakeMotorPower
-      "float", //flywheelMotorPower
-      "float", //potLeftValueLow
-      "float", //potRightValueLow
-      "float", //potLeftValueHigh
-      "float", //potRightValueHigh
-};
+   const static int numberOfVars = 18;
+   const static std::string variables[numberOfVars] = {
+         "motorPower",
+         "degree",
+         "distance",
+         "leftDistancePerPulse",
+         "rightDistancePerPulse",
+         "armMotorPower",
+         "homingPower",
+         "outerIntakeMotorPower",
+         "innerIntakeMotorPower",
+         "flywheelMotorPower",
+         "potLeftValueLow",
+         "potRightValueLow",
+         "potLeftValueHigh",
+         "potRightValueHigh",
+         "wheelEncoderDistancePerDegree",
+         "fastAverageFactor",
+         "slowAverageFactor",
+         "lidarOffset"
+   };
+   const static std::string types[numberOfVars] = {
+         "float", //motorPower
+         "float", //degree
+         "float", //distance
+         "double", //leftDistancePerPulse
+         "double", //rightDistancePerPulse
+         "float", //armMotorPower
+         "float", //homingPower
+         "float", //outerIntakeMotorPower
+         "float", //innerIntakeMotorPower
+         "float", //flywheelMotorPower
+         "float", //potLeftValueLow
+         "float", //potRightValueLow
+         "float", //potLeftValueHigh
+         "float", //potRightValueHigh
+         "float", //wheelEncoderDistancePerDegree
+         "double", //fastAverageFactor
+         "double", //slowAverageFactor,
+         "double" //lidarOffset
+   };
 };
 
 #endif /* SRC_CONSTANTS_H_ */

@@ -2,7 +2,7 @@
 #include "DriveTrainController.h"
 
 ActionTurn::ActionTurn(DriveTrainController* dt, float angle, float power)
-: Action(), m_driveTrain(dt), m_angle(angle), m_power(power)
+   : Action(), m_driveTrain(dt), m_angle(angle), m_power(power)
 {
 }
 
@@ -16,7 +16,5 @@ ActionTurn::init(void)
 bool
 ActionTurn::execute(void)
 {
-   if (m_driveTrain->getCurrentState() == DriveTrainController::IDLE)
-      return true;
-   return false;
+   return m_driveTrain->getCurrentState() == DriveTrainController::IDLE;
 }

@@ -1,4 +1,3 @@
-
 /*
  * RobotController.cpp
  *
@@ -30,9 +29,15 @@ RobotController::~RobotController() {}
 
 void RobotController::run(){
    if (m_state == ROBOT_AUTO){
+
       // Y button cancels autonomous mode, resetting it to manual controls.
       if (m_driveStation->getGamepadButton(DriveStationConstants::buttonY)){
-         m_queue.clear();
+         // Simplest way to empty queue while destroying everything.
+         // Not replacing with empty queue because that may not destroy
+         // the objects inside.
+         while (!m_queue.empty())
+            m_queue.pop();
+         m_driveTrain->stopRobot();
          m_state = ROBOT_MANUAL;
          return;
       }
@@ -41,25 +46,22 @@ void RobotController::run(){
    else if (m_state == ROBOT_MANUAL)
    {
 
-//      //Moving Backwards
-//      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
-//         m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), -(m_configEditor->getFloat("motorPower"))));
-//      }
-//
-//      //Moving Forwards
-//      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonY)){
-//         m_queue.insert(m_queue.begin(), new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
-//      }
-//
-//      //Moving Clockwise
-//      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonB)){
-//         m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
-//      }
-//
-//      //Moving CounterClockwise
-//      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonX)){
-//         m_queue.insert(m_queue.begin(), new ActionTurn(m_driveTrain, -(m_configEditor->getFloat("degree")), m_configEditor->getFloat("motorPower")));
-//      }
+      //      //Moving Backwards
+      //      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
+      //         m_queue.push(m_queue.begin(), new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), -(m_configEditor->getFloat("motorPower"))));
+      //      }
+      //
+      //      //Moving Forwards
+      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonY)){
+         m_queue.push(new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
+      }
+      //
+      //      //Moving Clockwise
+      //        m_queue.push(new ActionDrive(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
+      // m_queue.push(new ActionTurn(m_driveTrain, 180.0f, 0.6f));
+      // m_queue.push(new ActionTurn(m_driveTrain, -180.0f, 0.6f));
+      //m_queue.push(new ActionDrive(m_driveTrain, -18.0f, 0.6f));
+      //      }
 
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonRB)){
          m_loaderController->start();
@@ -77,30 +79,33 @@ void RobotController::run(){
       }
 
       m_arm->move(m_driveStation->deadzoneOfGamepadJoystick() / 2);
-
-
-      m_queue.clear();
       m_state = ROBOT_MANUAL;
+
       return;
    }
-   performAction();
 }
 
-
-void RobotController::performAction(void)
-{
+void RobotController::performAction(void){
    if (m_queue.size() == 0)
    {
       m_state = ROBOT_MANUAL;
       return;
    }
-   Action *currentAction = m_queue.back();
+   Action *currentAction = m_queue.front();
    if (!currentAction->isInitialized())
       currentAction->init();
    if (currentAction->execute())
    {
       printf("Completed action.");
       delete currentAction;
-      m_queue.pop_back();
+      m_queue.pop();
    }
+}
+void RobotController::setAuto(){
+   m_state = ROBOT_AUTO;
+   m_queue.push(new ActionDrive(m_driveTrain, 72 , m_configEditor->getFloat("motorPower")));
+
+}
+void  RobotController::setManual(){
+   m_state = ROBOT_MANUAL;
 }
