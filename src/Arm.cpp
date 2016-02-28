@@ -37,15 +37,15 @@ Arm::~Arm() {
 
 void Arm::run(){
 
-   std::ostringstream leftPotentiometer;
-   leftPotentiometer << "LP Voltage: ";
-   leftPotentiometer << m_leftPotentiometer->GetVoltage();
-   SmartDashboard::PutString("DB/String 1", leftPotentiometer.str());
+//   std::ostringstream leftPotentiometer;
+//   leftPotentiometer << "LP Voltage: ";
+//   leftPotentiometer << m_leftPotentiometer->GetVoltage();
+//   SmartDashboard::PutString("DB/String 1", leftPotentiometer.str());
 
-   std::ostringstream rightPotentiometer;
-   rightPotentiometer << "RP Voltage: ";
-   rightPotentiometer << m_rightPotentiometer->GetVoltage();
-   SmartDashboard::PutString("DB/String 2", rightPotentiometer.str());
+//   std::ostringstream rightPotentiometer;
+//   rightPotentiometer << "RP Voltage: ";
+//   rightPotentiometer << m_rightPotentiometer->GetVoltage();
+//   SmartDashboard::PutString("DB/String 2", rightPotentiometer.str());
 
 //   std::ostringstream limitSwitch;
 //   limitSwitch << "BL: ";

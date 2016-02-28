@@ -36,18 +36,18 @@ void Flywheel::run(){
 }
 Flywheel::STATE Flywheel::getCurrentState(){
    if(!m_spinning){
-      SmartDashboard::PutString("DB/String 5", "OFF");
-      SmartDashboard::PutString("DB/String 6", " ");
+//      SmartDashboard::PutString("DB/String 5", "OFF");
+//      SmartDashboard::PutString("DB/String 6", " ");
 
       return OFF;
    }
 
    if(upToSpeed(0.05)){
-      SmartDashboard::PutString("DB/String 5", "Ready To Fire");
+      //SmartDashboard::PutString("DB/String 5", "Ready To Fire");
       return READY;
    }
    else{
-      SmartDashboard::PutString("DB/String 5", "Not Ready To Fire");
+      //SmartDashboard::PutString("DB/String 5", "Not Ready To Fire");
       return NOTREADY;
    }
 
@@ -76,15 +76,15 @@ float Flywheel::calculateSpeed() {
    float currentDistance = m_lidar->getFastAverage();
 
    if(currentDistance < m_minDistance){
-      SmartDashboard::PutString("DB/String 6", "To Close");
+      //SmartDashboard::PutString("DB/String 6", "To Close");
       return m_minDistanceRate;
    }
    if(currentDistance > m_maxDistance){
-      SmartDashboard::PutString("DB/String 6", "To Far");
+      //SmartDashboard::PutString("DB/String 6", "To Far");
       return m_maxDistanceRate;
    }
 
-   SmartDashboard::PutString("DB/String 6", "Correct Range");
+   //SmartDashboard::PutString("DB/String 6", "Correct Range");
 
    float deltaDistance = m_maxDistance - m_minDistance;
    float maxToCurrent = m_maxDistance - currentDistance;

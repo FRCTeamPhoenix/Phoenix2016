@@ -124,7 +124,7 @@ public:
       lidarRun.detach();
    }
    void Autonomous (){
-      SmartDashboard::PutString("DB/String 0", "Autonomous ");
+      SmartDashboard::PutString("DB/String 0", "Autonomous");
       SmartDashboard::PutString("DB/String 0", " ");
       SmartDashboard::PutString("DB/String 1", " ");
       SmartDashboard::PutString("DB/String 2", " ");
@@ -154,7 +154,7 @@ public:
    }
 
    void OperatorControl(){
-      SmartDashboard::PutString("DB/String 0", "Teleop ");
+      SmartDashboard::PutString("DB/String 0", "Teleop");
       SmartDashboard::PutString("DB/String 0", " ");
       SmartDashboard::PutString("DB/String 1", " ");
       SmartDashboard::PutString("DB/String 2", " ");
@@ -166,6 +166,7 @@ public:
       SmartDashboard::PutString("DB/String 8", " ");
       SmartDashboard::PutString("DB/String 9", " ");
 
+      int cycleCounter = 0;
 
       std::thread lidarRun(lidarThread, this, &m_lidarHandler);
       lidarRun.detach();
@@ -175,13 +176,13 @@ public:
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
 
       while(IsOperatorControl() && IsEnabled()){
-         std::ostringstream LE;
-         LE << m_leftWheelEncoder.GetDistance();
-         SmartDashboard::PutString("DB/String 7", LE.str());
-
-         std::ostringstream RE;
-         RE << m_rightWheelEncoder.GetDistance();
-         SmartDashboard::PutString("DB/String 8", RE.str());
+//         std::ostringstream LE;
+//         LE << m_leftWheelEncoder.GetDistance();
+//         SmartDashboard::PutString("DB/String 7", LE.str());
+//
+//         std::ostringstream RE;
+//         RE << m_rightWheelEncoder.GetDistance();
+//         SmartDashboard::PutString("DB/String 8", RE.str());
 
          m_driveStation.snapShot();
          m_robotController.run();
@@ -189,6 +190,32 @@ public:
          m_shooterController.run();
          m_aiming.run();
          m_arm.run();
+
+         if(cycleCounter < 10) {
+            cycleCounter++;
+         } else {
+            cycleCounter = 0;
+
+            std::ostringstream ss0;
+            ss0 << "Teleop";
+            SmartDashboard::PutString("DB/String 0",ss0.str());
+
+            std::ostringstream ss1;
+            ss1 << "Lidar Distance: " << m_lidarHandler.getFastAverage();
+            SmartDashboard::PutString("DB/String 1",ss1.str());
+
+            std::ostringstream ss2;
+            ss2 << "Left Arm Angle: " << m_arm.getAngleLeft();
+            SmartDashboard::PutString("DB/String 2",ss2.str());
+
+            std::ostringstream ss3;
+            ss3 << "Right Arm Angle: " << m_arm.getAngleRight();
+            SmartDashboard::PutString("DB/String 3",ss3.str());
+
+            std::ostringstream ss4;
+            ss4 << "Ball Present: " << m_loaderController.loaded();
+            SmartDashboard::PutString("DB/String 4",ss4.str());
+         }
       }
    }
 
