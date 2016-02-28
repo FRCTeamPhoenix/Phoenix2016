@@ -13,11 +13,12 @@ class LoaderController;
 class Flywheel;
 class ConfigEditor;
 class Arm;
+class Aiming;
 
 class AutoController : public BaseController
 {
  public:
-   AutoController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, Flywheel*, ConfigEditor*, Arm*);
+   AutoController(DriveStation*, DriveTrainController*, ShooterController*, LoaderController*, Flywheel*, ConfigEditor*, Arm*, Aiming*);
 
    void run(void);
    void cancel(void);
@@ -33,4 +34,5 @@ class AutoController : public BaseController
    Flywheel* m_flywheel;
    ConfigEditor* m_configEditor;
    Arm* m_arm;
+   Aiming* m_aiming;
 };
