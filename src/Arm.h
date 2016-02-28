@@ -29,6 +29,10 @@ private:
    bool PDRIVE;
    float pAngle;
 public:
+   enum STATE{
+      SEEKING,
+      MANUAL
+   };
    Arm(
          Talon* armMotorLeft,
          Talon* armMotorRight,
@@ -43,10 +47,21 @@ public:
    void move(float);
    void stop();
    void run();
+   void armToShoot();
+   void armToLoad();
    void angle(float,float);
    float getAngleLeft();
    float getAngleRight();
+
+   STATE getCurrentState();
+   void setGoalState(STATE currentState);
+
    virtual ~Arm();
+
+private:
+   STATE m_goalState;
+   float m_goalLeftPotentiometerValue;
+   float m_goalRightPotentiometerValue;
 
 };
 

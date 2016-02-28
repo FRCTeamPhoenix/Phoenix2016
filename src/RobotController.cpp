@@ -79,7 +79,7 @@ void RobotController::run(){
       }
 
 
-      m_arm->move(m_driveStation->deadzoneOfGamepadJoystick() / 2);
+      m_arm->run();
       m_state = ROBOT_MANUAL;
       if (m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
          SmartDashboard::PutString("DB/String 5", "Adding to queue ");

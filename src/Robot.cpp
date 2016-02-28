@@ -232,7 +232,7 @@ public:
 
          //         m_loaderController.setHoming();
          //
-         //         m_loaderController.run();
+         m_loaderController.run();
          //
          //         if (m_loaderController.homed()){
          m_driveStation.snapShot();
@@ -281,7 +281,8 @@ public:
             m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
          }
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
-            m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"),m_configEditor.getFloat("motorPower"));
+            //m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"),m_configEditor.getFloat("motorPower"));
+            m_arm.armToShoot();
          }
          //Aiming Robot Counter Clockwise 90 degrees
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
