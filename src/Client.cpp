@@ -75,7 +75,7 @@ void Client::receivePacket(){
         memset(m_ballData,0,9);
         memset(m_distanceData,0,9);
         while (true){
-           cout << "waiting to receive packet in thread" << endl;
+           //cout << "waiting to receive packet in thread" << endl;
            if(recvfrom(m_socket,m_receivedData,BUFLEN, 0 ,(sockaddr*)&m_si_other, &m_si_other_len) < 0) {
               cout << "packet receive error" << endl;
            }
@@ -104,11 +104,11 @@ void Client::receivePacket(){
 }
 void Client::byteToInt(char *byteArray,int *intArray){
     int currentByte =0;
-    for (int currentInt = 0; currentInt<8;currentInt++){
-
+    cout<<"start packet convert"<<endl;
+    for (int currentInt = 0; currentInt < 9;currentInt++){
         intArray[currentInt]=(int)byteArray[currentByte] + ((int)(byteArray[currentByte+1]) << 8);
         currentByte+=2;
-        //cout << "received data = " <<  intArray[currentInt] << endl;
+        cout << "received data = " <<  intArray[currentInt] << endl;
     }
 }
 
@@ -136,16 +136,9 @@ int Client::getDistanceData(){
 }
 
 void Client::copyArray(int *array1, int *array2){
-   if (sizeof(array1)>=sizeof(array2)){
-      for (unsigned int i =0;i<sizeof(array2);i++){
+      for (unsigned int i =0;i < 9;i++){
          array2[i]=array1[i];
       }
-   }
-   else {
-      for (unsigned int i =0;i<sizeof(array1);i++){
-            array2[i]=array1[i];
-      }
-   }
 }
 
 bool Client::checkPacketState(){

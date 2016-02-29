@@ -182,6 +182,7 @@ void Aiming::run() {
    if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonA)) {
          setCurrentState(IDLE);
    }
+
    getNewImageData();
    printCurrentCoordinates();
    m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL] +m_currentTargetCoordinates[AimingConstants::xLR])/2);

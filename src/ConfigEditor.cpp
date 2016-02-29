@@ -49,6 +49,7 @@ void ConfigEditor::getConfig() {
    } else {
       m_DriveStation->setString(11, Preferences::GetInstance()->GetString(keyName, 0));
    }
+   Preferences::GetInstance()->Save();
 }
 
 int ConfigEditor::getInt(std::string key) {

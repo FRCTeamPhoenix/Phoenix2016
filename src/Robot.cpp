@@ -118,7 +118,7 @@ public:
       m_driveCamera.SetExposureManual(20);
       m_driveCamera.SetWhiteBalanceAuto();
       CameraServer::GetInstance()->SetQuality(50);
-      CameraServer::GetInstance()->StartAutomaticCapture("cam1");
+      CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 
       std::thread lidarRun(lidarThread, this, &m_lidarHandler);
       lidarRun.detach();
