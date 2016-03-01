@@ -7,4 +7,5 @@
 #include "ActionDrive.h"
 #include "ActionNone.h"
 #include "ActionTurn.h"
+#include "ActionShoot.h"
 #include "Action.h"

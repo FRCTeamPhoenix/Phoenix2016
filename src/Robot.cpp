@@ -1,5 +1,6 @@
 #include "WPILib.h"
 #include "constants.h"
+#include "AutoController.h"
 #include "RobotController.h"
 #include "DriveStation.h"
 #include "DriveTrainController.h"
@@ -59,6 +60,7 @@ class Robot: public SampleRobot
    LoaderController m_loaderController;
    ShooterController m_shooterController;
    Arm m_arm;
+   AutoController m_autoController;
    Aiming m_aiming;
    RobotController m_robotController;
 
@@ -96,6 +98,7 @@ public:
       m_loaderController(&m_intakeMotor, &m_stationaryMotor, &m_loadedSensor, &m_driveStation, &m_configEditor),
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor),
+      m_autoController(&m_driveStation, &m_driveTrainController, &m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm, &m_aiming),
       m_aiming(&m_client, &m_driveTrainController, &m_driveStation, &m_lidarHandler, &m_shooterController),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm, &m_aiming)
 {
@@ -125,7 +128,6 @@ public:
    }
    void Autonomous (){
       SmartDashboard::PutString("DB/String 0", "Autonomous ");
-      SmartDashboard::PutString("DB/String 0", " ");
       SmartDashboard::PutString("DB/String 1", " ");
       SmartDashboard::PutString("DB/String 2", " ");
       SmartDashboard::PutString("DB/String 3", " ");
@@ -135,19 +137,14 @@ public:
       SmartDashboard::PutString("DB/String 7", " ");
       SmartDashboard::PutString("DB/String 8", " ");
       SmartDashboard::PutString("DB/String 9", " ");
-      bool addedToQueue = false;
+
       m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
 
       while (IsAutonomous()&& IsEnabled()){
-
-         if(!addedToQueue){
-            m_robotController.initAutonomousModeQueue();
-            addedToQueue = true;
-         }
          m_driveStation.snapShot();
+         m_autoController.run();
          m_driveTrainController.run();
-         m_robotController.run();
          //m_shooterController.run();
          //m_arm.run();
       }
@@ -155,7 +152,6 @@ public:
 
    void OperatorControl(){
       SmartDashboard::PutString("DB/String 0", "Teleop ");
-      SmartDashboard::PutString("DB/String 0", " ");
       SmartDashboard::PutString("DB/String 1", " ");
       SmartDashboard::PutString("DB/String 2", " ");
       SmartDashboard::PutString("DB/String 3", " ");
@@ -166,11 +162,9 @@ public:
       SmartDashboard::PutString("DB/String 8", " ");
       SmartDashboard::PutString("DB/String 9", " ");
 
-
       std::thread lidarRun(lidarThread, this, &m_lidarHandler);
       lidarRun.detach();
       m_driveTrainController.setGoalState(DriveTrainController::TELEOP);
-      m_robotController.setManual();
       m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
 
