@@ -58,7 +58,6 @@ void Aiming::getNewImageData() {
 void Aiming::centering() {
 
    driveIdle=false;
-   newCenter=false;
 
    if ((m_driveTrainController->getCurrentState()==DriveTrainController::IDLE
          || m_driveTrainController->getCurrentState()==DriveTrainController::TELEOP )){
