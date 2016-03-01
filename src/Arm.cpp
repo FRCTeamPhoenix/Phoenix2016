@@ -99,13 +99,9 @@ void Arm::run(){
       if (m_rightPotentiometerComplete || m_leftPotentiometerComplete){
          m_goalState = MANUAL;
       }
-      else
-      {
-         power = m_armMotorPower;
-      }
       break;
    case MANUAL:
-      power = manualDrive();
+      manualDrive();
       break;
    }
    m_armMotorLeft->Set(power);
@@ -169,16 +165,16 @@ Arm::STATE Arm::getCurrentState(){
          m_leftPotentiometerComplete = true;
       }
       //if (!m_leftUpperLimitSwitch->Get() && !m_rightUpperLimitSwitch->Get()){
-      if ((m_leftPotentiometer->GetVoltage() < RobotConstants::maxSoftLimitLeft) && (m_rightPotentiometer->GetVoltage() < RobotConstants::maxSoftLimitRight)){
-         return MANUAL;
-      }
+//      if ((m_leftPotentiometer->GetVoltage() < RobotConstants::maxSoftLimitLeft) && (m_rightPotentiometer->GetVoltage() < RobotConstants::maxSoftLimitRight)){
+//         m_leftPotentiometerComplete = true;
+//      }
+//      //}
+//      //if (!m_leftLowerLimitSwitch->Get() && !m_rightLowerLimitSwitch->Get()){
+//      if ((m_leftPotentiometer->GetVoltage() > RobotConstants::minSoftLimitLeft) && (m_rightPotentiometer->GetVoltage() > RobotConstants::minSoftLimitRight)){
+//         return MANUAL;
+//      }
       //}
-      //if (!m_leftLowerLimitSwitch->Get() && !m_rightLowerLimitSwitch->Get()){
-      if ((m_leftPotentiometer->GetVoltage() > RobotConstants::minSoftLimitLeft) && (m_rightPotentiometer->GetVoltage() > RobotConstants::minSoftLimitRight)){
-         return MANUAL;
-      }
-      //}
-      return MANUAL;
+      return POTENTIOMETERDRIVE;
    default:
       return MANUAL;
    }
