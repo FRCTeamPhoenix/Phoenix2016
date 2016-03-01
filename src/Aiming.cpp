@@ -47,6 +47,7 @@ void Aiming::getNewImageData() {
 
    if (m_client->checkPacketState()){
    // Updates array of current coordinates with data received by client
+      newCenter=true;
       for(int i = 0; i < AimingConstants::numTargetVals; i++) {
          m_currentTargetCoordinates[i] = m_client->getTargetData(i+1);
       }
@@ -74,16 +75,21 @@ void Aiming::centering() {
 //      newCenter=true;
 //   }
 
-   if (driveIdle && !m_client->checkPacketState()){
+   //only move if the drivtrain is idle and we have received the most recent packet
+   if (driveIdle && newCenter){
+      newCenter=false;
+      //move ccw if target right of desired
       if(deviation< -AimingConstants::rotationVariance){
          m_driveTrainController->aimRobotCounterclockwise(1, 0.6f);
 
       }
+      //move robot cw if target is left of desired
       else if (deviation > AimingConstants::rotationVariance){
 
          m_driveTrainController->aimRobotClockwise(1, 0.6f);
 
       }
+      //if target is within tolerence move to next state
       else if (deviation <  AimingConstants::rotationVariance && deviation > -AimingConstants::rotationVariance){
 
          if (!hasApproached && fullProcess){
@@ -171,16 +177,6 @@ void Aiming::run() {
    ostringstream aimingPrints;
    aimingPrints<< "C: " << m_targetCenter_x << ", " << "D: " << deviation;
    SmartDashboard::PutString("DB/String 9",aimingPrints.str());
-
-   ostringstream data;
-   data << m_currentTargetCoordinates[0] << ";" << m_currentTargetCoordinates[6];
-   SmartDashboard::PutString("DB/String 6",data.str());
-
-
-   ostringstream dataprint;
-   dataprint<< "unread="<<m_client->checkPacketState();
-   SmartDashboard::PutString("DB/String 8",dataprint.str());
-
 
    switch(m_currentState) {
    case IDLE:
