@@ -62,6 +62,8 @@ class Robot: public SampleRobot
    Aiming m_aiming;
    RobotController m_robotController;
 
+   std::ostringstream ss0,ss1,ss2,ss3,ss4,ss5,ss6,ss7,ss8,ss9;
+
 public:
    Robot() :
       m_gyro(PortAssign::gyroscope),
@@ -153,6 +155,82 @@ public:
       }
    }
 
+   void writeSmartDashboardTeleop() {
+      ss0.str("");
+      ss0 << "Teleop";
+      SmartDashboard::PutString("DB/String 0",ss0.str());
+
+      ss1.str("");
+      ss1 << "Lidar Distance: " << m_lidarHandler.getFastAverage();
+      SmartDashboard::PutString("DB/String 1",ss1.str());
+
+      ss2.str("");
+      ss2 << "Arm Average: " << (m_arm.getAngleLeft() + m_arm.getAngleRight()) / 2.0;
+      SmartDashboard::PutString("DB/String 2",ss2.str());
+
+      ss3.str("");
+      ss3 << "Arm Deviation: " << abs(m_arm.getAngleRight() - m_arm.getAngleLeft());
+      SmartDashboard::PutString("DB/String 3",ss3.str());
+
+      ss4.str("");
+      ss4 << "Ball Present: " << m_loaderController.loaded();
+      SmartDashboard::PutString("DB/String 4",ss4.str());
+
+      ss5.str("");
+      std::string state;
+      switch(m_aiming.getCurrentState()) {
+      case Aiming::CENTERING:
+         state = "Centering";
+         break;
+      case Aiming::APPROACHING:
+         state = "Approaching";
+         break;
+      case Aiming::REVERTING:
+         state = "Reverting";
+         break;
+      case Aiming::SHOOTING:
+         state = "Shooting";
+         break;
+      default:
+         state = "Idle";
+         break;
+      }
+      ss5 << state;
+      SmartDashboard::PutString("DB/String 5",ss5.str());
+
+      ss6.str("");
+      double dist = m_lidarHandler.getFastAverage();
+      if(dist < m_configEditor.getDouble("lidarLowerBound"))
+         ss6 << "Too close to shoot";
+      else if(dist > m_configEditor.getDouble("lidarUpperBound"))
+         ss6 << "Too far to shoot";
+      else
+         ss6 << "Ready to shoot";
+      SmartDashboard::PutString("DB/String 6",ss6.str());
+
+      ss7.str("");
+      switch(m_flywheel.getCurrentState()) {
+      case Flywheel::OFF:
+         ss7 << "Flywheel off";
+         break;
+      case Flywheel::NOTREADY:
+         ss7 << "Flywheel not ready";
+         break;
+      case Flywheel::READY:
+         ss7 << "Flywheel ready";
+         break;
+      }
+      SmartDashboard::PutString("DB/String 7",ss7.str());
+
+      ss8.str("");
+      ss8 << "Target Center: " << m_aiming.m_targetCenter_x;
+      SmartDashboard::PutString("DB/String 8",ss8.str());
+
+      ss9.str("");
+      ss9 << "Target Deviation: " << m_aiming.deviation;
+      SmartDashboard::PutString("DB/String 9",ss9.str());
+   }
+
    void OperatorControl(){
       SmartDashboard::PutString("DB/String 0", "Teleop");
       SmartDashboard::PutString("DB/String 0", " ");
@@ -195,26 +273,7 @@ public:
             cycleCounter++;
          } else {
             cycleCounter = 0;
-
-            std::ostringstream ss0;
-            ss0 << "Teleop";
-            SmartDashboard::PutString("DB/String 0",ss0.str());
-
-            std::ostringstream ss1;
-            ss1 << "Lidar Distance: " << m_lidarHandler.getFastAverage();
-            SmartDashboard::PutString("DB/String 1",ss1.str());
-
-            std::ostringstream ss2;
-            ss2 << "Left Arm Angle: " << m_arm.getAngleLeft();
-            SmartDashboard::PutString("DB/String 2",ss2.str());
-
-            std::ostringstream ss3;
-            ss3 << "Right Arm Angle: " << m_arm.getAngleRight();
-            SmartDashboard::PutString("DB/String 3",ss3.str());
-
-            std::ostringstream ss4;
-            ss4 << "Ball Present: " << m_loaderController.loaded();
-            SmartDashboard::PutString("DB/String 4",ss4.str());
+            writeSmartDashboardTeleop();
          }
       }
    }
