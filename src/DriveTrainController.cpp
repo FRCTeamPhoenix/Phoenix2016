@@ -68,7 +68,8 @@ void DriveTrainController::manualDrive() {
 void DriveTrainController::run() {
    SmartDashboard::PutString("DB/String 7", "In DTCRun Top");
    switch (getCurrentState()) {
-
+   case CONTINUOUSDRIVE:
+      break;
    //Goal state with the drivers are driving the robot
    case TELEOP:
       manualDrive();
@@ -266,6 +267,7 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
    default:
       return IDLE;
    }
+   return IDLE;
 }
 void DriveTrainController::driveLidar(float inches, float motorSpeed)
 {

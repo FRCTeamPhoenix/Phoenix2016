@@ -27,10 +27,10 @@ private:
    ConfigEditor* m_configEditor;
    float m_armMotorPower;
    bool PDRIVE;
-   float pAngle;
+   //float pAngle;
 public:
    enum STATE{
-      SEEKING,
+      POTENTIOMETERDRIVE,
       MANUAL
    };
    Arm(
@@ -47,8 +47,8 @@ public:
    void move(float);
    void stop();
    void run();
-   void armToShoot();
-   void armToLoad();
+   void moveArmToPosition(float, float);
+   float manualDrive();
    void angle(float,float);
    float getAngleLeft();
    float getAngleRight();
@@ -62,7 +62,10 @@ private:
    STATE m_goalState;
    float m_goalLeftPotentiometerValue;
    float m_goalRightPotentiometerValue;
-
+   float m_initalLeftPotentiometerValue;
+   float m_initalRightPotentiometerValue;
+   bool m_leftPotentiometerComplete;
+   bool m_rightPotentiometerComplete;
 };
 
 #endif /* SRC_ARM_H_ */
