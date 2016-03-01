@@ -30,9 +30,6 @@ Arm::Arm(
       m_driveStation(driveStation){
    m_armMotorPower = 0;
    m_goalState = MANUAL;
-   PDRIVE = false;
-   m_initalLeftPotentiometerValue = 0.0f;
-   m_initalRightPotentiometerValue = 0.0f;
    m_goalLeftPotentiometerValue = 0.0f;
    m_goalRightPotentiometerValue = 0.0f;
    m_leftPotentiometerComplete = false;
@@ -120,24 +117,30 @@ void Arm::stop(){
    m_goalState = MANUAL;
 }
 
-//void Arm::angle(float angle,float motorpower){
-//   m_armMotorPower = motorpower;
-//   pAngle = angle;
-//   PDRIVE = true;
-//}
-
-//The left goal needs to be in between 1.5 and 3.6
-//The right goal needs to be in between 1.59 and 3.7
+//left and right goal are between 0 and 1.
 void Arm::moveArmToPosition(float leftGoal, float rightGoal){
-   m_goalLeftPotentiometerValue = leftGoal;
-   m_goalRightPotentiometerValue = rightGoal;
-   m_initalLeftPotentiometerValue = m_leftPotentiometer->GetVoltage();
-   m_initalRightPotentiometerValue = m_rightPotentiometer->GetVoltage();
+   float leftLowerLimit = m_configEditor->getFloat("potLeftValueLow");
+   float rightLowerLimit = m_configEditor->getFloat("potRightValueLow");
+   float leftUpperLimit = m_configEditor->getFloat("potLeftValueHigh");
+   float rightUpperLimit = m_configEditor->getFloat("potRightValueHigh");
 
-   if((m_goalLeftPotentiometerValue < m_initalLeftPotentiometerValue) && (m_goalRightPotentiometerValue < m_initalRightPotentiometerValue)){
+   float leftRange = leftUpperLimit - leftLowerLimit;
+   float rightRange = rightUpperLimit - rightLowerLimit;
+
+   m_goalLeftPotentiometerValue = (leftGoal * leftRange) + leftLowerLimit;
+   m_goalRightPotentiometerValue = (rightGoal * rightRange) + rightLowerLimit;
+   m_leftPotentiometerComplete = false;
+   m_leftPotentiometerComplete = false;
+
+   float initalLeftPotentiometerValue = m_leftPotentiometer->GetVoltage();
+   float initalRightPotentiometerValue = m_rightPotentiometer->GetVoltage();
+
+   if((m_goalLeftPotentiometerValue < initalLeftPotentiometerValue) &&
+      (m_goalRightPotentiometerValue < initalRightPotentiometerValue)){
       m_armMotorPower = -(m_configEditor->getFloat("armMotorPower"));
    }
-   else if((m_goalLeftPotentiometerValue > m_initalLeftPotentiometerValue) && (m_goalRightPotentiometerValue > m_initalRightPotentiometerValue)){
+   else if((m_goalLeftPotentiometerValue > initalLeftPotentiometerValue) &&
+           (m_goalRightPotentiometerValue > initalRightPotentiometerValue)){
       m_armMotorPower = m_configEditor->getFloat("armMotorPower");
    }
    else{

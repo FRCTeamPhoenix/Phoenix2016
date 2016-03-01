@@ -27,8 +27,6 @@ private:
    ConfigEditor* m_configEditor;
    DriveStation* m_driveStation;
    float m_armMotorPower;
-   bool PDRIVE;
-   //float pAngle;
 public:
    enum STATE{
       POTENTIOMETERDRIVE,
@@ -52,7 +50,6 @@ public:
    void moveArmToPosition(float, float);
    void manualDrive();
    void setMotors();
-   void angle(float,float);
    float getAngleLeft();
    float getAngleRight();
 
@@ -65,8 +62,6 @@ private:
    STATE m_goalState;
    float m_goalLeftPotentiometerValue;
    float m_goalRightPotentiometerValue;
-   float m_initalLeftPotentiometerValue;
-   float m_initalRightPotentiometerValue;
    bool m_leftPotentiometerComplete;
    bool m_rightPotentiometerComplete;
 };
