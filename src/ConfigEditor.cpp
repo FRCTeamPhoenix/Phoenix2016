@@ -156,3 +156,9 @@ void ConfigEditor::update() {
    }
 
 }
+
+void ConfigEditor::putProgDouble(std::string key, double value) {
+   if(!key.find("prog")==0) {
+      Preferences::GetInstance()->PutDouble(key, value);
+   }
+}
