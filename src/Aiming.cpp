@@ -236,5 +236,13 @@ void Aiming::run() {
 
 }
 
+double Aiming::getCenter() {
+   return m_targetCenter_x;
+}
+
+double Aiming::getDeviation() {
+   return deviation;
+}
+
 Aiming::~Aiming() {
 }

@@ -46,6 +46,8 @@ public:
    void setFullProcess(bool);
    void printCurrentCoordinates();
    void run();
+   double getCenter();
+   double getDeviation();
    virtual ~Aiming();
 
 private:

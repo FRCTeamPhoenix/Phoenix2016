@@ -223,11 +223,11 @@ public:
       SmartDashboard::PutString("DB/String 7",ss7.str());
 
       ss8.str("");
-      ss8 << "Target Center: " << m_aiming.m_targetCenter_x;
+      ss8 << "Target Center: " << m_aiming.getCenter();
       SmartDashboard::PutString("DB/String 8",ss8.str());
 
       ss9.str("");
-      ss9 << "Target Deviation: " << m_aiming.deviation;
+      ss9 << "Target Deviation: " << m_aiming.getDeviation();
       SmartDashboard::PutString("DB/String 9",ss9.str());
    }
 
