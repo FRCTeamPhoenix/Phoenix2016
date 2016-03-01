@@ -47,7 +47,7 @@ public:
 
     int getTargetData(int element);
 
-    void sendPacket();
+    void sendPacket(char * data);
 
     int getBallData(int element);
 

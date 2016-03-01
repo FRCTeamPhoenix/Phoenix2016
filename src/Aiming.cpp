@@ -22,7 +22,6 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, Drive
    m_shooter(shooter)
 {
 
-   // We have not yet rotated
 
    // Nothing is happening
    setCurrentState(IDLE);
@@ -126,25 +125,6 @@ void Aiming::approachTarget() {
 
    }
 }
-
-void Aiming::shoot(){
-
-   //start Timer
-   if (m_timer.Get()==0){
-      m_timer.Start();
-   }
-
-   // Get the shooter ready, and then shoot if enough time has passed
-   m_shooter->setArmed();
-   if (m_timer.HasPeriodPassed(1.5)){
-      m_shooter->setShooting();
-      setCurrentState(IDLE);
-      m_timer.Stop();
-      m_timer.Reset();
-   }
-
-}
-
 void Aiming::setTargetCoordinateValue(AimingConstants::targetPositionData position, int newValue) {
    m_currentTargetCoordinates[position] = newValue;
 }
@@ -221,9 +201,6 @@ void Aiming::run() {
       else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonY)) {
          setCurrentState(CENTERING);
       }
-      else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonX)) {
-         setCurrentState(SHOOTING);
-      }
 
       break;
    case CENTERING:
@@ -236,11 +213,6 @@ void Aiming::run() {
       getNewImageData();
       approachTarget();
       break;
-   case SHOOTING:
-      SmartDashboard::PutString("DB/String 0", "State: Shooting" );
-      getNewImageData();
-      shoot();
-    break;
    default:
       break;
    }
