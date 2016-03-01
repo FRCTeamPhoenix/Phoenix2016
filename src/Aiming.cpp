@@ -95,9 +95,11 @@ void Aiming::centering() {
          if (!hasApproached && fullProcess){
             setCurrentState(APPROACHING);
          }
+         /*
          else if (hasApproached && fullProcess){
             setCurrentState(SHOOTING);
          }
+         */
          else {
             setCurrentState(IDLE);
 
