@@ -24,6 +24,8 @@ public:
    float getFloat(std::string key);
    double getDouble(std::string key);
    std::string getString(std::string key);
+
+   void putProgDouble(std::string key, double value);
 private:
    DriveStation* m_DriveStation;
 };
