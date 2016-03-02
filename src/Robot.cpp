@@ -132,12 +132,12 @@ public:
 
          std::ostringstream outputEL;
          outputEL << "LFly Encoder: ";
-         outputEL << m_LflyEncoder.GetRate();
+         outputEL << m_LflyEncoder.Get();
          SmartDashboard::PutString("DB/String 2", outputEL.str());
 
          std::ostringstream outputER;
          outputER << "RFly Encoder: ";
-         outputER << m_RflyEncoder.GetRate();
+         outputER << m_RflyEncoder.Get();
          SmartDashboard::PutString("DB/String 3", outputER.str());
 
          std::ostringstream outputS;
