@@ -85,6 +85,7 @@ void Arm::manualDrive(){
 
 void Arm::run(){
 
+
    std::ostringstream leftPotentiometer;
    leftPotentiometer << "LP Voltage: ";
    leftPotentiometer << m_leftPotentiometer->GetVoltage();
@@ -118,7 +119,7 @@ void Arm::stop(){
 }
 
 //left and right goal are between 0 and 1.
-void Arm::moveArmToPosition(float leftGoal, float rightGoal){
+void Arm::moveArmToPosition(float goal){
    float leftLowerLimit = m_configEditor->getFloat("potLeftValueLow");
    float rightLowerLimit = m_configEditor->getFloat("potRightValueLow");
    float leftUpperLimit = m_configEditor->getFloat("potLeftValueHigh");
@@ -127,10 +128,18 @@ void Arm::moveArmToPosition(float leftGoal, float rightGoal){
    float leftRange = leftUpperLimit - leftLowerLimit;
    float rightRange = rightUpperLimit - rightLowerLimit;
 
-   m_goalLeftPotentiometerValue = (leftGoal * leftRange) + leftLowerLimit;
-   m_goalRightPotentiometerValue = (rightGoal * rightRange) + rightLowerLimit;
+
+   m_goalLeftPotentiometerValue = (goal * leftRange) + leftLowerLimit;
+   m_goalRightPotentiometerValue = (goal * rightRange) + rightLowerLimit;
    m_leftPotentiometerComplete = false;
    m_leftPotentiometerComplete = false;
+
+   std::ostringstream O;
+   O << "L: ";
+   O << m_goalLeftPotentiometerValue;
+   O << " R: ";
+   O << m_goalRightPotentiometerValue;
+   SmartDashboard::PutString("DB/String 7", O.str());
 
    float initalLeftPotentiometerValue = m_leftPotentiometer->GetVoltage();
    float initalRightPotentiometerValue = m_rightPotentiometer->GetVoltage();

@@ -233,6 +233,7 @@ public:
          m_driveStation.snapShot();
          m_driveTrainController.run();
          m_configEditor.update();
+         m_arm.run();
          //            m_shooterController.run();
          //Calls all run functions involved with testing
 
@@ -261,23 +262,18 @@ public:
          //      }
          //Aiming Robot Counter Clockwise 90 degrees
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
-            SmartDashboard::PutString("DB/String 6", ":) Aiming Robot CounterClockwise 90 Test");
-            m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
+            SmartDashboard::PutString("DB/String 6", "Arm Preset 0");
+            m_arm.moveArmToPosition(0);
+
          }
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
-            //m_driveTrainController.aimRobotClockwise(m_configEditor.getFloat("degree"),m_configEditor.getFloat("motorPower"));
-            m_arm.moveArmToPosition(2.55, 2.645);
+            SmartDashboard::PutString("DB/String 6", "Arm Preset 1");
+            m_arm.moveArmToPosition(1);
          }
          //Aiming Robot Counter Clockwise 90 degrees
-         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
-            SmartDashboard::PutString("DB/String 6", ":) Aiming Robot CounterClockwise 90 Test");
-            m_driveTrainController.aimRobotCounterclockwise(m_configEditor.getFloat("degree"), m_configEditor.getFloat("motorPower"));
-         }
-
-         //Robot drives straight
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonY)){
-            SmartDashboard::PutString("DB/String 6", ":) Moving Robot Straight Test");
-            m_driveTrainController.moveRobotStraight(m_configEditor.getFloat("distance"), m_configEditor.getFloat("motorPower"));
+            SmartDashboard::PutString("DB/String 6", "Arm Preset 0.5");
+            m_arm.moveArmToPosition(0.5);
          }
          //Stops everything on robot
          if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){

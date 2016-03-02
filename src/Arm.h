@@ -47,7 +47,7 @@ public:
    void move(float);
    void stop();
    void run();
-   void moveArmToPosition(float, float);
+   void moveArmToPosition(float);
    void manualDrive();
    void setMotors();
    float getAngleLeft();
