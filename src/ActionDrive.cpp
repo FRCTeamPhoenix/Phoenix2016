@@ -14,7 +14,6 @@ void ActionDrive::init(void)
 {
    m_driveTrain->moveRobotStraight(m_distance, m_power);
    m_initialized = true;
-   SmartDashboard::PutString("DB/String 2", "Drive init");
 }
 
 // Stop executing and remove from queue when the drive sequence is done

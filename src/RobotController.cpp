@@ -31,7 +31,6 @@ RobotController::~RobotController() {}
 
 void RobotController::run(){
    if (m_state == ROBOT_AUTO){
-      SmartDashboard::PutString("DB/String 1", "In robot Auto");
       // Y button cancels autonomous mode, resetting it to manual controls.
       if (m_driveStation->getGamepadButton(DriveStationConstants::buttonY)){
          clearQueue();
@@ -43,7 +42,6 @@ void RobotController::run(){
    {
 
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
-         SmartDashboard::PutString("DB/String 1", "Drive added");
          m_queue.push(new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
          m_state = ROBOT_AUTO;
       }
@@ -72,7 +70,6 @@ void RobotController::run(){
 void RobotController::performAction(void){
    std::ostringstream qSize;
    qSize << "qSize: " << m_queue.size();
-   SmartDashboard::PutString("DB/String 7", qSize.str());
    if (m_queue.empty()) {
       m_state = ROBOT_MANUAL;
       return;
