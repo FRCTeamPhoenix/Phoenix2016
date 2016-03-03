@@ -67,12 +67,13 @@ bool Flywheel::upToSpeed(float tolerance) {
 }
 
 void Flywheel::setRate(float rate) {
-   m_leftFlywheelController.setRate(rate);
+   m_leftFlywheelController.setRate(-rate);
    m_rightFlywheelController.setRate(rate);
 }
 
 
 float Flywheel::calculateSpeed() {
+   return 1900;
    float currentDistance = m_lidar->getFastAverage();
 
    if(currentDistance < m_minDistance){

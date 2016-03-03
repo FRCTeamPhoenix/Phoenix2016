@@ -77,9 +77,9 @@ struct RobotConstants {
    constexpr static const float maxPotentiometerV = 0;
    constexpr static const double armDeadZone = 2;
    constexpr static const float maxSoftLimitLeft = 3.6;
-   constexpr static const float maxSoftLimitRight = 3.7;
-   constexpr static const float minSoftLimitLeft = 1.5;
-   constexpr static const float minSoftLimitRight = 1.59;
+   constexpr static const float maxSoftLimitRight = 3.68;
+   constexpr static const float minSoftLimitLeft = 1.55;
+   constexpr static const float minSoftLimitRight = 1.55;
 
 
 };
@@ -309,7 +309,7 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-   const static int numberOfVars = 18;
+   const static int numberOfVars = 22;
    const static std::string variables[numberOfVars] = {
          "motorPower",
          "degree",
@@ -321,6 +321,10 @@ namespace ConfigVariables {
          "outerIntakeMotorPower",
          "innerIntakeMotorPower",
          "flywheelMotorPower",
+         "maxSoftLimitLeft",
+         "maxSoftLimitRight",
+         "minSoftLimitLeft",
+         "minSoftLimitRight",
          "potLeftValueLow",
          "potRightValueLow",
          "potLeftValueHigh",
@@ -341,6 +345,10 @@ namespace ConfigVariables {
          "float", //outerIntakeMotorPower
          "float", //innerIntakeMotorPower
          "float", //flywheelMotorPower
+         "float", //maxSoftLimitLeft
+         "float", //maxSoftLimitRight
+         "float", //minSoftLimitLeft
+         "float", //minSoftLimitRight
          "float", //potLeftValueLow
          "float", //potRightValueLow
          "float", //potLeftValueHigh

@@ -40,28 +40,84 @@ Arm::~Arm() {
 
 }
 void Arm::setMotors(){
-   float power = 0.0f;
+   float powerLeft = 0.0f;
+   float powerRight = 0.0f;
+
+   float leftPotentiometer = m_leftPotentiometer->GetVoltage();
+   float rightPotentiometer = m_rightPotentiometer->GetVoltage();
+
+   if((RobotConstants::maxSoftLimitRight - RobotConstants::minSoftLimitRight) * 0.05 < fabs(leftPotentiometer - rightPotentiometer)){
+      if(m_armMotorPower > 0){
+         if(leftPotentiometer > rightPotentiometer){
+            powerLeft = m_armMotorPower / 2;
+            powerRight = m_armMotorPower;
+         }
+         if(rightPotentiometer > leftPotentiometer){
+            powerLeft = m_armMotorPower;
+            powerRight = m_armMotorPower / 2;
+         }
+      }
+      if(m_armMotorPower < 0){
+         if(leftPotentiometer < rightPotentiometer){
+            powerLeft = m_armMotorPower / 2;
+            powerRight = m_armMotorPower;
+         }
+         if(rightPotentiometer < leftPotentiometer){
+            powerLeft = m_armMotorPower;
+            powerRight = m_armMotorPower / 2;
+         }
+      }
+   }
+
+//   if(m_armMotorPower > 0){
+//      if(leftPotentiometer - rightPotentiometer <= -0.5 || leftPotentiometer - rightPotentiometer >= 0.5){
+//         if(leftPotentiometer > rightPotentiometer){
+//            powerLeft = m_armMotorPower / 2;
+//            powerRight = m_armMotorPower;
+//         }
+//         if(rightPotentiometer > leftPotentiometer){
+//            powerLeft = m_armMotorPower;
+//            powerRight = m_armMotorPower / 2;
+//         }
+//      }
+//   }
+//   if(m_armMotorPower < 0){
+//      if(leftPotentiometer - rightPotentiometer <= (RobotConstants::maxSoftLimitLeft - RobotConstants::maxSoftLimitRight) || leftPotentiometer - rightPotentiometer >= 0.5){
+//         if(leftPotentiometer < rightPotentiometer){
+//            powerLeft = m_armMotorPower / 2;
+//            powerRight = m_armMotorPower;
+//         }
+//         if(rightPotentiometer < leftPotentiometer){
+//            powerLeft = m_armMotorPower;
+//            powerRight = m_armMotorPower / 2;
+//         }
+//      }
+//   }
+
    if(m_armMotorPower > 0){
       //if (!m_leftUpperLimitSwitch->Get() && !m_rightUpperLimitSwitch->Get()){
-      if ((m_leftPotentiometer->GetVoltage() < RobotConstants::maxSoftLimitLeft) &&
-          (m_rightPotentiometer->GetVoltage() < RobotConstants::maxSoftLimitRight)){
-         power = m_armMotorPower;
+      if ((m_leftPotentiometer->GetVoltage() < m_configEditor->getFloat("maxSoftLimitLeft")) &&
+          (m_rightPotentiometer->GetVoltage() < m_configEditor->getFloat("maxSoftLimitRight"))){
+         powerLeft = m_armMotorPower;
+         powerRight = m_armMotorPower;
       }
       //}
    }
    if(m_armMotorPower < 0 ){
       //if (!m_leftLowerLimitSwitch->Get() && !m_rightLowerLimitSwitch->Get()){
-      if ((m_leftPotentiometer->GetVoltage() > RobotConstants::minSoftLimitLeft) && (m_rightPotentiometer->GetVoltage() > RobotConstants::minSoftLimitRight)){
-         power = m_armMotorPower;
+      if ((m_leftPotentiometer->GetVoltage() > m_configEditor->getFloat("minSoftLimitLeft")) &&
+          (m_rightPotentiometer->GetVoltage() > m_configEditor->getFloat("minSoftLimitRight"))){
+         powerLeft = m_armMotorPower;
+         powerRight = m_armMotorPower;
       }
       //}
    }
-   m_armMotorLeft->Set(power);
-   m_armMotorRight->Set(power);
+   m_armMotorLeft->Set(powerLeft);
+   m_armMotorRight->Set(powerRight);
 }
 void Arm::manualDrive(){
 
-   m_armMotorPower = m_driveStation->getGamepadJoystick();
+   m_armMotorPower = m_driveStation->getGamepadJoystick() / 2;
 
 
    //   else{
