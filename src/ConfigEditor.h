@@ -20,10 +20,10 @@ public:
    bool isType(std::string str, std::string type);
    void showAllKeys();
 
-   int getInt(std::string key);
-   float getFloat(std::string key);
-   double getDouble(std::string key);
-   std::string getString(std::string key);
+   int getInt(std::string key, int defaultValue = 0);
+   float getFloat(std::string key, float defaultValue = 0.0f);
+   double getDouble(std::string key, double defaultValue = 0.0);
+   std::string getString(std::string key, std::string defaultValue = "");
 private:
    DriveStation* m_DriveStation;
 };

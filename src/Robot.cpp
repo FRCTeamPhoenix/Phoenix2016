@@ -160,8 +160,8 @@ public:
          m_driveStation.snapShot();
          m_robotController.run();
          m_driveTrainController.run();
-//         m_shooterController.run();
-//         m_aiming.run();
+         m_shooterController.run();
+         //m_aiming.run();
          m_arm.run();
       }
       m_robotController.clearQueue();

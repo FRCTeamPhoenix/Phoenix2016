@@ -38,7 +38,7 @@ void Flywheel::run(){
 Flywheel::STATE Flywheel::getCurrentState(){
    if(!m_spinning){
       SmartDashboard::PutString("DB/String 5", "OFF");
-//      SmartDashboard::PutString("DB/String 6", " ");
+      SmartDashboard::PutString("DB/String 6", "OFF");
 
       return OFF;
    }
@@ -74,31 +74,52 @@ void Flywheel::setRate(float rate) {
 
 
 float Flywheel::calculateSpeed() {
-   return 1000;
    float currentDistance = m_lidar->getFastAverage();
 
-   if(currentDistance < m_minDistance){
-      SmartDashboard::PutString("DB/String 6", "To Close");
-      return m_minDistanceRate;
-   }
-   if(currentDistance > m_maxDistance){
+   std::ostringstream dist;
+   dist << "lidar dist: " << currentDistance;
+   SmartDashboard::PutString("DB/String 7", dist.str());
+
+   float farPoint;
+   float closePoint;
+   float farPointRate;
+   float closePointRate;
+
+   if(currentDistance >= m_configEditor->getFloat("maxDistFlywheel", 120)){
       SmartDashboard::PutString("DB/String 6", "To Far");
-      return m_maxDistanceRate;
+      return m_configEditor->getFloat("maxDistFlywheelRate", 1900);
+   }
+   if(currentDistance <= m_configEditor->getFloat("minDistFlywheel", 24)){
+      SmartDashboard::PutString("DB/String 6", "To close");
+      return m_configEditor->getFloat("minDistFlywheelRate", 1900);
    }
 
+   if((currentDistance >= m_configEditor->getFloat("midDistFlywheel", 72))){
+      farPoint = m_configEditor->getFloat("maxDistFlywheel", 120);
+      closePoint = m_configEditor->getFloat("midDistFlywheel", 72);
+      farPointRate = m_configEditor->getFloat("maxDistFlywheelRate", 1900);
+      closePointRate = m_configEditor->getFloat("midDistFlywheelRate", 1000);
+   }
+   else {
+      farPoint = m_configEditor->getFloat("midDistFlywheel", 72);
+      closePoint = m_configEditor->getFloat("minDistFlywheel", 24);
+      farPointRate = m_configEditor->getFloat("midDistFlywheelRate", 1000);
+      closePointRate = m_configEditor->getFloat("minDistFlywheelRate", 1900);
+   }
+
+
+
+   float deltaDistance = farPoint - closePoint;
+   float maxToCurrent = farPoint - currentDistance;
+   float minToCurrent = currentDistance - closePoint;
+
+
+   float farFactor = 1 - (maxToCurrent / deltaDistance);
+   float closeFactor = 1 - (minToCurrent / deltaDistance);
+
+   float rate = (farFactor * farPointRate) + (closeFactor * closePointRate);
    SmartDashboard::PutString("DB/String 6", "Correct Range");
-
-   float deltaDistance = m_maxDistance - m_minDistance;
-   float maxToCurrent = m_maxDistance - currentDistance;
-   float minToCurrent = currentDistance - m_minDistance;
-
-
-   float maxFactor = 1 - (maxToCurrent / deltaDistance);
-   float minFactor = 1 - (minToCurrent / deltaDistance);
-
-   float speed = (maxFactor * m_maxDistanceRate) + (minFactor * m_minDistanceRate);
-
-   return speed;
+   return rate;
 }
 
 
