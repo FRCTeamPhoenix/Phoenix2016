@@ -68,9 +68,6 @@ bool Flywheel::upToSpeed(float tolerance) {
 }
 
 void Flywheel::setRate(float rate) {
-   std::ostringstream Crate;
-   Crate << "Rate: " << rate;
-   SmartDashboard::PutString("DB/String 8", Crate.str());
    m_leftFlywheelController.setRate(-rate);
    m_rightFlywheelController.setRate(rate);
 }
