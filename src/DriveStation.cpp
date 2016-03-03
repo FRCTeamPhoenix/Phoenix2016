@@ -111,5 +111,18 @@ void DriveStation::setButton(int buttonNumber, bool value) {
 
 }
 
+void DriveStation::clearDriveStation() {
+   SmartDashboard::PutString("DB/String 0", " ");
+   SmartDashboard::PutString("DB/String 1", " ");
+   SmartDashboard::PutString("DB/String 2", " ");
+   SmartDashboard::PutString("DB/String 3", " ");
+   SmartDashboard::PutString("DB/String 4", " ");
+   SmartDashboard::PutString("DB/String 5", " ");
+   SmartDashboard::PutString("DB/String 6", " ");
+   SmartDashboard::PutString("DB/String 7", " ");
+   SmartDashboard::PutString("DB/String 8", " ");
+   SmartDashboard::PutString("DB/String 9", " ");
+}
+
 DriveStation::~DriveStation() {
 }

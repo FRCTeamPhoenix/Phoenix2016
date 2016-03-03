@@ -31,15 +31,10 @@ RobotController::~RobotController() {}
 
 void RobotController::run(){
    if (m_state == ROBOT_AUTO){
+      SmartDashboard::PutString("DB/String 1", "In robot Auto");
       // Y button cancels autonomous mode, resetting it to manual controls.
       if (m_driveStation->getGamepadButton(DriveStationConstants::buttonY)){
-         // Simplest way to empty queue while destroying everything.
-         // Not replacing with empty queue because that may not destroy
-         // the objects inside.
-         while (!m_queue.empty())
-            m_queue.pop();
-         m_driveTrain->stopRobot();
-         m_state = ROBOT_MANUAL;
+         clearQueue();
          return;
       }
       performAction();
@@ -47,8 +42,10 @@ void RobotController::run(){
    else if (m_state == ROBOT_MANUAL)
    {
 
-      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonY)){
+      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
+         SmartDashboard::PutString("DB/String 1", "Drive added");
          m_queue.push(new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
+         m_state = ROBOT_AUTO;
       }
 
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonRB)){
@@ -68,22 +65,24 @@ void RobotController::run(){
 
       m_arm->move(m_driveStation->deadzoneOfGamepadJoystick() / 2);
 
-      m_state = ROBOT_MANUAL;
       return;
    }
 }
 
 void RobotController::performAction(void){
-   if (m_queue.size() == 0)
-   {
+   std::ostringstream qSize;
+   qSize << "qSize: " << m_queue.size();
+   SmartDashboard::PutString("DB/String 7", qSize.str());
+   if (m_queue.empty()) {
       m_state = ROBOT_MANUAL;
       return;
    }
    Action *currentAction = m_queue.front();
+
    if (!currentAction->isInitialized())
       currentAction->init();
-   if (currentAction->execute())
-   {
+
+   if (currentAction->execute()) {
       printf("Completed action.");
       delete currentAction;
       m_queue.pop();
@@ -92,24 +91,21 @@ void RobotController::performAction(void){
 
 // Push sequence of autonomous actions to the queue
 void RobotController::initAutonomousModeQueue(){
-
-   // Drive forwards 5 feet
-   m_queue.push(new ActionDrive(m_driveTrain, 144, m_configEditor->getFloat("motorPower")));
-
-   // Start spinning flywheels to get them up to speed
-   //TODO: Only one parameter will be needed in the future, due to motor power calculation
-   // being handled by lidar/flywheels
-   m_queue.push(new ActionSpinFlywheels(m_flywheel, m_configEditor->getFloat("flywheelMotorPower")));
-
-   // As soon as the flywheels are spinning, begin the aiming process
-   m_queue.push(new ActionTargetAim(m_aiming));
-
-   // Shoot, after flywheels are up to speed and robot is centered
-   m_queue.push(new ActionShoot(m_loaderController));
+   m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
    m_state = ROBOT_AUTO;
-   m_queue.push(new ActionDrive(m_driveTrain, 72 , m_configEditor->getFloat("motorPower")));
 
 }
 void RobotController::setManual(){
    m_state = ROBOT_MANUAL;
+}
+
+// Simplest way to empty queue while destroying everything.
+// Not replacing with empty queue because that may not destroy
+// the objects inside.
+void RobotController::clearQueue() {
+   while (!m_queue.empty())
+      m_queue.pop();
+   m_driveTrain->stopRobot();
+   m_state = ROBOT_MANUAL;
+   return;
 }

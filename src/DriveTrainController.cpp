@@ -195,15 +195,16 @@ void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
    m_initalEncoderDistanceRight = m_rightWheelEncoder->GetDistance();
    m_initalEncoderDistanceLeft = m_leftWheelEncoder->GetDistance();
    m_targetDistanceRight = m_initalEncoderDistanceRight + distance;
-//   std::ostringstream r;
-//   r<<"TargetRight";
-//   r<<m_targetDistanceRight;
-//   SmartDashboard::PutString("DB/String 3", r.str());
-//   m_targetDistanceLeft = m_initalEncoderDistanceLeft + distance;
-//   std::ostringstream l;
-//   l<<"TargetLeft";
-//   l<<m_targetDistanceRight;
-//   SmartDashboard::PutString("DB/String 4", l.str());
+   std::ostringstream r;
+   r<<"TargetRight";
+   r<<m_targetDistanceRight;
+   SmartDashboard::PutString("DB/String 3", r.str());
+
+   m_targetDistanceLeft = m_initalEncoderDistanceLeft + distance;
+   std::ostringstream l;
+   l<<"TargetLeft";
+   l<<m_targetDistanceRight;
+   SmartDashboard::PutString("DB/String 4", l.str());
 
    m_rightEncoderComplete = false;
    m_leftEncoderComplete = false;
@@ -213,8 +214,8 @@ void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
       m_leftMotorPower = motorSpeed;
    }
    else {
-      m_rightMotorPower = - motorSpeed;
-      m_leftMotorPower = - motorSpeed;
+      m_rightMotorPower = -motorSpeed;
+      m_leftMotorPower = -motorSpeed;
    }
    m_goalState = ENCODERDRIVE;
 }
@@ -233,21 +234,18 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
       return TELEOP;
       //Goal state of ENCODERDRIVE, tests if the encoders are where they are supposed to be
    case ENCODERDRIVE:{
-//      std::ostringstream ku;
-//      ku<<"realRight: ";
-//      ku<<m_rightWheelEncoder->GetDistance();
-//      SmartDashboard::PutString("DB/String 6", ku.str());}
    if ((((m_rightMotorPower < 0) && (m_rightWheelEncoder->GetDistance() <= m_targetDistanceRight))) || (
          ((m_rightMotorPower >= 0) && (m_rightWheelEncoder->GetDistance() >= m_targetDistanceRight)))){
+      SmartDashboard::PutString("DB/String 5", "Right True");
       m_rightEncoderComplete = true;
    }
    if ((((m_leftMotorPower < 0) && (m_leftWheelEncoder->GetDistance() <= m_targetDistanceLeft))) ||
          (((m_leftMotorPower >= 0) && (m_leftWheelEncoder->GetDistance() >= m_targetDistanceLeft)))){
+      SmartDashboard::PutString("DB/String 6", "Left True");
       m_leftEncoderComplete = true;
    }
    if (m_rightEncoderComplete || m_leftEncoderComplete){
       m_goalState = IDLE;
-//      SmartDashboard::PutString("DB/String 7", "In enc cmplt");
       return IDLE;
    }
    else {
