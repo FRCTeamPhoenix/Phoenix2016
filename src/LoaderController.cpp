@@ -5,7 +5,7 @@
  *      Author: Ian
  */
 
-#include <LoaderController.h>
+#include "LoaderController.h"
 
 
 LoaderController::LoaderController(
@@ -64,15 +64,15 @@ bool LoaderController::loaded(){
 void LoaderController::run(){
 
    bool isLoaded = loaded();
-      std::ostringstream out;
-      out << "Ball in robot: ";
-      out << m_ballInRobot;
-      out << "  ";
-      out << isLoaded;
-      SmartDashboard::PutString("DB/String 6", out.str());
+//      std::ostringstream out;
+//      out << "Ball in robot: ";
+//      out << m_ballInRobot;
+//      out << "  ";
+//      out << isLoaded;
+//      SmartDashboard::PutString("DB/String 6", out.str());
 
       if (m_ballInRobot != isLoaded){
-         SmartDashboard::PutString("DB/String 7", "Stopping");
+//         SmartDashboard::PutString("DB/String 7", "Stopping");
          stop();
       }
 

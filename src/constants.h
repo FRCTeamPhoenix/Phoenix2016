@@ -22,10 +22,10 @@ struct PortAssign {
    const static uint32_t rightWheelEncoderChannelB = 3;
 
    //Flywheels
-   const static uint32_t leftFlywheelEncoderChannelA = 4;
-   const static uint32_t leftFlywheelEncoderChannelB = 5;
-   const static uint32_t rightFlywheelEncoderChannelA = 6;
-   const static uint32_t rightFlywheelEncoderChannelB = 7;
+   const static uint32_t leftFlywheelEncoderChannelA = 6;
+   const static uint32_t leftFlywheelEncoderChannelB = 7;
+   const static uint32_t rightFlywheelEncoderChannelA = 4;
+   const static uint32_t rightFlywheelEncoderChannelB = 5;
 
 
    //Loader

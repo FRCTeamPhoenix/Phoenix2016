@@ -106,14 +106,14 @@ public:
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
       m_gyro.Calibrate();
       m_configEditor.showAllKeys();
-
-      cout<<"run init socket function" << endl;
-      m_client.initilizeSocket();
-      if (m_client.m_initGood){
-         cout<<"init good start thread" << endl;
-         std::thread receiveThread(runClient, this, &m_client);
-         receiveThread.detach();
-      }
+//TODO: uncomment this block of code
+//      cout<<"run init socket function" << endl;
+//      m_client.initilizeSocket();
+//      if (m_client.m_initGood){
+//         cout<<"init good start thread" << endl;
+//         std::thread receiveThread(runClient, this, &m_client);
+//         receiveThread.detach();
+//      }
 
       m_driveCamera.SetExposureManual(20);
       m_driveCamera.SetWhiteBalanceAuto();
@@ -124,7 +124,6 @@ public:
       lidarRun.detach();
    }
    void Autonomous (){
-      SmartDashboard::PutString("DB/String 0", "Autonomous ");
       SmartDashboard::PutString("DB/String 0", " ");
       SmartDashboard::PutString("DB/String 1", " ");
       SmartDashboard::PutString("DB/String 2", " ");
@@ -154,7 +153,6 @@ public:
    }
 
    void OperatorControl(){
-      SmartDashboard::PutString("DB/String 0", "Teleop ");
       SmartDashboard::PutString("DB/String 0", " ");
       SmartDashboard::PutString("DB/String 1", " ");
       SmartDashboard::PutString("DB/String 2", " ");
@@ -175,14 +173,6 @@ public:
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
 
       while(IsOperatorControl() && IsEnabled()){
-         std::ostringstream LE;
-         LE << m_leftWheelEncoder.GetDistance();
-         SmartDashboard::PutString("DB/String 7", LE.str());
-
-         std::ostringstream RE;
-         RE << m_rightWheelEncoder.GetDistance();
-         SmartDashboard::PutString("DB/String 8", RE.str());
-
          m_driveStation.snapShot();
          m_robotController.run();
          m_driveTrainController.run();
@@ -198,7 +188,6 @@ public:
       m_rightWheelEncoder.Reset();
 
       //Clears the Dashboard
-      SmartDashboard::PutString("DB/String 0", "Entering Test ");
       SmartDashboard::PutString("DB/String 0", " ");
       SmartDashboard::PutString("DB/String 1", " ");
       SmartDashboard::PutString("DB/String 2", " ");

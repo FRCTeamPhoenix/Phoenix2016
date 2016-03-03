@@ -5,7 +5,7 @@
  *      Author: ben
  */
 
-#include <ConfigEditor.h>
+#include "ConfigEditor.h"
 
 ConfigEditor::ConfigEditor(DriveStation* DriveStation):
 m_DriveStation(DriveStation){

@@ -47,22 +47,9 @@ void RobotController::run(){
    else if (m_state == ROBOT_MANUAL)
    {
 
-      //      //Moving Backwards
-      //      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
-      //         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), -(m_configEditor->getFloat("motorPower"))));
-      //      }
-      //
-      //      //Moving Forwards
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonY)){
          m_queue.push(new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
       }
-      //
-      //      //Moving Clockwise
-      //        m_queue.push(new ActionDrive(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
-      // m_queue.push(new ActionTurn(m_driveTrain, 180.0f, 0.6f));
-      // m_queue.push(new ActionTurn(m_driveTrain, -180.0f, 0.6f));
-      //m_queue.push(new ActionDrive(m_driveTrain, -18.0f, 0.6f));
-      //      }
 
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonRB)){
          m_loaderController->start();
@@ -80,32 +67,8 @@ void RobotController::run(){
 
 
       m_arm->move(m_driveStation->deadzoneOfGamepadJoystick() / 2);
+
       m_state = ROBOT_MANUAL;
-      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
-         SmartDashboard::PutString("DB/String 5", "Adding to queue ");
-         m_state = ROBOT_AUTO;
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
-         //m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
-         //m_queue.push( new ActionTurn(m_driveTrain, -m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
-         //m_queue.push( new ActionDrive(m_driveTrain, -m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
-      }
-      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonB)){
-         SmartDashboard::PutString("DB/String 5", "Adding to queue ");
-         m_state = ROBOT_AUTO;
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
-         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
-         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
-         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
-         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
-      }
-      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonX)){
-         m_queue.push( new ActionDrive(m_driveTrain, 80, 0.8)); //Goes to defense
-         m_queue.push( new ActionDrive(m_driveTrain, 44, 0.6)); //Goes over defense
-         m_queue.push( new ActionDrive(m_driveTrain, 51.5, 0.8)); //Goes to alignment line
-      }
       return;
    }
 }

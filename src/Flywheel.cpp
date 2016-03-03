@@ -13,7 +13,7 @@ Flywheel::Flywheel(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor, Encoder*
    m_leftFlywheelEncoder(leftFlywheelEncoder),
    m_rightFlywheelEncoder(rightFlywheelEncoder),
    m_lidar(lidar),
-   m_leftFlywheelController(m_leftFlywheelMotor, m_leftFlywheelEncoder),
+   m_leftFlywheelController(m_leftFlywheelMotor, m_rightFlywheelEncoder),
    m_rightFlywheelController(m_rightFlywheelMotor, m_rightFlywheelEncoder),
    m_configEditor(configEditor)
 {
@@ -38,7 +38,7 @@ void Flywheel::run(){
 Flywheel::STATE Flywheel::getCurrentState(){
    if(!m_spinning){
       SmartDashboard::PutString("DB/String 5", "OFF");
-      SmartDashboard::PutString("DB/String 6", " ");
+//      SmartDashboard::PutString("DB/String 6", " ");
 
       return OFF;
    }
@@ -74,7 +74,7 @@ void Flywheel::setRate(float rate) {
 
 
 float Flywheel::calculateSpeed() {
-   return m_configEditor->getFloat("shooterPower");
+   return 1000;
    float currentDistance = m_lidar->getFastAverage();
 
    if(currentDistance < m_minDistance){
