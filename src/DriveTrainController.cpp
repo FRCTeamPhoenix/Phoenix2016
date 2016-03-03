@@ -58,7 +58,7 @@ void DriveTrainController::manualDrive() {
    std::ostringstream t;
    t<<"Twist: ";
    t<<twistRatio;
-   SmartDashboard::PutString("DB/String 9", t.str());
+//   SmartDashboard::PutString("DB/String 9", t.str());
 
    m_leftMotorPower = (throttle * throttleRatio) + (twist * twistRatio);
    m_rightMotorPower = (throttle * throttleRatio) - (twist * twistRatio);
@@ -66,7 +66,7 @@ void DriveTrainController::manualDrive() {
 }
 
 void DriveTrainController::run() {
-   SmartDashboard::PutString("DB/String 7", "In DTCRun Top");
+//   SmartDashboard::PutString("DB/String 7", "In DTCRun Top");
    switch (getCurrentState()) {
 
    //Goal state with the drivers are driving the robot
@@ -80,7 +80,7 @@ void DriveTrainController::run() {
       break;
       //Goal state of when the robot is moving by its self
    case ENCODERDRIVE:
-      SmartDashboard::PutString("DB/String 7", "In RunED");
+//      SmartDashboard::PutString("DB/String 7", "In RunED");
       if (m_rightEncoderComplete){
          m_goalState = IDLE;
 
@@ -155,13 +155,13 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
       m_rightEncoderComplete = false;
       m_leftEncoderComplete = false;
 
-      std::ostringstream outputTR;
-      outputTR << "Target Right Tick " << m_targetDistanceRight;
-      SmartDashboard::PutString("DB/String 8", outputTR.str());
-
-      std::ostringstream outputTL;
-      outputTL << "Target Left Tick " << m_targetDistanceLeft;
-      SmartDashboard::PutString("DB/String 9", outputTL.str());
+//      std::ostringstream outputTR;
+//      outputTR << "Target Right Tick " << m_targetDistanceRight;
+//      SmartDashboard::PutString("DB/String 8", outputTR.str());
+//
+//      std::ostringstream outputTL;
+//      outputTL << "Target Left Tick " << m_targetDistanceLeft;
+//      SmartDashboard::PutString("DB/String 9", outputTL.str());
 
       if (degree > 0) {
          m_rightMotorPower = -motorSpeed;
@@ -195,15 +195,9 @@ void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
    m_initalEncoderDistanceRight = m_rightWheelEncoder->GetDistance();
    m_initalEncoderDistanceLeft = m_leftWheelEncoder->GetDistance();
    m_targetDistanceRight = m_initalEncoderDistanceRight + distance;
-   std::ostringstream r;
-   r<<"TargetRight";
-   r<<m_targetDistanceRight;
-   SmartDashboard::PutString("DB/String 3", r.str());
+
+
    m_targetDistanceLeft = m_initalEncoderDistanceLeft + distance;
-   std::ostringstream l;
-   l<<"TargetLeft";
-   l<<m_targetDistanceRight;
-   SmartDashboard::PutString("DB/String 4", l.str());
 
    m_rightEncoderComplete = false;
    m_leftEncoderComplete = false;
@@ -213,15 +207,15 @@ void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
       m_leftMotorPower = motorSpeed;
    }
    else {
-      m_rightMotorPower = - motorSpeed;
-      m_leftMotorPower = - motorSpeed;
+      m_rightMotorPower = -motorSpeed;
+      m_leftMotorPower = -motorSpeed;
    }
    m_goalState = ENCODERDRIVE;
 }
 
 //Set the goal state to IDLE
 void DriveTrainController::stopRobot() {
-   SmartDashboard::PutString("DB/String 7", "In STOP");
+//   SmartDashboard::PutString("DB/String 7", "In STOP");
    m_goalState = IDLE;
 }
 
@@ -233,10 +227,6 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
       return TELEOP;
       //Goal state of ENCODERDRIVE, tests if the encoders are where they are supposed to be
    case ENCODERDRIVE:{
-      std::ostringstream ku;
-      ku<<"realRight: ";
-      ku<<m_rightWheelEncoder->GetDistance();
-      SmartDashboard::PutString("DB/String 6", ku.str());}
    if ((((m_rightMotorPower < 0) && (m_rightWheelEncoder->GetDistance() <= m_targetDistanceRight))) || (
          ((m_rightMotorPower >= 0) && (m_rightWheelEncoder->GetDistance() >= m_targetDistanceRight)))){
       m_rightEncoderComplete = true;
@@ -247,7 +237,6 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
    }
    if (m_rightEncoderComplete || m_leftEncoderComplete){
       m_goalState = IDLE;
-      SmartDashboard::PutString("DB/String 7", "In enc cmplt");
       return IDLE;
    }
    else {
@@ -267,8 +256,9 @@ DriveTrainController::STATE DriveTrainController::getCurrentState() {
       return IDLE;
    }
 }
-void DriveTrainController::driveLidar(float inches, float motorSpeed)
-{
+}
+
+void DriveTrainController::driveLidar(float inches, float motorSpeed){
    m_goalState = LIDARDRIVE;
    lidarInches = inches;
    m_rightMotorPower = motorSpeed;

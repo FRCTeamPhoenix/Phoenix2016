@@ -42,6 +42,7 @@ public:
    //For printing strings to the dashboard
    void printToDashboard(unsigned long *pointToString, int space);
    void gyroTest();
+   void clearDriveStation();
 
 
 private:
