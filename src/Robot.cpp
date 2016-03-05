@@ -333,7 +333,7 @@ public:
                m_shooterController.setShooting();
             }
             else{
-               m_shooterC  ontroller.setArmed();
+               m_shooterController.setArmed();
             }
          }
       }
