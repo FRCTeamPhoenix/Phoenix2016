@@ -340,17 +340,18 @@ public:
    }
 
    void displayDriverInfo(){
-      std::ostringstream output;
+
 
       //Space 0
-      output << "Drive State " << m_robotController.getState();
-      m_driveStation.printToDashboard(output.str(), 0);
-      output.clear();
+      std::ostringstream output1;
+      output1 << "Drive State " << m_robotController.getState();
+      m_driveStation.printToDashboard(output1.str(), 0);
 
       //Space 1
-      output << "Distance: " << m_lidarHandler.getFastAverage();
-      m_driveStation.printToDashboard(output.str(), 1);
-      output.clear();
+      std::ostringstream output2;
+      output2 << "Distance: " << m_lidarHandler.getFastAverage();
+      m_driveStation.printToDashboard(output2.str(), 1);
+
 
       //Space 2
       //Space 3
