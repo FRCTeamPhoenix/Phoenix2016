@@ -269,7 +269,7 @@ struct AimingConstants{
    const static int minTargetWidth = 250;
    const static int maxTargetWidth = 350;
 
-   const static int desiredCenter = 380; //untuned value not correct
+   const static int desiredCenter = 345; //untuned value not correct
    constexpr static double aimedDistance=84;//untuned value not correct
 
    const static int distanceVariance = 12; //in inches

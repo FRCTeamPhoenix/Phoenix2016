@@ -21,9 +21,8 @@ class ActionSpinFlywheels : public Action
 {
 private:
    Flywheel* m_flywheel;
-   float m_motorPower;
 public:
-   ActionSpinFlywheels(Flywheel*, float);
+   ActionSpinFlywheels(Flywheel* flywheel);
    void init(void);
    bool execute(void);
    ~ActionSpinFlywheels();

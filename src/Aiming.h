@@ -62,11 +62,15 @@ private:
    bool hasApproached;
    bool hasRotated;
    bool fullProcess;
-   double initialTargetCenterX;
+   double previousTargetCenter;
    double m_targetCenter_x;
    double deviation;
    bool driveIdle;
    bool newCenter;
+   int sameCenterCount;
+   int packetCount;
+   string moveDirection;
+   int  moveCount;
 };
 
 #endif /* SRC_AIMING_H_ */

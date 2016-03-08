@@ -66,7 +66,7 @@ void DriveTrainController::manualDrive() {
 }
 
 void DriveTrainController::run() {
-   SmartDashboard::PutString("DB/String 7", "In DTCRun Top");
+   //SmartDashboard::PutString("DB/String 7", "In DTCRun Top");
    switch (getCurrentState()) {
 
    //Goal state with the drivers are driving the robot
@@ -80,6 +80,7 @@ void DriveTrainController::run() {
       break;
       //Goal state of when the robot is moving by its self
    case ENCODERDRIVE:
+      std ::  cout <<"drive state" << std::endl;
       SmartDashboard::PutString("DB/String 7", "In RunED");
       if (m_rightEncoderComplete){
          m_goalState = IDLE;
@@ -189,9 +190,11 @@ void DriveTrainController::continuousDrive(float motorSpeed){
 //Moves the robot a desired distance and at a desired motor speed
 void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
 
+
    if (m_goalState == ENCODERDRIVE){
       return;
    }
+
    m_initalEncoderDistanceRight = m_rightWheelEncoder->GetDistance();
    m_initalEncoderDistanceLeft = m_leftWheelEncoder->GetDistance();
    m_targetDistanceRight = m_initalEncoderDistanceRight + distance;

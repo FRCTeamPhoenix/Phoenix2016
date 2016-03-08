@@ -1,7 +1,7 @@
 #include "Client.h"
 #define NPACK 1
 #define PORT 31415 //port currently used for testing, can be changed
-#define SRV_IP "10.23.42.142" //static ip of pi is 10.0.42.142
+#define SRV_IP "10.1.42.142" //static ip of pi is 10.0.42.142
 
 
 
@@ -76,12 +76,18 @@ void Client::receivePacket(){
         memset(m_ballData,0,9);
         memset(m_distanceData,0,9);
         //infinite loop because it is running in a thread
+        struct timeval timeout;
+        timeout.tv_sec=0;
+        timeout.tv_usec=500;
+        cout<<"set socket timeout" << endl;
+        setsockopt(m_socket, SOL_SOCKET, SO_RCVTIMEO,&timeout,sizeof(timeout));
+
         while (true){
            //cout << "waiting to receive packet in thread" << endl;
 
            //receive packet
            if(recvfrom(m_socket,m_receivedData,BUFLEN, 0 ,(sockaddr*)&m_si_other, &m_si_other_len) < 0) {
-              cout << "packet receive error" << endl;
+              //cout << "packet receive error" << endl;
            }
 
            else {
@@ -114,12 +120,12 @@ void Client::receivePacket(){
 
 void Client::byteToInt(char *byteArray,int *intArray){
     int currentByte =0;
-    cout<<"start packet convert"<<endl;
+    //cout<<"start packet convert"<<endl;
     //loop through int array and count up 2 for bytes
     for (int currentInt = 0; currentInt < 9;currentInt++){
         intArray[currentInt]=(int)byteArray[currentByte] + ((int)(byteArray[currentByte+1]) << 8);
         currentByte+=2;
-        cout << "received data = " <<  intArray[currentInt] << endl;
+        //cout << "received data = " <<  intArray[currentInt] << endl;
     }
 }
 

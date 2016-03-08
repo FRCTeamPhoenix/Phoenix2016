@@ -13,8 +13,8 @@
 
 #include "ActionSpinFlywheels.h"
 
-ActionSpinFlywheels::ActionSpinFlywheels(Flywheel* flywheel, float motorPower)
-   : Action(), m_flywheel(flywheel), m_motorPower(motorPower)
+ActionSpinFlywheels::ActionSpinFlywheels(Flywheel* flywheel)
+   : Action(), m_flywheel(flywheel)
 {
 
 }

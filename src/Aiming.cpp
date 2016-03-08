@@ -22,13 +22,15 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, Drive
    m_shooter(shooter)
 {
 
-
+   sameCenterCount=0;
    // Nothing is happening
    setCurrentState(IDLE);
 
    // We have not yet approached
    hasApproached=false;
-
+   moveDirection = "no move";
+   moveCount=0;
+   packetCount=0;
    // By default, we will only be performing a specified part of the aiming process
    // In order to perform the ENTIRE process (including shooting), START should be pressed
    fullProcess=false;
@@ -48,6 +50,7 @@ void Aiming::getNewImageData() {
    if (m_client->checkPacketState()){
    // Updates array of current coordinates with data received by client
       newCenter=true;
+      packetCount++;
       for(int i = 0; i < AimingConstants::numTargetVals; i++) {
          m_currentTargetCoordinates[i] = m_client->getTargetData(i+1);
       }
@@ -64,28 +67,39 @@ void Aiming::centering() {
       driveIdle=true;
    }
 
-   initialTargetCenterX=m_targetCenter_x;
-   m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL] +m_currentTargetCoordinates[AimingConstants::xLR])/2);
-   // Amount of offset from our desired center coordinate (w/ respect to current frame of vision)
 
-   deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
+   if (newCenter){
+      previousTargetCenter=m_targetCenter_x;
+      m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL]
+                         +m_currentTargetCoordinates[AimingConstants::xLR])/2);
 
-//   if (m_targetCenter_x != initialTargetCenterX){
-//      newCenter=true;
-//   }
+      if ((previousTargetCenter < (m_targetCenter_x + 20) && previousTargetCenter > (m_targetCenter_x-20))){
+         sameCenterCount++;
+      }
+   }
+
+
+
+
 
    //only move if the drivtrain is idle and we have received the most recent packet
-   if (driveIdle && newCenter){
-      newCenter=false;
+   if (driveIdle && newCenter && m_targetCenter_x !=0){
+      sameCenterCount=0;
+      moveCount++;
       //move ccw if target right of desired
+
+      // Amount of offset from our desired center coordinate (w/ respect to current frame of vision)
+      deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
+
       if(deviation< -AimingConstants::rotationVariance){
-         m_driveTrainController->aimRobotCounterclockwise(1, 0.6f);
+         moveDirection="ccw";
+         m_driveTrainController->aimRobotCounterclockwise(fabs(deviation/20), 0.6f);
 
       }
       //move robot cw if target is left of desired
       else if (deviation > AimingConstants::rotationVariance){
-
-         m_driveTrainController->aimRobotClockwise(1, 0.6f);
+         moveDirection="cw";
+         m_driveTrainController->aimRobotClockwise(fabs(deviation/20), 0.6f);
 
       }
       //if target is within tolerence move to next state
@@ -103,6 +117,7 @@ void Aiming::centering() {
          }
       }
    }
+   newCenter=false;
 }
 
 
@@ -167,15 +182,16 @@ void Aiming::run() {
    if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonA)) {
          setCurrentState(IDLE);
    }
-
-   getNewImageData();
-   printCurrentCoordinates();
-   m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL] +m_currentTargetCoordinates[AimingConstants::xLR])/2);
-   deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
-
    ostringstream aimingPrints;
    aimingPrints<< "C: " << m_targetCenter_x << ", " << "D: " << deviation;
-   SmartDashboard::PutString("DB/String 9",aimingPrints.str());
+   SmartDashboard::PutString("DB/String 4",aimingPrints.str());
+
+
+   ostringstream centerSame;
+   centerSame << "PC:  " << packetCount<< "MC: " <<moveCount<<"Dir: " << moveDirection;
+   SmartDashboard::PutString("DB/String 3",centerSame.str());
+
+
 
    switch(m_currentState) {
    case IDLE:
@@ -183,6 +199,9 @@ void Aiming::run() {
       fullProcess=false;
       hasApproached=false;
       getNewImageData();
+      previousTargetCenter=-1;
+      sameCenterCount=0;
+
 
       SmartDashboard::PutString("DB/String 0", "State: IDLE" );
 

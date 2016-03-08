@@ -136,8 +136,7 @@ public:
       SmartDashboard::PutString("DB/String 8", " ");
       SmartDashboard::PutString("DB/String 9", " ");
       bool addedToQueue = false;
-      m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
-      m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
+
 
       while (IsAutonomous()&& IsEnabled()){
 
@@ -148,8 +147,9 @@ public:
          m_driveStation.snapShot();
          m_driveTrainController.run();
          m_robotController.run();
-         //m_shooterController.run();
-         //m_arm.run();
+         m_aiming.run();
+         m_shooterController.run();
+         m_arm.run();
       }
    }
 

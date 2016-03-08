@@ -14,10 +14,12 @@ void ActionDrive::init(void)
 {
    m_driveTrain->moveRobotStraight(m_distance, m_power);
    m_initialized = true;
+
 }
 
 // Stop executing and remove from queue when the drive sequence is done
 bool ActionDrive::execute(void)
 {
-   return m_driveTrain->getCurrentState() == DriveTrainController::IDLE;
+   return false;
+   //return m_driveTrain->getCurrentState() == DriveTrainController::IDLE;
 }
