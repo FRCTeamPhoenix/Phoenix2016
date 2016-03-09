@@ -88,7 +88,36 @@ void RobotController::performAction(void){
 
 // Push sequence of autonomous actions to the queue
 void RobotController::initAutonomousModeQueue(){
-   m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+   if(SmartDashboard::GetBoolean("Rock Wall", false))
+      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+   else if(SmartDashboard::GetBoolean("Cheval de Frise", false)) {
+      //TODO set arm up
+      m_queue.push(new ActionDrive(m_driveTrain, 20, m_configEditor->getFloat("motorPower")));//TODO distances
+      //TODO set arm down
+      m_queue.push(new ActionDrive(m_driveTrain, 40, m_configEditor->getFloat("motorPower")));//TODO distances
+   }
+   else if(SmartDashboard::GetBoolean("Portcullis", false)) {
+      //TODO set arm down
+      m_queue.push(new ActionDrive(m_driveTrain, 20, m_configEditor->getFloat("motorPower")));//TODO distances
+      //TODO set arm up
+      m_queue.push(new ActionDrive(m_driveTrain, 40, m_configEditor->getFloat("motorPower")));//TODO distances
+   }
+   else if(SmartDashboard::GetBoolean("Rough Terrain", false))
+      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+   else if(SmartDashboard::GetBoolean("Moat", false))
+      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+   else if(SmartDashboard::GetBoolean("Ramparts", false))
+      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+   else if(SmartDashboard::GetBoolean("Sally Port", false)) {
+      //TODO set arm up
+      m_queue.push(new ActionDrive(m_driveTrain, 20, m_configEditor->getFloat("motorPower")));//TODO distances
+      //TODO set arm down
+      m_queue.push(new ActionDrive(m_driveTrain, -8, m_configEditor->getFloat("motorPower")));//TODO distances
+      //TODO finish the stuff
+   }
+   else if(SmartDashboard::GetBoolean("Drawbridge", false))
+      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+   //m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
    m_state = ROBOT_AUTO;
 
 }
