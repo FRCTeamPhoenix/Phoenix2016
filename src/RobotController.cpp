@@ -89,7 +89,7 @@ void RobotController::performAction(void){
 // Push sequence of autonomous actions to the queue
 void RobotController::initAutonomousModeQueue(){
 
-   // Drive forwards 5 feet
+   // Drive forwards 12 feet
    m_queue.push(new ActionDrive(m_driveTrain, 144, m_configEditor->getFloat("motorPower")));
 
    // Start spinning flywheels to get them up to speed
