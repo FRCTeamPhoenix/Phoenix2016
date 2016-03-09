@@ -109,11 +109,7 @@ void RobotController::initAutonomousModeQueue(){
    else if(SmartDashboard::GetBoolean("Ramparts", false))
       m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
    else if(SmartDashboard::GetBoolean("Sally Port", false)) {
-      //TODO set arm up
-      m_queue.push(new ActionDrive(m_driveTrain, 20, m_configEditor->getFloat("motorPower")));//TODO distances
-      //TODO set arm down
-      m_queue.push(new ActionDrive(m_driveTrain, -8, m_configEditor->getFloat("motorPower")));//TODO distances
-      //TODO finish the stuff
+      m_queue.push(new ActionDrive(m_driveTrain, 20, m_configEditor->getFloat("motorPower")));
    }
    else if(SmartDashboard::GetBoolean("Drawbridge", false))
       m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
