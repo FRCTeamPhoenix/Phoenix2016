@@ -58,7 +58,6 @@ void DriveTrainController::manualDrive() {
    std::ostringstream t;
    t<<"Twist: ";
    t<<twistRatio;
-//   SmartDashboard::PutString("DB/String 9", t.str());
 
    m_leftMotorPower = (throttle * throttleRatio) + (twist * twistRatio);
    m_rightMotorPower = (throttle * throttleRatio) - (twist * twistRatio);
@@ -79,8 +78,6 @@ void DriveTrainController::run() {
       break;
       //Goal state of when the robot is moving by its self
    case ENCODERDRIVE:
-
-//      SmartDashboard::PutString("DB/String 7", "In RunED");
       if (m_rightEncoderComplete){
          m_goalState = IDLE;
 
@@ -155,14 +152,6 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
       m_rightEncoderComplete = false;
       m_leftEncoderComplete = false;
 
-//      std::ostringstream outputTR;
-//      outputTR << "Target Right Tick " << m_targetDistanceRight;
-//      SmartDashboard::PutString("DB/String 8", outputTR.str());
-//
-//      std::ostringstream outputTL;
-//      outputTL << "Target Left Tick " << m_targetDistanceLeft;
-//      SmartDashboard::PutString("DB/String 9", outputTL.str());
-
       if (degree > 0) {
          m_rightMotorPower = -motorSpeed;
          m_leftMotorPower = motorSpeed;
@@ -217,7 +206,6 @@ void DriveTrainController::moveRobotStraight(float distance, float motorSpeed){
 
 //Set the goal state to IDLE
 void DriveTrainController::stopRobot() {
-//   SmartDashboard::PutString("DB/String 7", "In STOP");
    m_goalState = IDLE;
 }
 

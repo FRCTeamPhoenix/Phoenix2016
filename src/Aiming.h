@@ -47,6 +47,7 @@ public:
    void printCurrentCoordinates();
    void run();
    int getCenter();
+   int getDeviation();
    virtual ~Aiming();
 
 private:

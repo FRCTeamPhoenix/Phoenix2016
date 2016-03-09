@@ -127,9 +127,7 @@ public:
       m_driveStation.clearDriveStation();
       bool addedToQueue = false;
       while (IsAutonomous()&& IsEnabled()){
-         std::ostringstream wheelEncoders;
-         wheelEncoders << "L: " << m_leftWheelEncoder.GetDistance() << " R: " << m_rightWheelEncoder.GetDistance();
-         SmartDashboard::PutString("DB/String 0", wheelEncoders.str());
+         displayDriverInfo();
          if(!addedToQueue){
             m_robotController.initAutonomousModeQueue();
             addedToQueue = true;
@@ -153,10 +151,7 @@ public:
 
 
       while(IsOperatorControl() && IsEnabled()){
-         std::ostringstream wheelEncoders;
-         wheelEncoders << "L: " << m_leftWheelEncoder.GetDistance() << " R: " << m_rightWheelEncoder.GetDistance();
-         SmartDashboard::PutString("DB/String 0", wheelEncoders.str());
-
+         displayDriverInfo();
          m_driveStation.snapShot();
          m_robotController.run();
          m_driveTrainController.run();
@@ -343,6 +338,81 @@ public:
          }
       }
    }
+
+
+   void displayDriverInfo(){
+      static int _DisplayCounter = 0;
+
+
+
+      if((_DisplayCounter % 10) == 0) {
+
+         //Space 0
+         std::ostringstream output1;
+         output1 << "Drive State " << m_robotController.getState();
+         m_driveStation.printToDashboard(output1.str(), 0);
+
+         //Space 1
+         std::ostringstream output2;
+         output2 << "Distance: " << m_lidarHandler.getFastAverage();
+         m_driveStation.printToDashboard(output2.str(), 1);
+
+
+         //Space 2
+         std::ostringstream output3;
+         output3 << "Deviation: " << m_aiming.getDeviation();
+         m_driveStation.printToDashboard(output3.str(),2);
+
+         //Space 3
+
+         //Space 4
+         if (m_loaderController.loaded()) {
+            m_driveStation.printToDashboard("Ball loaded", 4);
+         }
+         else {
+            m_driveStation.printToDashboard("Ball not loaded", 4);
+         }
+
+         //Space 5
+
+         //Space 6
+         Flywheel::STATE flyState = m_flywheel.getCurrentState();
+         if (flyState == Flywheel::STATE::READY) {
+            m_driveStation.printToDashboard("Flywheel ready", 6);
+         }
+         else if (flyState == Flywheel::STATE::NOTREADY) {
+            m_driveStation.printToDashboard("Flywheel not ready", 6);
+         }
+         else {
+            m_driveStation.printToDashboard("Flywheel off", 6);
+         }
+
+         //Space 7
+         float dist = m_lidarHandler.getFastAverage();
+         if (dist < m_configEditor.getFloat("minDistFlywheel", 24)) {
+            m_driveStation.printToDashboard("Too Close", 7);
+         }
+         else if (dist > m_configEditor.getFloat("maxDistFlywheel", 120)) {
+            m_driveStation.printToDashboard("Too Far", 7);
+         }
+         else {
+            m_driveStation.printToDashboard("In Range", 7);
+         }
+
+         //Space 8
+         std::ostringstream part8;
+         part8 << m_lidarHandler.getResetCount();
+         SmartDashboard::PutString("DB/String 8",part8.str());
+         //Space 9
+
+      }
+
+      _DisplayCounter++;
+
+   }
+
+
+
 };
 
 void lidarThread(Robot * robot, LidarHandler * lidarHandler) {

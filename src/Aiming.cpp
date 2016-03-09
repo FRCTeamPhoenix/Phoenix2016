@@ -166,7 +166,7 @@ int Aiming::getCenter(){
    return m_targetCenter_x;
 }
 int Aiming::getDeviation(){
-
+   return deviation;
 }
 
 // Called to implement all aiming mechanisms
@@ -194,7 +194,9 @@ void Aiming::run() {
 
       if ((previousTargetCenter < (m_targetCenter_x + 10) && previousTargetCenter > (m_targetCenter_x-10))){
          sameCenterCount++;
+
       }
+      deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
    }
 
    switch(m_currentState) {

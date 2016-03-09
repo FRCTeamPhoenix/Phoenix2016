@@ -88,10 +88,10 @@ void DriveStation::snapShot() {
    m_gamepadJoystickY = m_gamepad->GetY();
 }
 
-void DriveStation::printToDashboard(unsigned long *pointToString, int space){
-   std::ostringstream outputS;
-   outputS << &pointToString;
-   SmartDashboard::PutString("DB/String " + space, outputS.str());
+void DriveStation::printToDashboard(llvm::StringRef oString, int space){
+   std::ostringstream outputSpot;
+   outputSpot << "DB/String " << space;
+   SmartDashboard::PutString(outputSpot.str(), oString);
 }
 std::string DriveStation::getStringInput(int inputCode) {
    return m_stringInputs[inputCode];
