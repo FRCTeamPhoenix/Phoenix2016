@@ -40,14 +40,14 @@ void Arm::run(){
    if (!PDRIVE){
       if(m_armMotorPower > 0){
          //if (!m_leftUpperLimitSwitch->Get() && !m_rightUpperLimitSwitch->Get()){
-         if ((m_leftPotentiometer->GetVoltage() < RobotConstants::maxSoftLimitLeft) && (m_rightPotentiometer->GetVoltage() < RobotConstants::maxSoftLimitRight)){
+         if ((m_leftPotentiometer->GetVoltage() < m_configEditor->getFloat("potLeftValueHigh", 3.75)) && (m_rightPotentiometer->GetVoltage() < m_configEditor->getFloat("potRightValueHigh", 3.75))){
             power = m_armMotorPower;
          }
          //}
       }
       if(m_armMotorPower < 0 ){
          //if (!m_leftLowerLimitSwitch->Get() && !m_rightLowerLimitSwitch->Get()){
-         if ((m_leftPotentiometer->GetVoltage() > RobotConstants::minSoftLimitLeft) && (m_rightPotentiometer->GetVoltage() > RobotConstants::minSoftLimitRight)){
+         if ((m_leftPotentiometer->GetVoltage() > m_configEditor->getFloat("potLeftValueLow", 1.70)) && (m_rightPotentiometer->GetVoltage() > m_configEditor->getFloat("potRightValueLow", 1.70))){
             power = m_armMotorPower;
          }
          //}

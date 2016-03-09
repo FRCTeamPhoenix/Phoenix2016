@@ -82,7 +82,7 @@ void RobotController::performAction(void){
 
 // Push sequence of autonomous actions to the queue
 void RobotController::initAutonomousModeQueue(){
-   m_queue.push(new ActionDrive(m_driveTrain, 120, m_configEditor->getFloat("motorPower", 0.75)));
+   m_queue.push(new ActionDrive(m_driveTrain, 180, m_configEditor->getFloat("motorPower", 0.75)));
    m_state = ROBOT_AUTO;
 
 }
