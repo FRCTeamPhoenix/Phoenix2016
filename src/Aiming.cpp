@@ -12,7 +12,7 @@
  *
  */
 
-#include <Aiming.h>
+#include "Aiming.h"
 
 Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, DriveStation* driveStation,LidarHandler* lidar,ShooterController* shooter) :
    m_client(client),
@@ -68,22 +68,8 @@ void Aiming::centering() {
    }
 
 
-   if (newCenter){
-      previousTargetCenter=m_targetCenter_x;
-      m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL]
-                         +m_currentTargetCoordinates[AimingConstants::xLR])/2);
-
-      if ((previousTargetCenter < (m_targetCenter_x + 20) && previousTargetCenter > (m_targetCenter_x-20))){
-         sameCenterCount++;
-      }
-   }
-
-
-
-
-
    //only move if the drivtrain is idle and we have received the most recent packet
-   if (driveIdle && newCenter && m_targetCenter_x !=0){
+   if (driveIdle && newCenter && sameCenterCount >2 && m_targetCenter_x !=0){
       sameCenterCount=0;
       moveCount++;
       //move ccw if target right of desired
@@ -174,7 +160,12 @@ void Aiming::printCurrentCoordinates() {
          m_currentTargetCoordinates[AimingConstants::xLR] << ", " <<
          m_currentTargetCoordinates[AimingConstants::yLR] << ")" << endl;
 }
+int Aiming::getCenter(){
+   return m_targetCenter_x;
+}
+int Aiming::getDeviation(){
 
+}
 
 // Called to implement all aiming mechanisms
 void Aiming::run() {
@@ -192,18 +183,29 @@ void Aiming::run() {
    SmartDashboard::PutString("DB/String 3",centerSame.str());
 
 
+   getNewImageData();
+   if (newCenter){
+      previousTargetCenter=m_targetCenter_x;
+
+      m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL]
+                         +m_currentTargetCoordinates[AimingConstants::xLR])/2);
+
+      if ((previousTargetCenter < (m_targetCenter_x + 10) && previousTargetCenter > (m_targetCenter_x-10))){
+         sameCenterCount++;
+      }
+   }
 
    switch(m_currentState) {
    case IDLE:
       m_driveTrainController->setGoalState(m_driveTrainController->TELEOP);
       fullProcess=false;
       hasApproached=false;
-      getNewImageData();
       previousTargetCenter=-1;
       sameCenterCount=0;
 
 
-      SmartDashboard::PutString("DB/String 0", "State: IDLE" );
+
+      //SmartDashboard::PutString("DB/String 0", "State: IDLE" );
 
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonStart)) {
             fullProcess=true;
@@ -218,12 +220,12 @@ void Aiming::run() {
 
       break;
    case CENTERING:
-      SmartDashboard::PutString("DB/String 0", "State: Centering" );
+      //SmartDashboard::PutString("DB/String 0", "State: Centering" );
       getNewImageData();
       centering();
       break;
    case APPROACHING:
-      SmartDashboard::PutString("DB/String 0", "State: Approaching" );
+      //SmartDashboard::PutString("DB/String 0", "State: Approaching" );
       getNewImageData();
       approachTarget();
       break;

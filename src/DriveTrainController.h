@@ -51,7 +51,7 @@ public:
    STATE getCurrentState();
 
    void setGoalState(STATE currentState);
-   void setDriveConstants(float, float);
+   void setDriveConstants(float inches, float motorSpeed);
 
 private:
    STATE m_goalState;

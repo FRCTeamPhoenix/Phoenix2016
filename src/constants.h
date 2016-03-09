@@ -22,10 +22,10 @@ struct PortAssign {
    const static uint32_t rightWheelEncoderChannelB = 3;
 
    //Flywheels
-   const static uint32_t leftFlywheelEncoderChannelA = 4;
-   const static uint32_t leftFlywheelEncoderChannelB = 5;
-   const static uint32_t rightFlywheelEncoderChannelA = 6;
-   const static uint32_t rightFlywheelEncoderChannelB = 7;
+   const static uint32_t leftFlywheelEncoderChannelA = 6;
+   const static uint32_t leftFlywheelEncoderChannelB = 7;
+   const static uint32_t rightFlywheelEncoderChannelA = 4;
+   const static uint32_t rightFlywheelEncoderChannelB = 5;
 
 
    //Loader
@@ -61,8 +61,7 @@ struct RobotConstants {
    constexpr static bool gyro = false; //Determines which mode we use for turning.
 
    constexpr static double distancePerDegree = 0.2093;
-   //constexpr static double rightDistancePerPulse = (66.0/1720.0); //0.0384
-   //constexpr static double leftDistancePerPulse = (66.0/2475.0); //0.0267
+
    constexpr static int lidarErrorRange = 4;
 
    constexpr static const float armMotorLeftPower = 1.0f;
@@ -80,6 +79,14 @@ struct RobotConstants {
    constexpr static const float maxSoftLimitRight = 2.5;
    constexpr static const float minSoftLimitLeft = 0.34;
    constexpr static const float minSoftLimitRight = 0.5;
+
+   constexpr static const float maxDistFlywheelRate = 1950;
+   constexpr static const float midDistFlywheelRate = 1550;
+   constexpr static const float minDistFlywheelRate = 1950;
+
+   constexpr static const float maxDistFlywheel = 10 * 12;
+   constexpr static const float midDistFlywheel = 7 * 12;
+   constexpr static const float minDistFlywheel = 4 * 12;
 
 
 };
@@ -309,48 +316,61 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-   const static int numberOfVars = 19;
+   const static int numberOfVars = 25;
    const static std::string variables[numberOfVars] = {
-         "motorPower",
-         "degree",
-         "distance",
-         "leftDistancePerPulse",
-         "rightDistancePerPulse",
-         "armMotorPower",
-         "homingPower",
-         "outerIntakeMotorPower",
-         "innerIntakeMotorPower",
-         "flywheelMotorPower",
-         "potLeftValueLow",
-         "potRightValueLow",
-         "potLeftValueHigh",
-         "potRightValueHigh",
-         "wheelEncoderDistancePerDegree",
-         "fastAverageFactor",
-         "slowAverageFactor",
-         "lidarOffset"
-         "shooterPower"
+      "motorPower",
+      "degree",
+      "distance",
+      "leftDistancePerPulse",
+      "rightDistancePerPulse",
+      "armMotorPower",
+      "homingPower",
+      "outerIntakeMotorPower",
+      "innerIntakeMotorPower",
+      "flywheelMotorPower",
+      "potLeftValueLow",
+      "potRightValueLow",
+      "potLeftValueHigh",
+      "potRightValueHigh",
+      "wheelEncoderDistancePerDegree",
+      "fastAverageFactor",
+      "slowAverageFactor",
+      "lidarOffset",
+      "shooterPower",
+      "maxDistFlywheel",
+      "midDistFlywheel",
+      "minDistFlywheel",
+      "maxDistFlywheelRate",
+      "midDistFlywheelRate",
+      "minDistFlywheelRate"
    };
    const static std::string types[numberOfVars] = {
-         "float", //motorPower
-         "float", //degree
-         "float", //distance
-         "double", //leftDistancePerPulse
-         "double", //rightDistancePerPulse
-         "float", //armMotorPower
-         "float", //homingPower
-         "float", //outerIntakeMotorPower
-         "float", //innerIntakeMotorPower
-         "float", //flywheelMotorPower
-         "float", //potLeftValueLow
-         "float", //potRightValueLow
-         "float", //potLeftValueHigh
-         "float", //potRightValueHigh
-         "float", //wheelEncoderDistancePerDegree
-         "double", //fastAverageFactor
-         "double", //slowAverageFactor,
-         "double" //lidarOffset
-         "float", //shooterPower
+      "float", //motorPower
+      "float", //degree
+      "float", //distance
+      "double", //leftDistancePerPulse
+      "double", //rightDistancePerPulse
+      "float", //armMotorPower
+      "float", //homingPower
+      "float", //outerIntakeMotorPower
+      "float", //innerIntakeMotorPower
+      "float", //flywheelMotorPower
+      "float", //potLeftValueLow
+      "float", //potRightValueLow
+      "float", //potLeftValueHigh
+      "float", //potRightValueHigh
+      "float", //wheelEncoderDistancePerDegree
+      "double", //fastAverageFactor
+      "double", //slowAverageFactor,
+      "double", //lidarOffset
+      "float", //shooterPower
+      "float", //maxDistFlywheel
+      "float", //midDistFlywheel
+      "float", //minDistFlywheel
+      "float", //maxDistFlywheelRate
+      "float", //midDistFlywheelRate
+      "float" //minDistFlywheelRate
+
    };
 };
 

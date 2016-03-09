@@ -5,7 +5,7 @@
  *      Author: ben
  */
 
-#include <ConfigEditor.h>
+#include "ConfigEditor.h"
 
 ConfigEditor::ConfigEditor(DriveStation* DriveStation):
 m_DriveStation(DriveStation){
@@ -52,20 +52,20 @@ void ConfigEditor::getConfig() {
    Preferences::GetInstance()->Save();
 }
 
-int ConfigEditor::getInt(std::string key) {
-   return Preferences::GetInstance()->GetInt(key,0);
+int ConfigEditor::getInt(std::string key, int defaultValue) {
+   return Preferences::GetInstance()->GetInt(key, defaultValue);
 }
 
-float ConfigEditor::getFloat(std::string key) {
-   return Preferences::GetInstance()->GetFloat(key,0.0f);
+float ConfigEditor::getFloat(std::string key, float defaultValue) {
+   return Preferences::GetInstance()->GetFloat(key, defaultValue);
 }
 
-double ConfigEditor::getDouble(std::string key) {
-   return Preferences::GetInstance()->GetDouble(key,0.0);
+double ConfigEditor::getDouble(std::string key, double defaultValue) {
+   return Preferences::GetInstance()->GetDouble(key, defaultValue);
 }
 
-std::string ConfigEditor::getString(std::string key) {
-   return Preferences::GetInstance()->GetString(key,"");
+std::string ConfigEditor::getString(std::string key, std::string defaultValue) {
+   return Preferences::GetInstance()->GetString(key, defaultValue);
 }
 
 void ConfigEditor::saveConfig() {

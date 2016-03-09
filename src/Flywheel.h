@@ -12,6 +12,11 @@
 #include "WheelSpeedController.h"
 #include "LidarHandler.h"
 
+
+
+
+
+
 class Flywheel : BaseController {
 private:
    Talon* m_leftFlywheelMotor;
@@ -26,13 +31,6 @@ private:
    ConfigEditor * m_configEditor;
 
    bool m_spinning;
-   float m_maxDistance;
-   float m_maxDistanceRate;
-
-   float m_minDistance;
-   float m_minDistanceRate;
-
-
 
    void setRate(float rate);
    float calculateSpeed();
