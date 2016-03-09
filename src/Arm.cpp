@@ -36,40 +36,18 @@ Arm::~Arm() {
 
 
 void Arm::run(){
-
-//   std::ostringstream leftPotentiometer;
-//   leftPotentiometer << "LP Voltage: ";
-//   leftPotentiometer << m_leftPotentiometer->GetVoltage();
-//   SmartDashboard::PutString("DB/String 1", leftPotentiometer.str());
-//
-//   std::ostringstream rightPotentiometer;
-//   rightPotentiometer << "RP Voltage: ";
-//   rightPotentiometer << m_rightPotentiometer->GetVoltage();
-//   SmartDashboard::PutString("DB/String 2", rightPotentiometer.str());
-
-//   std::ostringstream limitSwitch;
-//   limitSwitch << "BL: ";
-//   limitSwitch << m_leftLowerLimitSwitch->Get();
-//   limitSwitch << " BR: ";
-//   limitSwitch << m_rightLowerLimitSwitch->Get();
-//   limitSwitch << " FR: ";
-//   limitSwitch << m_rightUpperLimitSwitch->Get();
-//   limitSwitch << " FL: ";
-//   limitSwitch << m_leftUpperLimitSwitch->Get();
-//   SmartDashboard::PutString("DB/String 7", limitSwitch.str());
-
    float power = 0.0;
    if (!PDRIVE){
       if(m_armMotorPower > 0){
          //if (!m_leftUpperLimitSwitch->Get() && !m_rightUpperLimitSwitch->Get()){
-         if ((m_leftPotentiometer->GetVoltage() < RobotConstants::maxSoftLimitLeft) && (m_rightPotentiometer->GetVoltage() < RobotConstants::maxSoftLimitRight)){
+         if ((m_leftPotentiometer->GetVoltage() < m_configEditor->getFloat("potLeftValueHigh", 3.75)) && (m_rightPotentiometer->GetVoltage() < m_configEditor->getFloat("potRightValueHigh", 3.75))){
             power = m_armMotorPower;
          }
          //}
       }
       if(m_armMotorPower < 0 ){
          //if (!m_leftLowerLimitSwitch->Get() && !m_rightLowerLimitSwitch->Get()){
-         if ((m_leftPotentiometer->GetVoltage() > RobotConstants::minSoftLimitLeft) && (m_rightPotentiometer->GetVoltage() > RobotConstants::minSoftLimitRight)){
+         if ((m_leftPotentiometer->GetVoltage() > m_configEditor->getFloat("potLeftValueLow", 1.70)) && (m_rightPotentiometer->GetVoltage() > m_configEditor->getFloat("potRightValueLow", 1.70))){
             power = m_armMotorPower;
          }
          //}

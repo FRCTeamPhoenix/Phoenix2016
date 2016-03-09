@@ -38,13 +38,7 @@ void RobotController::run(){
       }
       performAction();
    }
-   else if (m_state == ROBOT_MANUAL)
-   {
-
-      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
-         m_queue.push(new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
-         m_state = ROBOT_AUTO;
-      }
+   else if (m_state == ROBOT_MANUAL) {
 
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonRB)){
          m_loaderController->start();
@@ -88,7 +82,7 @@ void RobotController::performAction(void){
 
 // Push sequence of autonomous actions to the queue
 void RobotController::initAutonomousModeQueue(){
-   m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+   m_queue.push(new ActionDrive(m_driveTrain, 180, m_configEditor->getFloat("motorPower", 0.75)));
    m_state = ROBOT_AUTO;
 
 }
@@ -105,4 +99,8 @@ void RobotController::clearQueue() {
    m_driveTrain->stopRobot();
    m_state = ROBOT_MANUAL;
    return;
+}
+
+RobotController::STATE RobotController::getState() {
+   return m_state;
 }
