@@ -262,8 +262,8 @@ public:
          //      }
          //Aiming Robot Counter Clockwise 90 degrees
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
-            SmartDashboard::PutString("DB/String 6", "Arm Preset 0");
-            m_arm.moveArmToPosition(0);
+           SmartDashboard::PutString("DB/String 6", "Rotation");
+           m_driveTrainController.aimRobotClockwise(90,0.5);
 
          }
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){

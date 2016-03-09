@@ -46,7 +46,7 @@ void Arm::setMotors(){
    float leftPotentiometer = m_leftPotentiometer->GetVoltage();
    float rightPotentiometer = m_rightPotentiometer->GetVoltage();
 
-   if((RobotConstants::maxSoftLimitRight - RobotConstants::minSoftLimitRight) * 0.05 < fabs(leftPotentiometer - rightPotentiometer)){
+   if((m_configEditor->getFloat("maxSoftLimitRight") - m_configEditor->getFloat("minSoftLimitRight")) * 0.05 < fabs(leftPotentiometer - rightPotentiometer)){
       if(m_armMotorPower > 0){
          if(leftPotentiometer > rightPotentiometer){
             powerLeft = m_armMotorPower / 2;
@@ -204,13 +204,13 @@ void Arm::moveArmToPosition(float goal){
       (m_goalRightPotentiometerValue < initalRightPotentiometerValue)){
       m_armMotorPower = -(m_configEditor->getFloat("armMotorPower"));
    }
-   else if((m_goalLeftPotentiometerValue > initalLeftPotentiometerValue) &&
+   if((m_goalLeftPotentiometerValue > initalLeftPotentiometerValue) &&
            (m_goalRightPotentiometerValue > initalRightPotentiometerValue)){
       m_armMotorPower = m_configEditor->getFloat("armMotorPower");
    }
-   else{
-      m_armMotorPower = 0;
-   }
+//   else{
+//      m_armMotorPower = 0;
+//   }
    m_goalState = POTENTIOMETERDRIVE;
 }
 
