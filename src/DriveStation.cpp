@@ -88,10 +88,10 @@ void DriveStation::snapShot() {
    m_gamepadJoystickY = m_gamepad->GetY();
 }
 
-void DriveStation::printToDashboard(unsigned long *pointToString, int space){
-   std::ostringstream outputS;
-   outputS << &pointToString;
-   SmartDashboard::PutString("DB/String " + space, outputS.str());
+void DriveStation::printToDashboard(llvm::StringRef oString, int space){
+   std::ostringstream outputSpot;
+   outputSpot << "DB/String " << space;
+   SmartDashboard::PutString(outputSpot.str(), oString);
 }
 std::string DriveStation::getStringInput(int inputCode) {
    return m_stringInputs[inputCode];
@@ -109,6 +109,19 @@ void DriveStation::setString(int stringNumber, std::string value) {
 void DriveStation::setButton(int buttonNumber, bool value) {
    SmartDashboard::PutBoolean(DriveStationConstants::dashButtonNames[buttonNumber], value);
 
+}
+
+void DriveStation::clearDriveStation() {
+   SmartDashboard::PutString("DB/String 0", " ");
+   SmartDashboard::PutString("DB/String 1", " ");
+   SmartDashboard::PutString("DB/String 2", " ");
+   SmartDashboard::PutString("DB/String 3", " ");
+   SmartDashboard::PutString("DB/String 4", " ");
+   SmartDashboard::PutString("DB/String 5", " ");
+   SmartDashboard::PutString("DB/String 6", " ");
+   SmartDashboard::PutString("DB/String 7", " ");
+   SmartDashboard::PutString("DB/String 8", " ");
+   SmartDashboard::PutString("DB/String 9", " ");
 }
 
 DriveStation::~DriveStation() {

@@ -92,7 +92,7 @@ public:
       m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor, &m_lidarHandler),
       m_driveCamera("cam0",false),//cam0 is nice camera cam1 is microsoft lifecam.
       m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
-      m_flywheel(&m_leftFlywheelMotor, &m_rightFlywheelMotor, &m_leftFlywheelEncoder, &m_rightFlywheelEncoder, &m_lidarHandler),
+      m_flywheel(&m_leftFlywheelMotor, &m_rightFlywheelMotor, &m_leftFlywheelEncoder, &m_rightFlywheelEncoder, &m_lidarHandler, &m_configEditor),
       m_loaderController(&m_intakeMotor, &m_stationaryMotor, &m_loadedSensor, &m_driveStation, &m_configEditor),
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor, &m_driveStation),
@@ -106,14 +106,14 @@ public:
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
       m_gyro.Calibrate();
       m_configEditor.showAllKeys();
-
-      cout<<"run init socket function" << endl;
-      m_client.initilizeSocket();
-      if (m_client.m_initGood){
-         cout<<"init good start thread" << endl;
-         std::thread receiveThread(runClient, this, &m_client);
-         receiveThread.detach();
-      }
+//TODO: uncomment this block of code
+//      cout<<"run init socket function" << endl;
+//      m_client.initilizeSocket();
+//      if (m_client.m_initGood){
+//         cout<<"init good start thread" << endl;
+//         std::thread receiveThread(runClient, this, &m_client);
+//         receiveThread.detach();
+//      }
 
       m_driveCamera.SetExposureManual(20);
       m_driveCamera.SetWhiteBalanceAuto();
@@ -124,23 +124,11 @@ public:
       lidarRun.detach();
    }
    void Autonomous (){
-      SmartDashboard::PutString("DB/String 0", "Autonomous ");
-      SmartDashboard::PutString("DB/String 0", " ");
-      SmartDashboard::PutString("DB/String 1", " ");
-      SmartDashboard::PutString("DB/String 2", " ");
-      SmartDashboard::PutString("DB/String 3", " ");
-      SmartDashboard::PutString("DB/String 4", " ");
-      SmartDashboard::PutString("DB/String 5", " ");
-      SmartDashboard::PutString("DB/String 6", " ");
-      SmartDashboard::PutString("DB/String 7", " ");
-      SmartDashboard::PutString("DB/String 8", " ");
-      SmartDashboard::PutString("DB/String 9", " ");
+      m_driveStation.clearDriveStation();
       bool addedToQueue = false;
-      m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
-      m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
 
       while (IsAutonomous()&& IsEnabled()){
-
+         displayDriverInfo();
          if(!addedToQueue){
             m_robotController.initAutonomousModeQueue();
             addedToQueue = true;
@@ -148,48 +136,30 @@ public:
          m_driveStation.snapShot();
          m_driveTrainController.run();
          m_robotController.run();
-         //m_shooterController.run();
+         m_shooterController.run();
          //m_arm.run();
       }
+      m_robotController.clearQueue();
    }
 
    void OperatorControl(){
-      SmartDashboard::PutString("DB/String 0", "Teleop ");
-      SmartDashboard::PutString("DB/String 0", " ");
-      SmartDashboard::PutString("DB/String 1", " ");
-      SmartDashboard::PutString("DB/String 2", " ");
-      SmartDashboard::PutString("DB/String 3", " ");
-      SmartDashboard::PutString("DB/String 4", " ");
-      SmartDashboard::PutString("DB/String 5", " ");
-      SmartDashboard::PutString("DB/String 6", " ");
-      SmartDashboard::PutString("DB/String 7", " ");
-      SmartDashboard::PutString("DB/String 8", " ");
-      SmartDashboard::PutString("DB/String 9", " ");
-
-
+      m_driveStation.clearDriveStation();
       std::thread lidarRun(lidarThread, this, &m_lidarHandler);
       lidarRun.detach();
       m_driveTrainController.setGoalState(DriveTrainController::TELEOP);
       m_robotController.setManual();
-      m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
-      m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
+
 
       while(IsOperatorControl() && IsEnabled()){
-         std::ostringstream LE;
-         LE << m_leftWheelEncoder.GetDistance();
-         SmartDashboard::PutString("DB/String 7", LE.str());
-
-         std::ostringstream RE;
-         RE << m_rightWheelEncoder.GetDistance();
-         SmartDashboard::PutString("DB/String 8", RE.str());
-
+         displayDriverInfo();
          m_driveStation.snapShot();
          m_robotController.run();
          m_driveTrainController.run();
          m_shooterController.run();
-         m_aiming.run();
+         //m_aiming.run();
          m_arm.run();
       }
+      m_robotController.clearQueue();
    }
 
    void Test(){
@@ -197,20 +167,7 @@ public:
       m_leftWheelEncoder.Reset();
       m_rightWheelEncoder.Reset();
 
-      //Clears the Dashboard
-      SmartDashboard::PutString("DB/String 0", "Entering Test ");
-      SmartDashboard::PutString("DB/String 0", " ");
-      SmartDashboard::PutString("DB/String 1", " ");
-      SmartDashboard::PutString("DB/String 2", " ");
-      SmartDashboard::PutString("DB/String 3", " ");
-      SmartDashboard::PutString("DB/String 4", " ");
-      SmartDashboard::PutString("DB/String 5", " ");
-      SmartDashboard::PutString("DB/String 6", " ");
-      SmartDashboard::PutString("DB/String 7", " ");
-      SmartDashboard::PutString("DB/String 8", " ");
-      SmartDashboard::PutString("DB/String 9", " ");
-      m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
-      m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
+      m_driveStation.clearDriveStation();
 
       while(IsTest() && IsEnabled()){
          /*if(SmartDashboard::GetBoolean("DB/Button 3",false)) {
@@ -240,17 +197,14 @@ public:
          //Outputs the encoder value of the left and right wheels
          std::ostringstream outputR;
          outputR << "EncoderR: ";
-         outputR << (m_rightWheelEncoder.Get());
+         outputR << (m_rightWheelEncoder.GetDistance());
          SmartDashboard::PutString("DB/String 0", outputR.str());
          std::ostringstream outputL;
          outputL << "EncoderL: ";
-         outputL << (m_leftWheelEncoder.Get());
+         outputL << (m_leftWheelEncoder.GetDistance());
          SmartDashboard::PutString("DB/String 1", outputL.str());
 
          //DriveTrainController
-         std::ostringstream outputDriveTrainController;
-         outputDriveTrainController << "DTC State: " << (m_driveTrainController.getCurrentState());
-         SmartDashboard::PutString("DB/String 3", outputDriveTrainController.str());
 
          //Aiming Robot Clockwise 90 degrees
          //         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
@@ -303,6 +257,79 @@ public:
          }
       }
    }
+
+
+   void displayDriverInfo(){
+      static int _DisplayCounter = 0;
+
+
+
+      if((_DisplayCounter % 10) == 0) {
+
+         //Space 0
+         std::ostringstream output1;
+         output1 << "Drive State " << m_robotController.getState();
+         m_driveStation.printToDashboard(output1.str(), 0);
+
+         //Space 1
+         std::ostringstream output2;
+         output2 << "Distance: " << m_lidarHandler.getFastAverage();
+         m_driveStation.printToDashboard(output2.str(), 1);
+
+
+         //Space 2
+
+
+         //Space 3
+
+         //Space 4
+         if (m_loaderController.loaded()) {
+            m_driveStation.printToDashboard("Ball loaded", 4);
+         }
+         else {
+            m_driveStation.printToDashboard("Ball not loaded", 4);
+         }
+
+         //Space 5
+
+         //Space 6
+         Flywheel::STATE flyState = m_flywheel.getCurrentState();
+         if (flyState == Flywheel::STATE::READY) {
+            m_driveStation.printToDashboard("Flywheel ready", 6);
+         }
+         else if (flyState == Flywheel::STATE::NOTREADY) {
+            m_driveStation.printToDashboard("Flywheel not ready", 6);
+         }
+         else {
+            m_driveStation.printToDashboard("Flywheel off", 6);
+         }
+
+         //Space 7
+         float dist = m_lidarHandler.getFastAverage();
+         if (dist < m_configEditor.getFloat("minDistFlywheel", 24)) {
+            m_driveStation.printToDashboard("To Close", 7);
+         }
+         else if (dist > m_configEditor.getFloat("maxDistFlywheel", 120)) {
+            m_driveStation.printToDashboard("To Far", 7);
+         }
+         else {
+            m_driveStation.printToDashboard("In Range", 7);
+         }
+
+         //Space 8
+         std::ostringstream part8;
+         part8 << m_lidarHandler.getResetCount();
+         SmartDashboard::PutString("DB/String 8",part8.str());
+         //Space 9
+
+      }
+
+      _DisplayCounter++;
+
+   }
+
+
+
 };
 
 void lidarThread(Robot * robot, LidarHandler * lidarHandler) {

@@ -22,10 +22,10 @@ struct PortAssign {
    const static uint32_t rightWheelEncoderChannelB = 3;
 
    //Flywheels
-   const static uint32_t leftFlywheelEncoderChannelA = 12;
-   const static uint32_t leftFlywheelEncoderChannelB = 13;
-   const static uint32_t rightFlywheelEncoderChannelA = 14;
-   const static uint32_t rightFlywheelEncoderChannelB = 15;
+   const static uint32_t leftFlywheelEncoderChannelA = 6;
+   const static uint32_t leftFlywheelEncoderChannelB = 7;
+   const static uint32_t rightFlywheelEncoderChannelA = 4;
+   const static uint32_t rightFlywheelEncoderChannelB = 5;
 
 
    //Loader
@@ -46,8 +46,8 @@ struct PortAssign {
    const static uint32_t leftPotentiometer = 2;
 
    //DIO
-   const static uint32_t rightLowerLimitSwitch = 6;
-   const static uint32_t rightUpperLimitSwitch = 7;
+   const static uint32_t rightLowerLimitSwitch = 12;
+   const static uint32_t rightUpperLimitSwitch = 13;
    const static uint32_t leftLowerLimitSwitch = 10; //how do you do extensions
    const static uint32_t leftUpperLimitSwitch = 11; //how do you do extensions
 };
@@ -61,8 +61,7 @@ struct RobotConstants {
    constexpr static bool gyro = false; //Determines which mode we use for turning.
 
    constexpr static double distancePerDegree = 0.2093;
-   //constexpr static double rightDistancePerPulse = (66.0/1720.0); //0.0384
-   //constexpr static double leftDistancePerPulse = (66.0/2475.0); //0.0267
+
    constexpr static int lidarErrorRange = 4;
 
    constexpr static const float armMotorLeftPower = 1.0f;
@@ -82,8 +81,15 @@ struct RobotConstants {
    constexpr static const float minSoftLimitRight = 1.55;
 
 
-};
+   constexpr static const float maxDistFlywheelRate = 1950;
+   constexpr static const float midDistFlywheelRate = 1550;
+   constexpr static const float minDistFlywheelRate = 1950;
 
+   constexpr static const float maxDistFlywheel = 10 * 12;
+   constexpr static const float midDistFlywheel = 7 * 12;
+   constexpr static const float minDistFlywheel = 4 * 12;
+
+};
 struct LidarConstants {
    const static int numberStoredValues = 100;
    constexpr static double periodToInches = 100000.0 / 2.54;
@@ -309,54 +315,60 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-   const static int numberOfVars = 22;
+   const static int numberOfVars = 25;
    const static std::string variables[numberOfVars] = {
-         "motorPower",
-         "degree",
-         "distance",
-         "leftDistancePerPulse",
-         "rightDistancePerPulse",
-         "armMotorPower",
-         "homingPower",
-         "outerIntakeMotorPower",
-         "innerIntakeMotorPower",
-         "flywheelMotorPower",
-         "maxSoftLimitLeft",
-         "maxSoftLimitRight",
-         "minSoftLimitLeft",
-         "minSoftLimitRight",
-         "potLeftValueLow",
-         "potRightValueLow",
-         "potLeftValueHigh",
-         "potRightValueHigh",
-         "wheelEncoderDistancePerDegree",
-         "fastAverageFactor",
-         "slowAverageFactor",
-         "lidarOffset"
+      "motorPower",
+      "degree",
+      "distance",
+      "leftDistancePerPulse",
+      "rightDistancePerPulse",
+      "armMotorPower",
+      "homingPower",
+      "outerIntakeMotorPower",
+      "innerIntakeMotorPower",
+      "flywheelMotorPower",
+      "potLeftValueLow",
+      "potRightValueLow",
+      "potLeftValueHigh",
+      "potRightValueHigh",
+      "wheelEncoderDistancePerDegree",
+      "fastAverageFactor",
+      "slowAverageFactor",
+      "lidarOffset",
+      "shooterPower",
+      "maxDistFlywheel",
+      "midDistFlywheel",
+      "minDistFlywheel",
+      "maxDistFlywheelRate",
+      "midDistFlywheelRate",
+      "minDistFlywheelRate"
    };
    const static std::string types[numberOfVars] = {
-         "float", //motorPower
-         "float", //degree
-         "float", //distance
-         "double", //leftDistancePerPulse
-         "double", //rightDistancePerPulse
-         "float", //armMotorPower
-         "float", //homingPower
-         "float", //outerIntakeMotorPower
-         "float", //innerIntakeMotorPower
-         "float", //flywheelMotorPower
-         "float", //maxSoftLimitLeft
-         "float", //maxSoftLimitRight
-         "float", //minSoftLimitLeft
-         "float", //minSoftLimitRight
-         "float", //potLeftValueLow
-         "float", //potRightValueLow
-         "float", //potLeftValueHigh
-         "float", //potRightValueHigh
-         "float", //wheelEncoderDistancePerDegree
-         "double", //fastAverageFactor
-         "double", //slowAverageFactor,
-         "double" //lidarOffset
+      "float", //motorPower
+      "float", //degree
+      "float", //distance
+      "double", //leftDistancePerPulse
+      "double", //rightDistancePerPulse
+      "float", //armMotorPower
+      "float", //homingPower
+      "float", //outerIntakeMotorPower
+      "float", //innerIntakeMotorPower
+      "float", //flywheelMotorPower
+      "float", //potLeftValueLow
+      "float", //potRightValueLow
+      "float", //potLeftValueHigh
+      "float", //potRightValueHigh
+      "float", //wheelEncoderDistancePerDegree
+      "double", //fastAverageFactor
+      "double", //slowAverageFactor,
+      "double", //lidarOffset
+      "float", //shooterPower
+      "float", //maxDistFlywheel
+      "float", //midDistFlywheel
+      "float", //minDistFlywheel
+      "float", //maxDistFlywheelRate
+      "float", //midDistFlywheelRate
+      "float" //minDistFlywheelRate
    };
 };
 

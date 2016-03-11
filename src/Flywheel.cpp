@@ -7,14 +7,15 @@
 
 #include "Flywheel.h"
 
-Flywheel::Flywheel(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor, Encoder* leftFlywheelEncoder, Encoder* rightFlywheelEncoder, LidarHandler* lidar) :
+Flywheel::Flywheel(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor, Encoder* leftFlywheelEncoder, Encoder* rightFlywheelEncoder, LidarHandler* lidar, ConfigEditor * configEditor) :
    m_leftFlywheelMotor(leftFlywheelMotor),
    m_rightFlywheelMotor(rightFlywheelMotor),
    m_leftFlywheelEncoder(leftFlywheelEncoder),
    m_rightFlywheelEncoder(rightFlywheelEncoder),
    m_lidar(lidar),
    m_leftFlywheelController(m_leftFlywheelMotor, m_leftFlywheelEncoder),
-   m_rightFlywheelController(m_rightFlywheelMotor, m_rightFlywheelEncoder)
+   m_rightFlywheelController(m_rightFlywheelMotor, m_rightFlywheelEncoder),
+   m_configEditor(configEditor)
 {
    m_spinning = false;
 
@@ -36,18 +37,13 @@ void Flywheel::run(){
 }
 Flywheel::STATE Flywheel::getCurrentState(){
    if(!m_spinning){
-      SmartDashboard::PutString("DB/String 5", "OFF");
-      SmartDashboard::PutString("DB/String 6", " ");
-
       return OFF;
    }
 
    if(upToSpeed(0.05)){
-      SmartDashboard::PutString("DB/String 5", "Ready To Fire");
       return READY;
    }
    else{
-      SmartDashboard::PutString("DB/String 5", "Not Ready To Fire");
       return NOTREADY;
    }
 
@@ -76,28 +72,43 @@ float Flywheel::calculateSpeed() {
    return 1900;
    float currentDistance = m_lidar->getFastAverage();
 
-   if(currentDistance < m_minDistance){
-      SmartDashboard::PutString("DB/String 6", "To Close");
-      return m_minDistanceRate;
+   float farPoint;
+   float closePoint;
+   float farPointRate;
+   float closePointRate;
+
+   if(currentDistance >= m_configEditor->getFloat("maxDistFlywheel", 144)){
+      return m_configEditor->getFloat("maxDistFlywheelRate", 1900);
    }
-   if(currentDistance > m_maxDistance){
-      SmartDashboard::PutString("DB/String 6", "To Far");
-      return m_maxDistanceRate;
+   if(currentDistance <= m_configEditor->getFloat("minDistFlywheel", 48)){
+      return m_configEditor->getFloat("minDistFlywheelRate", 1900);
    }
 
-   SmartDashboard::PutString("DB/String 6", "Correct Range");
+   if((currentDistance >= m_configEditor->getFloat("midDistFlywheel", 96))){
+      farPoint = m_configEditor->getFloat("maxDistFlywheel", 144);
+      closePoint = m_configEditor->getFloat("midDistFlywheel", 96);
+      farPointRate = m_configEditor->getFloat("maxDistFlywheelRate", 1900);
+      closePointRate = m_configEditor->getFloat("midDistFlywheelRate", 1700);
+   }
+   else {
+      farPoint = m_configEditor->getFloat("midDistFlywheel", 96);
+      closePoint = m_configEditor->getFloat("minDistFlywheel", 48);
+      farPointRate = m_configEditor->getFloat("midDistFlywheelRate", 1800);
+      closePointRate = m_configEditor->getFloat("minDistFlywheelRate", 1900);
+   }
 
-   float deltaDistance = m_maxDistance - m_minDistance;
-   float maxToCurrent = m_maxDistance - currentDistance;
-   float minToCurrent = currentDistance - m_minDistance;
 
 
-   float maxFactor = 1 - (maxToCurrent / deltaDistance);
-   float minFactor = 1 - (minToCurrent / deltaDistance);
+   float deltaDistance = farPoint - closePoint;
+   float maxToCurrent = farPoint - currentDistance;
+   float minToCurrent = currentDistance - closePoint;
 
-   float speed = (maxFactor * m_maxDistanceRate) + (minFactor * m_minDistanceRate);
 
-   return speed;
+   float farFactor = 1 - (maxToCurrent / deltaDistance);
+   float closeFactor = 1 - (minToCurrent / deltaDistance);
+
+   float rate = (farFactor * farPointRate) + (closeFactor * closePointRate);
+   return rate;
 }
 
 

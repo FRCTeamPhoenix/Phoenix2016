@@ -40,8 +40,9 @@ public:
    //Sets member varibles for all inputs
    void snapShot();
    //For printing strings to the dashboard
-   void printToDashboard(unsigned long *pointToString, int space);
+   void printToDashboard(llvm::StringRef oString, int space);
    void gyroTest();
+   void clearDriveStation();
 
 
 private:

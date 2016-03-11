@@ -5,7 +5,7 @@
  *      Author: Ian
  */
 
-#include <LidarHandler.h>
+#include "LidarHandler.h"
 
 /**
  * All distances in class are in inches
@@ -49,12 +49,9 @@ void LidarHandler::run() {
     bool infDistance = distance - distance != 0;
 
     if(infDistance) {
-       SmartDashboard::PutBoolean("DB/Button 1",false);
        m_resetCount++;
        m_onSwitch->Set(Relay::kOff);
-       SmartDashboard::PutString("DB/String 1", "resetting");
        Wait(0.3);
-       SmartDashboard::PutString("DB/String 1", " ");
        m_onSwitch->Set(Relay::kOn);
     } else {
        m_distance = distance;

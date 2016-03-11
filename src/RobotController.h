@@ -40,6 +40,8 @@ public:
    void setManual();
    void run();
    void performAction(void);
+   void clearQueue();
+   STATE getState();
 private:
    STATE m_state;
 

@@ -12,7 +12,7 @@
  *
  */
 
-#include <Aiming.h>
+#include "Aiming.h"
 
 Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, DriveStation* driveStation,LidarHandler* lidar,ShooterController* shooter) :
    m_client(client),
@@ -79,7 +79,7 @@ void Aiming::centering() {
 
    ostringstream aimingPrints;
    aimingPrints<< "C: " << m_targetCenter_x << ", " << "D: " << deviation;
-   SmartDashboard::PutString("DB/String 9",aimingPrints.str());
+   //SmartDashboard::PutString("DB/String 9",aimingPrints.str());
 
    if (driveIdle){
       if(deviation< -AimingConstants::rotationVariance && newCenter){
@@ -198,7 +198,7 @@ void Aiming::run() {
       hasApproached=false;
       getNewImageData();
 
-      SmartDashboard::PutString("DB/String 0", "State: IDLE" );
+      //SmartDashboard::PutString("DB/String 0", "State: IDLE" );
 
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonStart)) {
             fullProcess=true;
@@ -216,17 +216,17 @@ void Aiming::run() {
 
       break;
    case CENTERING:
-      SmartDashboard::PutString("DB/String 0", "State: Centering" );
+      //SmartDashboard::PutString("DB/String 0", "State: Centering" );
       getNewImageData();
       centering();
       break;
    case APPROACHING:
-      SmartDashboard::PutString("DB/String 0", "State: Approaching" );
+      //SmartDashboard::PutString("DB/String 0", "State: Approaching" );
       getNewImageData();
       approachTarget();
       break;
    case SHOOTING:
-      SmartDashboard::PutString("DB/String 0", "State: Shooting" );
+      //SmartDashboard::PutString("DB/String 0", "State: Shooting" );
       getNewImageData();
       shoot();
     break;
