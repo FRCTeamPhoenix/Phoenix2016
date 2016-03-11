@@ -141,17 +141,6 @@ void Arm::setMotors(){
 
    void Arm::run(){
 
-
-      std::ostringstream leftPotentiometer;
-      leftPotentiometer << "LP Voltage: ";
-      leftPotentiometer << m_leftPotentiometer->GetVoltage();
-      SmartDashboard::PutString("DB/String 1", leftPotentiometer.str());
-
-      std::ostringstream rightPotentiometer;
-      rightPotentiometer << "RP Voltage: ";
-      rightPotentiometer << m_rightPotentiometer->GetVoltage();
-      SmartDashboard::PutString("DB/String 2", rightPotentiometer.str());
-
       switch (getCurrentState()) {
       case POTENTIOMETERDRIVE:
          if (m_rightPotentiometerComplete || m_leftPotentiometerComplete){
@@ -189,13 +178,6 @@ void Arm::setMotors(){
       m_goalRightPotentiometerValue = (goal * rightRange) + rightLowerLimit;
       m_leftPotentiometerComplete = false;
       m_leftPotentiometerComplete = false;
-
-      std::ostringstream O;
-      O << "L: ";
-      O << m_goalLeftPotentiometerValue;
-      O << " R: ";
-      O << m_goalRightPotentiometerValue;
-      SmartDashboard::PutString("DB/String 7", O.str());
 
       float initalLeftPotentiometerValue = m_leftPotentiometer->GetVoltage();
       float initalRightPotentiometerValue = m_rightPotentiometer->GetVoltage();

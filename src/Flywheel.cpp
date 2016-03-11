@@ -69,7 +69,6 @@ void Flywheel::setRate(float rate) {
 
 
 float Flywheel::calculateSpeed() {
-   return 1900;
    float currentDistance = m_lidar->getFastAverage();
 
    float farPoint;
