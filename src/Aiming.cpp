@@ -25,18 +25,20 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, Drive
    sameCenterCount=0;
    // Nothing is happening
    setCurrentState(IDLE);
+   centered=false;
 
+   dataRequested=false;
+   requestedDataReceived=false;
    // We have not yet approached
    hasApproached=false;
-   moveDirection = "no move";
-   moveCount=0;
-   packetCount=0;
+
    // By default, we will only be performing a specified part of the aiming process
    // In order to perform the ENTIRE process (including shooting), START should be pressed
    fullProcess=false;
 
    // "Clean slate" for the target coordinate array!
    memset(m_currentTargetCoordinates,0,8);
+   memset(requestArray,3,9);
 }
 
 // Call this method to begin aiming process - same as manually setting state to first phase of aiming process
@@ -50,64 +52,75 @@ void Aiming::getNewImageData() {
    if (m_client->checkPacketState()){
    // Updates array of current coordinates with data received by client
       newCenter=true;
-      packetCount++;
       for(int i = 0; i < AimingConstants::numTargetVals; i++) {
          m_currentTargetCoordinates[i] = m_client->getTargetData(i+1);
       }
    }
 }
 
+void Aiming::getRequestedData(){
+
+   if(m_client->m_unreadResponseData){
+      requestedDataReceived=true;
+      for(int i = 0; i < AimingConstants::numTargetVals; i++) {
+          m_currentTargetCoordinates[i] = m_client->getResponseData(i+1);
+       }
+
+      m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL]
+                               +m_currentTargetCoordinates[AimingConstants::xLR])/2);
+      deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
+
+   }
+}
 // Turns robot to line up with target, once target is within field of vision
 void Aiming::centering() {
 
-   driveIdle=false;
+   if(!dataRequested){
+      m_client->sendPacket(m_client->intToByte(requestArray));
+      dataRequested=true;
+   }
+
+   if (!requestedDataReceived){
+      getRequestedData();
+   }
+
 
    if ((m_driveTrainController->getCurrentState()==DriveTrainController::IDLE
          || m_driveTrainController->getCurrentState()==DriveTrainController::TELEOP )){
       driveIdle=true;
    }
-
-
-   //only move if the drivtrain is idle and we have received the most recent packet
-   if (driveIdle && newCenter && sameCenterCount >2 && m_targetCenter_x !=0){
-      sameCenterCount=0;
-      moveCount++;
-      //move ccw if target right of desired
-
-      // Amount of offset from our desired center coordinate (w/ respect to current frame of vision)
-      deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
-
-      if(deviation< -AimingConstants::rotationVariance){
-         moveDirection="ccw";
-         m_driveTrainController->aimRobotCounterclockwise(fabs(deviation/20), 0.6f);
-
-      }
-      //move robot cw if target is left of desired
-      else if (deviation > AimingConstants::rotationVariance){
-         moveDirection="cw";
-         m_driveTrainController->aimRobotClockwise(fabs(deviation/20), 0.6f);
-
-      }
-      //if target is within tolerence move to next state
-      else if (deviation <  AimingConstants::rotationVariance && deviation > -AimingConstants::rotationVariance){
-
-         if (!hasApproached && fullProcess){
-            setCurrentState(APPROACHING);
-         }
-         /*
-         else if (hasApproached && fullProcess){
-            setCurrentState(SHOOTING);
-         }
-         */
-         else {
-            setCurrentState(IDLE);
-
-         }
-      }
+   if (deviation > -AimingConstants::distanceVariance && deviation < AimingConstants::distanceVariance){
+      centered=true;
    }
-   newCenter=false;
-}
 
+
+
+   //only move if the drivetrain is idle and we have received the most recent packet
+   if (driveIdle && (m_targetCenter_x != 0) && requestedDataReceived && !centered){
+      dataRequested=false;
+      requestedDataReceived=false;
+      rotate();
+   }
+   if (centered){
+      setCurrentState(IDLE);
+   }
+
+}
+void Aiming::rotate(){
+
+
+   if(deviation< -AimingConstants::rotationVariance){
+      moveDirection="ccw";
+      m_driveTrainController->aimRobotCounterclockwise(fabs(deviation/20), 0.6f);
+
+   }
+   //move robot cw if target is left of desired
+   else if (deviation > AimingConstants::rotationVariance){
+      moveDirection="cw";
+      m_driveTrainController->aimRobotClockwise(fabs(deviation/20), 0.6f);
+
+   }
+}
 
 void Aiming::approachTarget() {
 
@@ -168,22 +181,15 @@ int Aiming::getCenter(){
 int Aiming::getDeviation(){
    return deviation;
 }
-
+int Aiming::getSameCenter(){
+   return sameCenterCount;
+}
 // Called to implement all aiming mechanisms
 void Aiming::run() {
 
    if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonA)) {
          setCurrentState(IDLE);
    }
-   ostringstream aimingPrints;
-   aimingPrints<< "C: " << m_targetCenter_x << ", " << "D: " << deviation;
-   SmartDashboard::PutString("DB/String 4",aimingPrints.str());
-
-
-   ostringstream centerSame;
-   centerSame << "PC:  " << packetCount<< "MC: " <<moveCount<<"Dir: " << moveDirection;
-   SmartDashboard::PutString("DB/String 3",centerSame.str());
-
 
    getNewImageData();
    if (newCenter){
@@ -191,11 +197,6 @@ void Aiming::run() {
 
       m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL]
                          +m_currentTargetCoordinates[AimingConstants::xLR])/2);
-
-      if ((previousTargetCenter < (m_targetCenter_x + 10) && previousTargetCenter > (m_targetCenter_x-10))){
-         sameCenterCount++;
-
-      }
       deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
    }
 
@@ -205,8 +206,6 @@ void Aiming::run() {
       fullProcess=false;
       hasApproached=false;
       previousTargetCenter=-1;
-      sameCenterCount=0;
-
 
 
       //SmartDashboard::PutString("DB/String 0", "State: IDLE" );
@@ -236,6 +235,7 @@ void Aiming::run() {
    default:
       break;
    }
+   newCenter=false;
 
 }
 

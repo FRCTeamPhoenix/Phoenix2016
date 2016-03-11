@@ -20,19 +20,19 @@ class Client {
 public:
     bool m_unreadBallData;
     bool m_unreadTargetData;
-    bool m_unreadDistanceData;
+    bool m_unreadResponseData;
     char m_receivedData[BUFLEN];
     static bool receive;
     int m_socket;
     socklen_t m_si_other_len;
     char buf2[20];
     bool m_initGood;
-    char m_sendData[BUFLEN];
     sockaddr_in m_si_me, m_si_other;
     int m_convertedData[9];
     int m_targetData[9];
     int m_ballData[9];
-    int m_distanceData[9];
+    int m_responseData[9];
+    char m_sendData[18];
     Client();
 
     char* getData();
@@ -45,13 +45,15 @@ public:
 
     void byteToInt(char *byteArray,int *intArray);
 
+    char* intToByte(int * intArray);
+
     int getTargetData(int element);
 
     void sendPacket(char * data);
 
     int getBallData(int element);
 
-    int getDistanceData();
+    int getResponseData(int element);
 
     void copyArray(int *array1, int *array2);
 

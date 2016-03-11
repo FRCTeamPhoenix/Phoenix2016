@@ -106,14 +106,13 @@ public:
       m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
       m_gyro.Calibrate();
       m_configEditor.showAllKeys();
-//TODO: uncomment this block of code
 //      cout<<"run init socket function" << endl;
-//      m_client.initilizeSocket();
-//      if (m_client.m_initGood){
-//         cout<<"init good start thread" << endl;
-//         std::thread receiveThread(runClient, this, &m_client);
-//         receiveThread.detach();
-//      }
+      m_client.initilizeSocket();
+      if (m_client.m_initGood){
+         cout<<"init good start thread" << endl;
+         std::thread receiveThread(runClient, this, &m_client);
+         receiveThread.detach();
+      }
 
       m_driveCamera.SetExposureManual(20);
       m_driveCamera.SetWhiteBalanceAuto();
@@ -156,7 +155,7 @@ public:
          m_robotController.run();
          m_driveTrainController.run();
          m_shooterController.run();
-         //m_aiming.run();
+         m_aiming.run();
          m_arm.run();
       }
       m_robotController.clearQueue();
@@ -360,10 +359,13 @@ public:
 
          //Space 2
          std::ostringstream output3;
-         output3 << "Deviation: " << m_aiming.getDeviation();
+         output3 << "Deviation: " << m_aiming.getDeviation()<< "Center: "<<m_aiming.getCenter();
          m_driveStation.printToDashboard(output3.str(),2);
 
          //Space 3
+         std::ostringstream output4;
+         output4<< "sameCenter: "<< m_aiming.getSameCenter();
+         m_driveStation.printToDashboard(output4.str(),3);
 
          //Space 4
          if (m_loaderController.loaded()) {

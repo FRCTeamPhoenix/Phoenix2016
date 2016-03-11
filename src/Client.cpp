@@ -1,7 +1,7 @@
 #include "Client.h"
 #define NPACK 1
 #define PORT 31415 //port currently used for testing, can be changed
-#define SRV_IP "10.1.42.142" //static ip of pi is 10.0.42.142
+#define SRV_IP "10.1.42.142" //static ip of pi is 10.0.4p2.142
 
 
 
@@ -34,7 +34,7 @@ void Client::initilizeSocket(){
    memset(m_convertedData,0,9);
    memset(m_targetData,0,9);
    memset(m_ballData,0,9);
-   memset(m_distanceData,0,9);
+   memset(m_responseData,0,9);
 
    cout<<"start ping loop" << endl;
    char buf[BUFLEN];
@@ -74,7 +74,7 @@ void Client::receivePacket(){
         memset(m_convertedData,0,9);
         memset(m_targetData,0,9);
         memset(m_ballData,0,9);
-        memset(m_distanceData,0,9);
+        memset(m_responseData,0,9);
         //infinite loop because it is running in a thread
         struct timeval timeout;
         timeout.tv_sec=0;
@@ -109,7 +109,8 @@ void Client::receivePacket(){
 
                }
                else if (m_convertedData[0]==3){
-                   copyArray(m_convertedData,m_distanceData);
+                   copyArray(m_convertedData,m_responseData);
+                   m_unreadResponseData=true;
                }
                else {
                    //cout << "no valid flag found" <<endl;
@@ -128,6 +129,7 @@ void Client::byteToInt(char *byteArray,int *intArray){
         //cout << "received data = " <<  intArray[currentInt] << endl;
     }
 }
+
 
 //send a packet of up to size 10 kb
 void Client::sendPacket(char * data) {
@@ -148,8 +150,11 @@ int Client::getTargetData(int element){
 
 }
 
-int Client::getDistanceData(){
-    return *m_distanceData;
+int Client::getResponseData(int element){
+   if (element == 8){
+       m_unreadResponseData=false;
+   }
+   return m_responseData[element];
 
 }
 //copy from one array to another
@@ -158,7 +163,23 @@ void Client::copyArray(int *array1, int *array2){
          array2[i]=array1[i];
       }
 }
+char* Client::intToByte(int * array){
+   int valuecount=0;
+   memset(m_sendData,0,18);
 
+   for ( int i =0;i<18;i++){
+      if(i%2){
+         m_sendData[i] = (char)(array[valuecount] & 0xff);
+      }
+      else {
+         m_sendData[i] = (char)((array[valuecount] & 0xff00) >> 8);
+         valuecount++;
+
+      }
+   }
+   return  m_sendData;
+
+}
 //getter for unread data or not
 bool Client::checkPacketState(){
    return m_unreadTargetData;

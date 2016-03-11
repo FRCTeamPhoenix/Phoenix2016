@@ -35,11 +35,13 @@ public:
 
    Aiming(Client*, DriveTrainController*, DriveStation*,LidarHandler*,ShooterController*);
    void getNewImageData();
+   void getRequestedData();
    void beginAiming();
    void centering();
    void approachTarget();
    void revert();
    void shoot();
+   void rotate();
    STATE getCurrentState();
    void setTargetCoordinateValue(AimingConstants::targetPositionData, int);
    void setCurrentState(STATE);
@@ -48,6 +50,7 @@ public:
    void run();
    int getCenter();
    int getDeviation();
+   int getSameCenter();
    virtual ~Aiming();
 
 private:
@@ -64,15 +67,19 @@ private:
    bool hasApproached;
    bool hasRotated;
    bool fullProcess;
+   bool centered;
    double previousTargetCenter;
    double m_targetCenter_x;
    double deviation;
    bool driveIdle;
    bool newCenter;
+   bool dataRequested;
+   bool requestedDataReceived;
    int sameCenterCount;
    int packetCount;
    string moveDirection;
    int  moveCount;
+   int requestArray[9];
 };
 
 #endif /* SRC_AIMING_H_ */
