@@ -75,10 +75,11 @@ struct RobotConstants {
    constexpr static const float minPotentiometerV = 0;
    constexpr static const float maxPotentiometerV = 0;
    constexpr static const double armDeadZone = 2;
-   constexpr static const float maxSoftLimitLeft = 2.34;
-   constexpr static const float maxSoftLimitRight = 2.5;
-   constexpr static const float minSoftLimitLeft = 0.34;
-   constexpr static const float minSoftLimitRight = 0.5;
+   constexpr static const float maxSoftLimitLeft = 3.6;
+   constexpr static const float maxSoftLimitRight = 3.68;
+   constexpr static const float minSoftLimitLeft = 1.55;
+   constexpr static const float minSoftLimitRight = 1.55;
+
 
    constexpr static const float maxDistFlywheelRate = 1950;
    constexpr static const float midDistFlywheelRate = 1550;
@@ -88,9 +89,7 @@ struct RobotConstants {
    constexpr static const float midDistFlywheel = 7 * 12;
    constexpr static const float minDistFlywheel = 4 * 12;
 
-
 };
-
 struct LidarConstants {
    const static int numberStoredValues = 100;
    constexpr static double periodToInches = 100000.0 / 2.54;
@@ -370,7 +369,6 @@ namespace ConfigVariables {
       "float", //maxDistFlywheelRate
       "float", //midDistFlywheelRate
       "float" //minDistFlywheelRate
-
    };
 };
 
