@@ -142,7 +142,7 @@ void DriveTrainController::aimRobotClockwise(float degree, float motorSpeed) {
    else{
       m_initalEncoderDistanceRight = m_rightWheelEncoder->GetDistance();
       m_initalEncoderDistanceLeft = m_leftWheelEncoder->GetDistance();
-      float distance = degree * m_configEditor->getFloat("wheelEncoderDistancePerDegree");
+      float distance = degree * m_configEditor->getFloat("wheelEncoderDistancePerDegree", 0.2093);
 
       m_targetDistanceRight = m_initalEncoderDistanceRight - distance;
       m_targetDistanceLeft = m_initalEncoderDistanceLeft + distance;
@@ -168,8 +168,8 @@ void DriveTrainController::aimRobotCounterclockwise(float degree, float motorSpe
 }
 void DriveTrainController::continuousDrive(float motorSpeed){
    m_continuousDriveTimer.Reset();
-   m_rightMotorPower = m_configEditor->getFloat("motorPower");
-   m_leftMotorPower = m_configEditor->getFloat("motorPower");
+   m_rightMotorPower = m_configEditor->getFloat("motorPower", 0.6);
+   m_leftMotorPower = m_configEditor->getFloat("motorPower", 0.6);
    m_goalState = CONTINUOUSDRIVE;
 }
 //Moves the robot a desired distance and at a desired motor speed

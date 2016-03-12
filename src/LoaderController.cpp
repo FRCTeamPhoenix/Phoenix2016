@@ -73,8 +73,8 @@ void LoaderController::run(){
 void LoaderController::start(){
 
       m_ballInRobot = loaded();
-      m_stationaryMotor->Set(-(m_configEditor->getFloat("innerIntakeMotorPower")));
-      m_intakeMotor->Set((m_configEditor->getFloat("outerIntakeMotorPower")));
+      m_stationaryMotor->Set(-(m_configEditor->getFloat("innerIntakeMotorPower", 1)));
+      m_intakeMotor->Set((m_configEditor->getFloat("outerIntakeMotorPower", 1)));
 
 }
 void LoaderController::stop(){
