@@ -55,23 +55,18 @@ void DriveTrainController::manualDrive() {
    float throttleRatio = (-m_driveStation->getJoystickThrottle()+ 1)/2;
    float throttle = m_driveStation->getYWithDeadzone();
    float twist = m_driveStation->getZWithDeadzone();
-   float twistRatio = 1 - throttleRatio;
 
    float maxPower = (throttleRatio * range) + m_configEditor->getFloat("throttleRatio");
 
-   std::ostringstream t;
-   t<<"Twist: ";
-   t<<twistRatio;
-
    m_leftMotorPower = (throttle * maxPower) + (twist * maxPower);
    m_rightMotorPower = (throttle * maxPower) - (twist * maxPower);
-
 
 }
 
 void DriveTrainController::run() {
    switch (getCurrentState()) {
-
+   case CONTINUOUSDRIVE:
+      break;
    //Goal state with the drivers are driving the robot
    case TELEOP:
       manualDrive();

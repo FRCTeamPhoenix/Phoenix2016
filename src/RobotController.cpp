@@ -53,10 +53,31 @@ void RobotController::run(){
       if(m_driveStation->getGamepadButton(DriveStationConstants::triggerLT)){
          m_flywheel->stop();
       }
-
-
-      m_arm->move(m_driveStation->deadzoneOfGamepadJoystick() / 2);
-
+      m_arm->run();
+      m_state = ROBOT_MANUAL;
+      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
+         m_state = ROBOT_AUTO;
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
+         //m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
+         //m_queue.push( new ActionTurn(m_driveTrain, -m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
+         //m_queue.push( new ActionDrive(m_driveTrain, -m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
+      }
+      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonB)){
+         m_state = ROBOT_AUTO;
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
+      }
+      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonX)){
+         m_queue.push( new ActionDrive(m_driveTrain, 80, 0.8)); //Goes to defense
+         m_queue.push( new ActionDrive(m_driveTrain, 44, 0.6)); //Goes over defense
+         m_queue.push( new ActionDrive(m_driveTrain, 51.5, 0.8)); //Goes to alignment line
+      }
       return;
    }
 }

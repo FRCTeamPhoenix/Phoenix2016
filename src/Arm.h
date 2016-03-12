@@ -25,10 +25,13 @@ private:
    DigitalInput* m_leftLowerLimitSwitch;
    DigitalInput* m_rightLowerLimitSwitch;
    ConfigEditor* m_configEditor;
+   DriveStation* m_driveStation;
    float m_armMotorPower;
-   bool PDRIVE;
-   float pAngle;
 public:
+   enum STATE{
+      POTENTIOMETERDRIVE,
+      MANUAL
+   };
    Arm(
          Talon* armMotorLeft,
          Talon* armMotorRight,
@@ -38,16 +41,29 @@ public:
          DigitalInput* rightUpperLimitSwitch,
          DigitalInput* leftLowerLimitSwitch,
          DigitalInput* rightLowerLimitSwitch,
-         ConfigEditor* configEditor);
+         ConfigEditor* configEditor,
+         DriveStation* driveStation);
 
    void move(float);
    void stop();
    void run();
-   void angle(float,float);
+   void moveArmToPosition(float);
+   void manualDrive();
+   void setMotors();
    float getAngleLeft();
    float getAngleRight();
+
+   STATE getCurrentState();
+   void setGoalState(STATE currentState);
+
    virtual ~Arm();
 
+private:
+   STATE m_goalState;
+   float m_goalLeftPotentiometerValue;
+   float m_goalRightPotentiometerValue;
+   bool m_leftPotentiometerComplete;
+   bool m_rightPotentiometerComplete;
 };
 
 #endif /* SRC_ARM_H_ */
