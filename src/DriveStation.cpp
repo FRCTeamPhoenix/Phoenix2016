@@ -8,8 +8,8 @@
 #include "DriveStation.h"
 #include <sstream>
 
-DriveStation::DriveStation(Joystick* joystick, Joystick* gamepad) :
-m_joystick(joystick), m_gamepad(gamepad) {
+DriveStation::DriveStation(Joystick* joystick, Joystick* gamepad, Joystick* armJoystick) :
+m_joystick(joystick), m_gamepad(gamepad), m_armJoystick(armJoystick) {
    //can't do this in constructor because drive station hasn't been initialized yet.
    //a call is now in robot.cpp constructor.
    //snapShot();
@@ -21,6 +21,12 @@ float DriveStation::getJoystickY() {
 
 float DriveStation::getJoystickZ() {
    return m_joystickZ;
+}
+
+bool DriveStation::getArmJoystickButton(uint32_t button) {
+   if(button < DriveStationConstants::armJoystickButtons && button > 0)
+      return m_armButtons[button];
+   return false;
 }
 
 float DriveStation::getJoystickThrottle() {
@@ -80,6 +86,10 @@ void DriveStation::snapShot() {
 
    for(int k=0;k<6;k++){
       m_buttonInputs[k]=SmartDashboard::GetBoolean(DriveStationConstants::dashButtonNames[k],false);
+   }
+
+   for(uint32_t l=0;l<DriveStationConstants::armJoystickButtons;l++) {
+      m_armButtons[l] = m_armJoystick->GetRawButton(l);
    }
 
    m_joystickY = m_joystick->GetY();

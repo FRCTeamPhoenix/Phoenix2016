@@ -12,7 +12,7 @@
 
 class DriveStation {
 public:
-   DriveStation(Joystick*, Joystick*);
+   DriveStation(Joystick*, Joystick*, Joystick*);
    virtual ~DriveStation();
 
    float getJoystickY();
@@ -31,6 +31,7 @@ public:
    bool getJoystickButton(int);
    std::string getStringInput(int);
    bool getButtonInput(int);
+   bool getArmJoystickButton(uint32_t);
 
    void setString(int, std::string);
 
@@ -48,6 +49,7 @@ public:
 private:
    Joystick * m_joystick;
    Joystick * m_gamepad;
+   Joystick * m_armJoystick;
 
    bool m_buttons[DriveStationConstants::gamepadButtons];
    float m_joystickY;
@@ -57,6 +59,7 @@ private:
    float m_gamepadJoystick;
    float m_gamepadJoystickY;
    bool m_buttonInputs[6];
+   bool m_armButtons[DriveStationConstants::armJoystickButtons];
    std::string m_stringInputs[13];
 };
 
