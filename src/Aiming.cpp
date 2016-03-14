@@ -99,7 +99,7 @@ void Aiming::centering() {
    if (driveIdle && (m_targetCenter_x != 0) && requestedDataReceived && !centered){
       dataRequested=false;
       requestedDataReceived=false;
-      rotate();
+      //rotate();
    }
    if (centered){
       setCurrentState(IDLE);
