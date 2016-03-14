@@ -228,12 +228,12 @@ public:
 
 
          if(m_joystick.GetRawButton(5)){
-            m_LLif.Set(0.5);
-            m_RLif.Set(0.5);
+            m_LLif.Set(0.3);
+            m_RLif.Set(0.3);
          }
          else if(m_joystick.GetRawButton((3))) {
-            m_LLif.Set(-0.5);
-            m_RLif.Set(-0.5);
+            m_LLif.Set(-0.3);
+            m_RLif.Set(-0.3);
          }
          else{
             m_LLif.Set(0.0);
