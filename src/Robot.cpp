@@ -62,6 +62,8 @@ class Robot: public SampleRobot
    Aiming m_aiming;
    RobotController m_robotController;
 
+   std::string m_currentCamera = "cam1";
+
 public:
    Robot() :
       m_gyro(PortAssign::gyroscope),
@@ -118,7 +120,7 @@ public:
       m_driveCamera.SetExposureManual(20);
       m_driveCamera.SetWhiteBalanceAuto();
       CameraServer::GetInstance()->SetQuality(50);
-      CameraServer::GetInstance()->StartAutomaticCapture("cam1");
+      CameraServer::GetInstance()->StartAutomaticCapture(m_currentCamera.c_str());
 
       std::thread lidarRun(lidarThread, this, &m_lidarHandler);
       lidarRun.detach();
@@ -152,12 +154,22 @@ public:
 
       while(IsOperatorControl() && IsEnabled()){
          displayDriverInfo();
+
          m_driveStation.snapShot();
          m_robotController.run();
          m_driveTrainController.run();
          m_shooterController.run();
          //m_aiming.run();
          m_arm.run();
+
+         if(m_joystick.GetRawButton(2) && m_currentCamera == "cam1") {
+            m_currentCamera = "cam2";
+            CameraServer::GetInstance()->StartAutomaticCapture(m_currentCamera.c_str());
+         }
+         else if(m_currentCamera == "cam2") {
+            m_currentCamera = "cam1";
+            CameraServer::GetInstance()->StartAutomaticCapture(m_currentCamera.c_str());
+         }
       }
       m_robotController.clearQueue();
    }
