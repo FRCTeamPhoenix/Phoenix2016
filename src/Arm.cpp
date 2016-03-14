@@ -56,75 +56,49 @@ void Arm::setMotors(){
    outputR << (m_rightPotentiometer->GetVoltage());
    SmartDashboard::PutString("DB/String 3", outputR.str());
 
-   if((m_configEditor->getFloat("maxSoftLimitRight", 3.68) - m_configEditor->getFloat("minSoftLimitRight", 1.55)) * 0.05 < fabs(leftPotentiometer - rightPotentiometer)){
-      SmartDashboard::PutString("DB/String 5", "FarFromEachOther");
-      if(m_armMotorPower > 0){
-         if(leftPotentiometer > rightPotentiometer){
-            powerLeft = m_armMotorPower / 2;
-            powerRight = m_armMotorPower;
-         }
-         if(rightPotentiometer > leftPotentiometer){
-            powerLeft = m_armMotorPower;
-            powerRight = m_armMotorPower / 2;
-         }
-      }
-      if(m_armMotorPower < 0){
-         if(leftPotentiometer < rightPotentiometer){
-            powerLeft = m_armMotorPower / 2;
-            powerRight = m_armMotorPower;
-         }
-         if(rightPotentiometer < leftPotentiometer){
-            powerLeft = m_armMotorPower;
-            powerRight = m_armMotorPower / 2;
-         }
-      }
-   }
+//   if((m_configEditor->getFloat("maxSoftLimitRight", 3.68) - m_configEditor->getFloat("minSoftLimitRight", 1.55)) * 0.05 < fabs(leftPotentiometer - rightPotentiometer)){
+//      SmartDashboard::PutString("DB/String 5", "FarFromEachOther");
+//      if(m_leftArmMotorPower > 0 && m_rightArmMotorPower > 0){
+//         if(leftPotentiometer > rightPotentiometer){
+//            powerLeft = m_leftArmMotorPower / 2;
+//            powerRight = m_rightArmMotorPower;
+//         }
+//         if(rightPotentiometer > leftPotentiometer){
+//            powerLeft = m_leftArmMotorPower;
+//            powerRight = m_rightArmMotorPower / 2;
+//         }
+//      }
+//      if(m_leftArmMotorPower < 0 && m_rightArmMotorPower < 0){
+//         if(leftPotentiometer < rightPotentiometer){
+//            powerLeft = m_leftArmMotorPower / 2;
+//            powerRight = m_rightArmMotorPower;
+//         }
+//         if(rightPotentiometer < leftPotentiometer){
+//            powerLeft = m_leftArmMotorPower;
+//            powerRight = m_rightArmMotorPower / 2;
+//         }
+//      }
+//   }
 
-
-   //   if(m_armMotorPower > 0){
-   //      if(leftPotentiometer - rightPotentiometer <= -0.5 || leftPotentiometer - rightPotentiometer >= 0.5){
-   //         if(leftPotentiometer > rightPotentiometer){
-   //            powerLeft = m_armMotorPower / 2;
-   //            powerRight = m_armMotorPower;
-   //         }
-   //         if(rightPotentiometer > leftPotentiometer){
-   //            powerLeft = m_armMotorPower;
-   //            powerRight = m_armMotorPower / 2;
-   //         }
-   //      }
-   //   }
-   //   if(m_armMotorPower < 0){
-   //      if(leftPotentiometer - rightPotentiometer <= (RobotConstants::maxSoftLimitLeft - RobotConstants::maxSoftLimitRight) || leftPotentiometer - rightPotentiometer >= 0.5){
-   //         if(leftPotentiometer < rightPotentiometer){
-   //            powerLeft = m_armMotorPower / 2;
-   //            powerRight = m_armMotorPower;
-   //         }
-   //         if(rightPotentiometer < leftPotentiometer){
-   //            powerLeft = m_armMotorPower;
-   //            powerRight = m_armMotorPower / 2;
-   //         }
-   //      }
-   //   }
-
-   if(m_armMotorPower > 0){
+   if(m_leftArmMotorPower > 0 && m_rightArmMotorPower > 0){
       SmartDashboard::PutString("DB/String 5", "GoingUp");
       //if (!m_leftUpperLimitSwitch->Get() && !m_rightUpperLimitSwitch->Get()){
       if ((m_leftPotentiometer->GetVoltage() < m_configEditor->getFloat("potLeftValueHigh", 3.6)) &&
             (m_rightPotentiometer->GetVoltage() < m_configEditor->getFloat("potRightValueHigh", 3.68))){
          SmartDashboard::PutString("DB/String 8", "UpSetPower");
-         powerLeft = m_armMotorPower;
-         powerRight = m_armMotorPower;
+         powerLeft = m_leftArmMotorPower;
+         powerRight = m_rightArmMotorPower;
       }
       //}
    }
-   if(m_armMotorPower < 0 ){
+   if(m_leftArmMotorPower < 0 && m_rightArmMotorPower < 0){
       SmartDashboard::PutString("DB/String 5", "GoingDown");
       //if (!m_leftLowerLimitSwitch->Get() && !m_rightLowerLimitSwitch->Get()){
       if ((m_leftPotentiometer->GetVoltage() > m_configEditor->getFloat("potLeftValueLow", 1.55)) &&
             (m_rightPotentiometer->GetVoltage() > m_configEditor->getFloat("potRightValueLow", 1.55))){
          SmartDashboard::PutString("DB/String 8", "DownSetPower");
-         powerLeft = m_armMotorPower;
-         powerRight = m_armMotorPower;
+         powerLeft = m_leftArmMotorPower;
+         powerRight = m_rightArmMotorPower;
       }
       //}
    }
@@ -159,7 +133,7 @@ void Arm::run(){
 
    switch (getCurrentState()) {
    case POTENTIOMETERDRIVE:
-      if (m_rightPotentiometerComplete || m_leftPotentiometerComplete){
+      if (m_rightPotentiometerComplete && m_leftPotentiometerComplete){
          SmartDashboard::PutString("DB/String 4", "Complete");
          m_goalState = MANUAL;
       }
@@ -206,7 +180,6 @@ void Arm::moveArmToPosition(float goal){
 
       if((m_goalLeftPotentiometerValue < initalLeftPotentiometerValue) &&
             (m_goalRightPotentiometerValue < initalRightPotentiometerValue)){
-
          m_armMotorPower = -(m_configEditor->getFloat("armMotorPower", 0.5));
       }
    if((m_goalLeftPotentiometerValue > initalLeftPotentiometerValue) &&

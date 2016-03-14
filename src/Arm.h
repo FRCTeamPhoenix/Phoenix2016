@@ -26,6 +26,8 @@ private:
    DigitalInput* m_rightLowerLimitSwitch;
    ConfigEditor* m_configEditor;
    DriveStation* m_driveStation;
+   float m_leftArmMotorPower;
+   float m_rightArmMotorPower;
    float m_armMotorPower;
 public:
    enum STATE{
