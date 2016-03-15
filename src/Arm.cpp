@@ -80,28 +80,43 @@ void Arm::setMotors(){
 //      }
 //   }
 
-   if(m_leftArmMotorPower > 0 && m_rightArmMotorPower > 0){
-      SmartDashboard::PutString("DB/String 5", "GoingUp");
-      //if (!m_leftUpperLimitSwitch->Get() && !m_rightUpperLimitSwitch->Get()){
-      if ((m_leftPotentiometer->GetVoltage() < m_configEditor->getFloat("potLeftValueHigh", 3.6)) &&
-            (m_rightPotentiometer->GetVoltage() < m_configEditor->getFloat("potRightValueHigh", 3.68))){
-         SmartDashboard::PutString("DB/String 8", "UpSetPower");
-         powerLeft = m_leftArmMotorPower;
-         powerRight = m_rightArmMotorPower;
+//   if(m_leftArmMotorPower > 0 && m_rightArmMotorPower > 0){
+//      SmartDashboard::PutString("DB/String 5", "GoingUp");
+//      //if (!m_leftUpperLimitSwitch->Get() && !m_rightUpperLimitSwitch->Get()){
+//      if ((m_leftPotentiometer->GetVoltage() < m_configEditor->getFloat("potLeftValueHigh", 3.6)) &&
+//            (m_rightPotentiometer->GetVoltage() < m_configEditor->getFloat("potRightValueHigh", 3.68))){
+//         SmartDashboard::PutString("DB/String 8", "UpSetPower");
+//         powerLeft = m_armMotorPower;
+//         powerRight = m_armMotorPower;
+//      }
+//      //}
+//   }
+//   if(m_leftArmMotorPower < 0 && m_rightArmMotorPower < 0){
+//      SmartDashboard::PutString("DB/String 5", "GoingDown");
+//      //if (!m_leftLowerLimitSwitch->Get() && !m_rightLowerLimitSwitch->Get()){
+//      if ((m_leftPotentiometer->GetVoltage() > m_configEditor->getFloat("potLeftValueLow", 1.55)) &&
+//            (m_rightPotentiometer->GetVoltage() > m_configEditor->getFloat("potRightValueLow", 1.55))){
+//         SmartDashboard::PutString("DB/String 8", "DownSetPower");
+//         powerLeft = m_armMotorPower;
+//         powerRight = m_armMotorPower;
+//      }
+//      //}
+//   }
+   if(!m_rightPotentiometerComplete){
+      if(((m_armMotorPower < 0) && (m_rightPotentiometer->GetVoltage() > m_configEditor->getFloat("potRightValueLow", 1.55))) ||
+            ((m_armMotorPower > 0) && (m_rightPotentiometer->GetVoltage() < m_configEditor->getFloat("potRightValueHigh", 3.68)))){
+         powerRight = m_armMotorPower;
       }
-      //}
    }
-   if(m_leftArmMotorPower < 0 && m_rightArmMotorPower < 0){
-      SmartDashboard::PutString("DB/String 5", "GoingDown");
-      //if (!m_leftLowerLimitSwitch->Get() && !m_rightLowerLimitSwitch->Get()){
-      if ((m_leftPotentiometer->GetVoltage() > m_configEditor->getFloat("potLeftValueLow", 1.55)) &&
-            (m_rightPotentiometer->GetVoltage() > m_configEditor->getFloat("potRightValueLow", 1.55))){
-         SmartDashboard::PutString("DB/String 8", "DownSetPower");
-         powerLeft = m_leftArmMotorPower;
-         powerRight = m_rightArmMotorPower;
+
+   if(!m_leftPotentiometerComplete){
+         if(((m_armMotorPower < 0) && (m_leftPotentiometer->GetVoltage() > m_configEditor->getFloat("potLeftValueLow", 1.55))) ||
+               ((m_armMotorPower > 0) && (m_leftPotentiometer->GetVoltage() < m_configEditor->getFloat("potLeftValueHigh", 3.6)))){
+            powerLeft = m_armMotorPower;
+         }
       }
-      //}
-   }
+
+
    m_armMotorLeft->Set(powerLeft);
    m_armMotorRight->Set(powerRight);
 }
