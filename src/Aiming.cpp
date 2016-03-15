@@ -112,6 +112,7 @@ void Aiming::centering() {
 //      dataRequested=false;
 //      requestedDataReceived=false;
       rotate();
+
    }
    if (centered){
       setCurrentState(ENCODERCENTER);
