@@ -215,19 +215,23 @@ public:
          //         m_driveTrainController.driveLidar(36,0.5);
          //      }
          //Aiming Robot Counter Clockwise 90 degrees
-         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
-           SmartDashboard::PutString("DB/String 6", "Rotation");
-           m_driveTrainController.aimRobotClockwise(90,0.5);
-
-         }
+//         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
+//           SmartDashboard::PutString("DB/String 6", "Rotation");
+//           m_driveTrainController.aimRobotClockwise(90,0.5);
+//
+//         }
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
             SmartDashboard::PutString("DB/String 6", "Arm Preset 1");
             m_arm.moveArmToPosition(1);
          }
          //Aiming Robot Counter Clockwise 90 degrees
-         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonY)){
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
             SmartDashboard::PutString("DB/String 6", "Arm Preset 0.5");
             m_arm.moveArmToPosition(0.5);
+         }
+         if(m_driveStation.getGamepadButton(DriveStationConstants::buttonX)){
+            SmartDashboard::PutString("DB/String 6", "Arm Preset 0.0");
+            m_arm.moveArmToPosition(0.0);
          }
          //Stops everything on robot
          if(m_driveStation.getGamepadButton(DriveStationConstants::triggerLT)){

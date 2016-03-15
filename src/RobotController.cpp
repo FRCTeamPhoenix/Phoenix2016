@@ -57,21 +57,21 @@ void RobotController::run(){
       m_state = ROBOT_MANUAL;
       if (m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
          m_state = ROBOT_AUTO;
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
-         //m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
-         //m_queue.push( new ActionTurn(m_driveTrain, -m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
-         //m_queue.push( new ActionDrive(m_driveTrain, -m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
+         //m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
+         //m_queue.push( new ActionTurn(m_driveTrain, -m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
+         //m_queue.push( new ActionDrive(m_driveTrain, -m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
       }
       if (m_driveStation->getGamepadButton(DriveStationConstants::buttonB)){
          m_state = ROBOT_AUTO;
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
-         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
-         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
-         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower")));
-         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower")));
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
+         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
+         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
+         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
+         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
       }
       if (m_driveStation->getGamepadButton(DriveStationConstants::buttonX)){
          m_queue.push( new ActionDrive(m_driveTrain, 80, 0.8)); //Goes to defense
