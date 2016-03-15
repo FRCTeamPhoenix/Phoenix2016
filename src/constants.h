@@ -287,6 +287,13 @@ struct AimingConstants{
    // First array element passed in a target data array
    const static int targetFlag = 1;
 
+   // Distance in inches from center to treads (a bit more)
+   const static int centerToEdgeDistance = 14;
+
+   // Circumference of robot's rotation, based upon previous value
+   constexpr static double circumferenceOfRotation = 2*3.1416*AimingConstants::centerToEdgeDistance;
+
+
 };
 
 

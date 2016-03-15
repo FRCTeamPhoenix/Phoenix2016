@@ -30,10 +30,12 @@ public:
          CENTERING,
          APPROACHING,
          REVERTING,
-         SHOOTING
+         SHOOTING,
+         ENCODERCENTER
       };
 
-   Aiming(Client*, DriveTrainController*, DriveStation*,LidarHandler*,ShooterController*);
+   Aiming(Client*, DriveTrainController*, DriveStation*,LidarHandler*,
+         ShooterController*,Encoder*encoder1, Encoder*encoder2);
    void getNewImageData();
    void getRequestedData();
    void beginAiming();
@@ -42,15 +44,19 @@ public:
    void revert();
    void shoot();
    void rotate();
+   void encoderCenter();
    STATE getCurrentState();
    void setTargetCoordinateValue(AimingConstants::targetPositionData, int);
    void setCurrentState(STATE);
    void setFullProcess(bool);
    void printCurrentCoordinates();
    void run();
+   void encoderGet();
    int getCenter();
    int getDeviation();
    int getSameCenter();
+   void sendEncoderData();
+   int encoderDistanceToDegrees(int, int);
    virtual ~Aiming();
 
 private:
@@ -61,6 +67,8 @@ private:
    LidarHandler * m_lidar;
    ShooterController *m_shooter;
    Timer m_timer;
+   Encoder* m_encoder1;
+   Encoder* m_encoder2;
    int m_currentTargetCoordinates[8];
    STATE m_currentState;
    bool lastArrayWasNull;
@@ -80,6 +88,7 @@ private:
    string moveDirection;
    int  moveCount;
    int requestArray[9];
+   int m_centeredEncoders[4];
 };
 
 #endif /* SRC_AIMING_H_ */

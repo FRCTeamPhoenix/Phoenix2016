@@ -163,6 +163,11 @@ void Client::copyArray(int *array1, int *array2){
          array2[i]=array1[i];
       }
 }
+void Client::copyArray(char* char1,char* char2){
+   for (int i=0;i<18;i++){
+      char2[i]=char1[i];
+   }
+}
 char* Client::intToByte(int * array){
    int valuecount=0;
    memset(m_sendData,0,18);
@@ -177,7 +182,7 @@ char* Client::intToByte(int * array){
 
       }
    }
-   return  m_sendData;
+   return m_sendData;
 
 }
 //getter for unread data or not

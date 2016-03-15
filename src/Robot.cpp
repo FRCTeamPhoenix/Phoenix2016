@@ -96,7 +96,7 @@ public:
       m_loaderController(&m_intakeMotor, &m_stationaryMotor, &m_loadedSensor, &m_driveStation, &m_configEditor),
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor),
-      m_aiming(&m_client, &m_driveTrainController, &m_driveStation, &m_lidarHandler, &m_shooterController),
+      m_aiming(&m_client, &m_driveTrainController, &m_driveStation, &m_lidarHandler, &m_shooterController,&m_leftWheelEncoder,&m_rightWheelEncoder),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm, &m_aiming)
 {
 }

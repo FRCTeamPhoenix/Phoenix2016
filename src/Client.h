@@ -57,6 +57,8 @@ public:
 
     void copyArray(int *array1, int *array2);
 
+    void copyArray(char *char1,char * char2);
+
     virtual ~Client();
 
 };
