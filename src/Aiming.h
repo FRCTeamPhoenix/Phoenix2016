@@ -42,7 +42,6 @@ public:
    void centering();
    void approachTarget();
    void revert();
-   void shoot();
    void rotate();
    void encoderCenter();
    STATE getCurrentState();
@@ -51,10 +50,8 @@ public:
    void setFullProcess(bool);
    void printCurrentCoordinates();
    void run();
-   void encoderGet();
    int getCenter();
    int getDeviation();
-   int getSameCenter();
    void sendEncoderData();
    int encoderDistanceToDegrees(int, int);
    virtual ~Aiming();
@@ -71,7 +68,6 @@ private:
    Encoder* m_encoder2;
    int m_currentTargetCoordinates[8];
    STATE m_currentState;
-   bool lastArrayWasNull;
    bool hasApproached;
    bool hasRotated;
    bool fullProcess;
@@ -81,14 +77,12 @@ private:
    double deviation;
    bool driveIdle;
    bool newCenter;
-   bool dataRequested;
-   bool requestedDataReceived;
    int sameCenterCount;
-   int packetCount;
-   string moveDirection;
-   int  moveCount;
    int requestArray[9];
    int m_centeredEncoders[4];
+   int sendData[2];
+   char byteData[8];
+   int sendcount;
 };
 
 #endif /* SRC_AIMING_H_ */

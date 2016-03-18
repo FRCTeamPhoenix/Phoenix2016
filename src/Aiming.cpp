@@ -25,24 +25,20 @@ Aiming::Aiming(Client* client, DriveTrainController* driveTrainController,
    m_encoder1(encoder1),
    m_encoder2(encoder2)
 {
-
+   sendcount=0;
    sameCenterCount=0;
    // Nothing is happening
    setCurrentState(IDLE);
    centered=false;
 
-   dataRequested=false;
-   requestedDataReceived=false;
    // We have not yet approached
    hasApproached=false;
-
    // By default, we will only be performing a specified part of the aiming process
    // In order to perform the ENTIRE process (including shooting), START should be pressed
    fullProcess=false;
 
    // "Clean slate" for the target coordinate array!
    memset(m_currentTargetCoordinates,0,8);
-   memset(requestArray,3,9);
    memset(m_centeredEncoders,0,4);
 }
 
@@ -62,32 +58,8 @@ void Aiming::getNewImageData() {
       }
    }
 }
-void Aiming::getRequestedData(){
-
-   if(m_client->m_unreadResponseData){
-      requestedDataReceived=true;
-      for(int i = 0; i < AimingConstants::numTargetVals; i++) {
-          m_currentTargetCoordinates[i] = m_client->getResponseData(i+1);
-       }
-
-      m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL]
-                               +m_currentTargetCoordinates[AimingConstants::xLR])/2);
-      deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
-
-   }
-}
 // Turns robot to line up with target, once target is within field of vision
 void Aiming::centering() {
-
-//   if(!dataRequested){
-//      m_client->sendPacket(m_client->intToByte(requestArray));
-//      dataRequested=true;
-//   }
-//
-//   if (!requestedDataReceived){
-//      getRequestedData();
-//   }
-
 
    if ((m_driveTrainController->getCurrentState()==DriveTrainController::IDLE
          || m_driveTrainController->getCurrentState()==DriveTrainController::TELEOP )){
@@ -122,13 +94,11 @@ void Aiming::rotate(){
 
 
    if(deviation< -AimingConstants::rotationVariance){
-      moveDirection="ccw";
       m_driveTrainController->aimRobotCounterclockwise(fabs(deviation/20), 0.6f);
 
    }
    //move robot cw if target is left of desired
    else if (deviation > AimingConstants::rotationVariance){
-      moveDirection="cw";
       m_driveTrainController->aimRobotClockwise(fabs(deviation/20), 0.6f);
 
    }
@@ -160,25 +130,28 @@ void Aiming::approachTarget() {
 }
 void Aiming::encoderCenter(){
 
-   int centerEncoder1;
-   int centerEncoder2;
+   int centerEncoder1=m_currentTargetCoordinates[2] ;
+   int centerEncoder2=m_currentTargetCoordinates[3];
    int degreeDifference;
-   if (m_centeredEncoders[0]==0){
-      centerEncoder1=(-1*m_centeredEncoders[1]);
-   }
-   else {
-      centerEncoder1=m_centeredEncoders[1];
-   }
-   if (m_centeredEncoders[2]==0){
-      centerEncoder2=(-1*m_centeredEncoders[3]);
-   }
-   else {
-      centerEncoder2=m_centeredEncoders[3];
-   }
-   degreeDifference=encoderDistanceToDegrees(m_encoder1->Get(),m_encoder2->Get())
-         -encoderDistanceToDegrees(centerEncoder1,centerEncoder2);
+   bool hasMoved=false;
 
-   m_driveTrainController->aimRobotClockwise(degreeDifference,0.6f);
+   if ((m_driveTrainController->getCurrentState()==DriveTrainController::IDLE
+         || m_driveTrainController->getCurrentState()==DriveTrainController::TELEOP )){
+      driveIdle=true;
+   }
+
+   if (!hasMoved){
+
+      degreeDifference=encoderDistanceToDegrees(m_encoder1->GetDistance(),m_encoder2->GetDistance())
+            -encoderDistanceToDegrees(centerEncoder1,centerEncoder2);
+
+      cout << degreeDifference;
+      m_driveTrainController->aimRobotClockwise(degreeDifference,0.6f);
+      hasMoved=true;
+   }
+   else if (hasMoved && driveIdle){
+      setCurrentState(IDLE);
+   }
 }
 
 
@@ -197,32 +170,25 @@ int Aiming::encoderDistanceToDegrees(int encoder1, int encoder2){
 }
 
 void Aiming::sendEncoderData(){
-   int sendData[9];
-   char byteData[18];
-   memset(sendData,0,18);
-   memset(sendData,0,9);
-   int encoder1Ticks = m_encoder1->Get();
-   int encoder2Ticks = m_encoder2->Get();
-   //zero means negative 1 is positive
+   sendcount++;
+   memset(sendData,0,2);
+   memset(byteData,0,8);
+   sendData[0] = m_encoder1->GetDistance();
+   sendData[1] = m_encoder2->GetDistance();
 
-   if(encoder1Ticks<0){
-      sendData[0]=0;
-      sendData[1]=(-1*encoder1Ticks);
-   }
-   else {
-      sendData[0]=1;
-      sendData[1]=encoder1Ticks;
-   }
-   if (encoder2Ticks<0){
-      sendData[2]=0;
-      sendData[3]=encoder2Ticks;
-   }
-   else {
-      sendData[2]=0;
-      sendData[3]=encoder2Ticks;
+   if (sendcount%2000 ==0){
+      cout <<"sending packet number "<<sendcount<<endl;
+      for (int i =0;i<9;i++){
+         cout << sendData[i] << " ";
+      }
    }
 
-   m_client->copyArray(*m_client->byteToInt(byteData,sendData),byteData);
+   for (int i =0; i<2;i++){
+      char * intbytes= m_client->intToBytes(sendData[0]);
+      for (int j =0;j <4 ;j++){
+         byteData[i*4+j]=intbytes[j];
+      }
+   }
    m_client->sendPacket(byteData);
 }
 void Aiming::setTargetCoordinateValue(AimingConstants::targetPositionData position, int newValue) {
@@ -259,9 +225,6 @@ int Aiming::getCenter(){
 }
 int Aiming::getDeviation(){
    return deviation;
-}
-int Aiming::getSameCenter(){
-   return sameCenterCount;
 }
 // Called to implement all aiming mechanisms
 void Aiming::run() {

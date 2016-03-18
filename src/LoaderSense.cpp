@@ -37,13 +37,13 @@ void LoaderSense::updateBallPositionData() {
    // TODO: Make sure that this array setup is in the appropriate format to match the client getter method
 
    // Checks if data is fresh
-   if (m_client->m_unreadBallData) {
+   if (true) {
 
       for(int i = 1; i <= LoaderSenseConstants::numBallVals; i++) {
 
        // Parameter passed to getData() corresponds to appropriate index of integer array received by client;
        // ball position values (are presumed to) immediately follow target position values in received array
-       m_currentBallPosition[i - 1] = m_client->getBallData(i);
+       //m_currentBallPosition[i - 1] = m_client->getBallData(i);
 
          }
 

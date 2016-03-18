@@ -31,10 +31,8 @@ void Client::initilizeSocket(){
    m_si_other.sin_addr.s_addr = inet_addr(SRV_IP);
 
    //set all arrays to zero
-   memset(m_convertedData,0,9);
-   memset(m_targetData,0,9);
-   memset(m_ballData,0,9);
-   memset(m_responseData,0,9);
+   memset(m_convertedData,0,5);
+   memset(m_targetData,0,5);
 
    cout<<"start ping loop" << endl;
    char buf[BUFLEN];
@@ -46,7 +44,7 @@ void Client::initilizeSocket(){
       cout<<"send ping " << sendCount << endl;
       //reset buffer between attempts
       memset(buf,0,sizeof(buf));
-      sprintf(buf,"ping number %d", sendCount);
+      //sprintf(buf,"ping number %d", sendCount);
 
       //send ping
       sendto(m_socket,buf,15, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
@@ -56,7 +54,7 @@ void Client::initilizeSocket(){
       //if received any data back
       if(recvfrom(m_socket,m_receivedData,1024, MSG_TRUNC ,(sockaddr*)&m_si_other, &m_si_other_len)>0){
           //convert received data to int
-          byteToInt(m_receivedData,m_convertedData);
+
           cout<<"init good" <<endl;
           m_initGood=true;
 
@@ -71,10 +69,8 @@ void Client::receivePacket(){
         socklen_t m_si_other_len=sizeof(m_si_other);
 
         //reset all arrays
-        memset(m_convertedData,0,9);
-        memset(m_targetData,0,9);
-        memset(m_ballData,0,9);
-        memset(m_responseData,0,9);
+        memset(m_convertedData,0,5);
+        memset(m_targetData,0,5);
         //infinite loop because it is running in a thread
         struct timeval timeout;
         timeout.tv_sec=0;
@@ -94,8 +90,13 @@ void Client::receivePacket(){
                //cout << "packet received in thread" <<endl;
 
                //convert data from byte to int
-               byteToInt(m_receivedData,m_convertedData);
-               //Target has flag 1 in first place of array ball has flag 2, lydar has flag 3
+
+              for (int i =0;i <5; i ++){
+                 for (int j=0;j<4;j++){
+                    m_tempByteArray[j]=m_receivedData[i*4+j];
+                 }
+                 m_convertedData[i]=bytesToInt(m_tempByteArray);
+              }
 
                //sort based on the first int as a flag
                if (m_convertedData[0]==1){
@@ -104,22 +105,16 @@ void Client::receivePacket(){
                    copyArray(m_convertedData,m_targetData);
 
                }
-               else if (m_convertedData[0]==2){
-                   copyArray(m_convertedData,m_ballData);
-
-               }
-               else if (m_convertedData[0]==3){
-                   copyArray(m_convertedData,m_responseData);
-                   m_unreadResponseData=true;
-               }
                else {
-                   //cout << "no valid flag found" <<endl;
-                }
+                  cout << "invalid flag"<<endl;
+               }
+
+
            }
      }
 }
 
-void Client::byteToInt(char *byteArray,int *intArray){
+void Client::byteToIntOld(char *byteArray,int *intArray){
     int currentByte =0;
     //cout<<"start packet convert"<<endl;
     //loop through int array and count up 2 for bytes
@@ -133,14 +128,10 @@ void Client::byteToInt(char *byteArray,int *intArray){
 
 //send a packet of up to size 10 kb
 void Client::sendPacket(char * data) {
-    cout << "sending packet" << endl;
-    sendto(m_socket,data,BUFLEN, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
+    //cout << "sending packet" << endl;
+    sendto(m_socket,&data,18, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
 }
 //getters for data types
-int Client::getBallData(int element){
-    return m_ballData[element];
-
-}
 
 int Client::getTargetData(int element){
      if (element == 8){
@@ -149,17 +140,9 @@ int Client::getTargetData(int element){
     return m_targetData[element];
 
 }
-
-int Client::getResponseData(int element){
-   if (element == 8){
-       m_unreadResponseData=false;
-   }
-   return m_responseData[element];
-
-}
 //copy from one array to another
 void Client::copyArray(int *array1, int *array2){
-      for (unsigned int i =0;i < 9;i++){
+      for (unsigned int i =0;i < 5;i++){
          array2[i]=array1[i];
       }
 }
@@ -168,7 +151,7 @@ void Client::copyArray(char* char1,char* char2){
       char2[i]=char1[i];
    }
 }
-char* Client::intToByte(int * array){
+char* Client::intToByteOld(int * array){
    int valuecount=0;
    memset(m_sendData,0,18);
 
@@ -184,6 +167,24 @@ char* Client::intToByte(int * array){
    }
    return m_sendData;
 
+}
+
+char * Client::intToBytes(int num){
+   memset(m_intToByteConvertBuf,0,4);
+     m_intToByteConvertBuf[0] = (char) ((num & 0xff000000) >> 24);
+     m_intToByteConvertBuf[1] = (char) ((num & 0xff0000) >> 16);
+     m_intToByteConvertBuf[2] = (char) ((num & 0xff00) >> 8);
+     m_intToByteConvertBuf[3] = (char) (num & 0xff);
+     return m_intToByteConvertBuf;
+
+}
+int Client::bytesToInt(char * bytes){
+   unsigned int val=0;
+    val += (unsigned int)((unsigned char)bytes[0] << 24);
+    val += (unsigned int)((unsigned char)bytes[1] << 16);
+    val += (unsigned int)((unsigned char)bytes[2] << 8);
+    val += (unsigned int)((unsigned char)bytes[3]);
+    return (int)val;
 }
 //getter for unread data or not
 bool Client::checkPacketState(){

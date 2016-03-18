@@ -363,9 +363,6 @@ public:
          m_driveStation.printToDashboard(output3.str(),2);
 
          //Space 3
-         std::ostringstream output4;
-         output4<< "sameCenter: "<< m_aiming.getSameCenter();
-         m_driveStation.printToDashboard(output4.str(),3);
 
          //Space 4
          if (m_loaderController.loaded()) {

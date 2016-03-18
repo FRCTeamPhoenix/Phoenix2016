@@ -18,21 +18,18 @@ using namespace std;
 
 class Client {
 public:
-    bool m_unreadBallData;
     bool m_unreadTargetData;
-    bool m_unreadResponseData;
     char m_receivedData[BUFLEN];
     static bool receive;
     int m_socket;
     socklen_t m_si_other_len;
-    char buf2[20];
     bool m_initGood;
     sockaddr_in m_si_me, m_si_other;
-    int m_convertedData[9];
-    int m_targetData[9];
-    int m_ballData[9];
-    int m_responseData[9];
-    char m_sendData[18];
+    int m_convertedData[5];
+    int m_targetData[5];
+    char m_sendData[8];
+    char m_tempByteArray[4];
+    char m_intToByteConvertBuf[4];
     Client();
 
     char* getData();
@@ -43,9 +40,9 @@ public:
 
     void receivePacket();
 
-    void byteToInt(char *byteArray,int *intArray);
+    void byteToIntOld(char *byteArray,int *intArray);
 
-    char* intToByte(int * intArray);
+    char* intToByteOld(int * intArray);
 
     int getTargetData(int element);
 
@@ -59,7 +56,12 @@ public:
 
     void copyArray(char *char1,char * char2);
 
+    char * intToBytes(int num);
+
+    int bytesToInt(char * bytes);
+
     virtual ~Client();
+
 
 };
 
