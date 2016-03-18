@@ -15,7 +15,6 @@ PIDControllerArm::PIDControllerArm(Talon* armMotor,
       m_potentiometer(potentiometer),
       m_upperLimit(upperLimit),
       m_lowerLimit(lowerLimit){
-   // TODO Auto-generated constructor stub
    m_potentiometer->SetPIDSourceType(PIDSourceType::kDisplacement);
    m_controller = new PIDController(0.00021, 0.00, 0.00, m_potentiometer, this);
    m_controller->SetTolerance(0.5);
@@ -24,6 +23,11 @@ PIDControllerArm::PIDControllerArm(Talon* armMotor,
 
 void PIDControllerArm::setTarget(float target){
    m_controller->SetSetpoint(target);
+}
+
+void PIDControllerArm::adjustTarget(float increment){
+   float newTarget = ((float)m_controller->GetSetpoint()) + increment;
+   m_controller->SetSetpoint(newTarget);
 }
 
 bool PIDControllerArm::atTarget(float tolerance){
@@ -45,6 +49,5 @@ void PIDControllerArm::PIDWrite(float output){
 }
 
 PIDControllerArm::~PIDControllerArm() {
-   // TODO Auto-generated destructor stub
 }
 

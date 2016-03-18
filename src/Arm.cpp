@@ -27,7 +27,10 @@ Arm::Arm(
       m_leftLowerLimitSwitch (leftLowerLimitSwitch),
       m_rightLowerLimitSwitch (rightLowerLimitSwitch),
       m_configEditor(configEditor),
-      m_driveStation(driveStation){
+      m_driveStation(driveStation),
+      m_leftControllerArm(m_armMotorLeft, m_leftPotentiometer, m_configEditor->getFloat("potLeftValueHigh",3.6), m_configEditor->getFloat("potLeftValueLow", 1.55)),
+      m_rightControllerArm(m_armMotorRight, m_rightPotentiometer, m_configEditor->getFloat("potRightValueHigh", 3.68), m_configEditor->getFloat("potRightValueLow", 1.5))
+{
    m_armMotorPower = 0;
    m_goalState = MANUAL;
    m_goalLeftPotentiometerValue = 0.0f;
@@ -121,7 +124,7 @@ void Arm::setMotors(){
    m_armMotorRight->Set(powerRight);
 }
 void Arm::manualDrive(){
-   SmartDashboard::PutString("DB/String 5", "InManuualDrive");
+   SmartDashboard::PutString("DB/String 5", "InManualDrive");
    m_armMotorPower = m_driveStation->getGamepadJoystick() / 2;
 
 
@@ -157,16 +160,12 @@ void Arm::run(){
       }
       break;
    case MANUAL:
+
       manualDrive();
       break;
    }
    setMotors();
 }
-
-//void Arm::move(float motorPower){
-//   PDRIVE = false;
-//   m_armMotorPower = motorPower;
-//}
 
 void Arm::stop(){
    m_goalState = MANUAL;
