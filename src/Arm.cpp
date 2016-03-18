@@ -47,9 +47,6 @@ void Arm::setMotors(){
    float powerLeft = 0.0f;
    float powerRight = 0.0f;
 
-   float leftPotentiometer = m_leftPotentiometer->GetVoltage();
-   float rightPotentiometer = m_rightPotentiometer->GetVoltage();
-
    std::ostringstream outputL;
    outputL << "PotL: ";
    outputL << (m_leftPotentiometer->GetVoltage());
@@ -119,13 +116,15 @@ void Arm::setMotors(){
          }
       }
 
-
-   m_armMotorLeft->Set(powerLeft);
-   m_armMotorRight->Set(powerRight);
+//TODO: Use PID Loop here?
+//   m_armMotorLeft->Set(powerLeft);
+//   m_armMotorRight->Set(powerRight);
 }
 void Arm::manualDrive(){
    SmartDashboard::PutString("DB/String 5", "InManualDrive");
-   m_armMotorPower = m_driveStation->getGamepadJoystick() / 2;
+   float adjust = m_driveStation->getGamepadJoystick() / 400.0;
+   m_leftControllerArm.adjustTarget(adjust);
+   m_rightControllerArm.adjustTarget(adjust);
 
 
    //   else{
@@ -160,11 +159,13 @@ void Arm::run(){
       }
       break;
    case MANUAL:
-
       manualDrive();
       break;
    }
-   setMotors();
+   std::ostringstream setPoints;
+   setPoints << m_leftControllerArm.getSetpoint();
+   SmartDashboard::PutString("DB/String 3", setPoints.str());
+//   setMotors();
 }
 
 void Arm::stop(){
@@ -204,16 +205,6 @@ void Arm::moveArmToPosition(float goal){
    //      m_armMotorPower = 0;
    //   }
    m_goalState = POTENTIOMETERDRIVE;
-}
-
-float Arm::getAngleLeft(){
-   double relativeVoltLeft = (m_leftPotentiometer->GetVoltage() - m_configEditor->getFloat("potLeftValueLow"))/(m_configEditor->getFloat("potLeftValueHigh") - m_configEditor->getFloat("potLeftValueLow"));
-   return relativeVoltLeft * (RobotConstants::maxTheta - RobotConstants::minTheta);
-}
-
-float Arm::getAngleRight(){
-   double relativeVoltRight = (m_rightPotentiometer->GetVoltage() - m_configEditor->getFloat("potRightValueLow"))/(m_configEditor->getFloat("potRightValueHigh") - m_configEditor->getFloat("potRightValueLow"));
-   return relativeVoltRight* (RobotConstants::maxTheta - RobotConstants::minTheta);
 }
 
 Arm::STATE Arm::getCurrentState(){

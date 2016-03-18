@@ -27,6 +27,7 @@ public:
    bool atTarget(float tolerance);
    void PIDWrite(float output);
    void adjustTarget(float increment);
+   float getSetpoint();
 
    virtual ~PIDControllerArm();
 };
