@@ -266,7 +266,7 @@ struct AimingConstants{
       yLR, // lower right y-coordinate
    };
 
-   const static int numTargetVals = 8;
+   const static int numTargetVals = 5;
 
    // These are all educated guesses and may need to be changed,
    // depending upon the chosen coordinate system

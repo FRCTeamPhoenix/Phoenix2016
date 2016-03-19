@@ -66,7 +66,7 @@ private:
    Timer m_timer;
    Encoder* m_encoder1;
    Encoder* m_encoder2;
-   int m_currentTargetCoordinates[8];
+   int m_currentTargetCoordinates[4];
    STATE m_currentState;
    bool hasApproached;
    bool hasRotated;
@@ -78,8 +78,7 @@ private:
    bool driveIdle;
    bool newCenter;
    int sameCenterCount;
-   int requestArray[9];
-   int m_centeredEncoders[4];
+   int m_centeredEncoders[2];
    int sendData[2];
    char byteData[8];
    int sendcount;

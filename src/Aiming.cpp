@@ -53,9 +53,12 @@ void Aiming::getNewImageData() {
    if (m_client->checkPacketState()){
    // Updates array of current coordinates with data received by client
       newCenter=true;
-      for(int i = 0; i < AimingConstants::numTargetVals; i++) {
+      //cout <<"received data ";
+      for(int i = 0; i < 4; i++) {
          m_currentTargetCoordinates[i] = m_client->getTargetData(i+1);
+         //cout << m_currentTargetCoordinates[i] <<" ";
       }
+     // cout <<endl;
    }
 }
 // Turns robot to line up with target, once target is within field of vision
@@ -173,22 +176,28 @@ void Aiming::sendEncoderData(){
    sendcount++;
    memset(sendData,0,2);
    memset(byteData,0,8);
-   sendData[0] = m_encoder1->GetDistance();
-   sendData[1] = m_encoder2->GetDistance();
-
-   if (sendcount%2000 ==0){
-      cout <<"sending packet number "<<sendcount<<endl;
-      for (int i =0;i<9;i++){
-         cout << sendData[i] << " ";
-      }
-   }
+   sendData[0] = m_encoder1->Get();
+   sendData[1] = m_encoder2->Get();
 
    for (int i =0; i<2;i++){
-      char * intbytes= m_client->intToBytes(sendData[0]);
-      for (int j =0;j <4 ;j++){
-         byteData[i*4+j]=intbytes[j];
-      }
+      m_client->copyArray((byteData+i*4),m_client->intToBytes(sendData[i]));
    }
+
+   if (sendcount%200 == 0){
+      cout <<"sending packet number "<<sendcount<<endl;
+      cout <<"Send data";
+      for (int i =0;i<2;i++){
+         cout <<sendData[i] << " ";
+      }
+      cout <<endl;
+      cout << "Byte Data ";
+      for (int i=0;i<8;i++){
+          cout << (unsigned int)byteData[i] << " ";
+      }
+      cout <<endl;
+
+   }
+
    m_client->sendPacket(byteData);
 }
 void Aiming::setTargetCoordinateValue(AimingConstants::targetPositionData position, int newValue) {
@@ -226,6 +235,7 @@ int Aiming::getCenter(){
 int Aiming::getDeviation(){
    return deviation;
 }
+
 // Called to implement all aiming mechanisms
 void Aiming::run() {
 

@@ -73,8 +73,8 @@ void Client::receivePacket(){
         memset(m_targetData,0,5);
         //infinite loop because it is running in a thread
         struct timeval timeout;
-        timeout.tv_sec=0;
-        timeout.tv_usec=500;
+        timeout.tv_sec=10;
+        timeout.tv_usec=0;
         cout<<"set socket timeout" << endl;
         setsockopt(m_socket, SOL_SOCKET, SO_RCVTIMEO,&timeout,sizeof(timeout));
 
@@ -83,31 +83,24 @@ void Client::receivePacket(){
 
            //receive packet
            if(recvfrom(m_socket,m_receivedData,BUFLEN, 0 ,(sockaddr*)&m_si_other, &m_si_other_len) < 0) {
-              //cout << "packet receive error" << endl;
+              cout << "packet receive error" << endl;
            }
 
            else {
-               //cout << "packet received in thread" <<endl;
+               cout << "packet received in thread" <<endl;
 
                //convert data from byte to int
-
-              for (int i =0;i <5; i ++){
-                 for (int j=0;j<4;j++){
-                    m_tempByteArray[j]=m_receivedData[i*4+j];
-                 }
-                 m_convertedData[i]=bytesToInt(m_tempByteArray);
-              }
+               cout <<"converted Data ";
+               for (int i =0;i<5;i++){
+                  m_convertedData[i] = bytesToInt(m_receivedData+i*4);
+                  cout << m_convertedData[i] << " ";
+               }
+              cout <<endl;
 
                //sort based on the first int as a flag
-               if (m_convertedData[0]==1){
-                  //set unread data to true telling aiming to get new data
-                   m_unreadTargetData=true;
-                   copyArray(m_convertedData,m_targetData);
-
-               }
-               else {
-                  cout << "invalid flag"<<endl;
-               }
+               //set unread data to true telling aiming to get new data
+               m_unreadTargetData=true;
+               copyArray(m_convertedData,m_targetData);
 
 
            }
@@ -129,12 +122,12 @@ void Client::byteToIntOld(char *byteArray,int *intArray){
 //send a packet of up to size 10 kb
 void Client::sendPacket(char * data) {
     //cout << "sending packet" << endl;
-    sendto(m_socket,&data,18, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
+    sendto(m_socket,&data,8, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
 }
 //getters for data types
 
 int Client::getTargetData(int element){
-     if (element == 8){
+     if (element == 5){
          m_unreadTargetData=false;
      }
     return m_targetData[element];
@@ -170,7 +163,7 @@ char* Client::intToByteOld(int * array){
 }
 
 char * Client::intToBytes(int num){
-   memset(m_intToByteConvertBuf,0,4);
+     memset(m_intToByteConvertBuf,0,4);
      m_intToByteConvertBuf[0] = (char) ((num & 0xff000000) >> 24);
      m_intToByteConvertBuf[1] = (char) ((num & 0xff0000) >> 16);
      m_intToByteConvertBuf[2] = (char) ((num & 0xff00) >> 8);
@@ -179,7 +172,7 @@ char * Client::intToBytes(int num){
 
 }
 int Client::bytesToInt(char * bytes){
-   unsigned int val=0;
+    unsigned int val=0;
     val += (unsigned int)((unsigned char)bytes[0] << 24);
     val += (unsigned int)((unsigned char)bytes[1] << 16);
     val += (unsigned int)((unsigned char)bytes[2] << 8);
