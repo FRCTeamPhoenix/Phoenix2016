@@ -90,7 +90,7 @@ public:
       m_lidarHandler(&m_lidarOnSwitch, &m_configEditor, 9),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
       m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor, &m_lidarHandler),
-      m_driveCamera("cam0",false),//cam0 is nice camera cam1 is microsoft lifecam.
+      m_driveCamera("cam1",false),//cam0 is nice camera cam1 is microsoft lifecam.
       m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
       m_flywheel(&m_leftFlywheelMotor, &m_rightFlywheelMotor, &m_leftFlywheelEncoder, &m_rightFlywheelEncoder, &m_lidarHandler, &m_configEditor),
       m_loaderController(&m_intakeMotor, &m_stationaryMotor, &m_loadedSensor, &m_driveStation, &m_configEditor),

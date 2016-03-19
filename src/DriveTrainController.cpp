@@ -50,13 +50,15 @@ DriveTrainController::~DriveTrainController() {
 // ThrottleRatio .8 is too high :(
 void DriveTrainController::manualDrive() {
 
+   float range = 0.7;
+
    float throttleRatio = (-m_driveStation->getJoystickThrottle()+ 1)/2;
    float throttle = m_driveStation->getYWithDeadzone();
    float twist = m_driveStation->getZWithDeadzone();
-   float twistRatio = 1 - throttleRatio;
+   float maxPower = (throttleRatio * range) + 0.3;
 
-   m_leftMotorPower = (throttle * throttleRatio) + (twist * twistRatio);
-   m_rightMotorPower = (throttle * throttleRatio) - (twist * twistRatio);
+   m_leftMotorPower = (throttle * maxPower) + (twist * maxPower);
+   m_rightMotorPower = (throttle * maxPower) - (twist * maxPower);
 
 }
 
