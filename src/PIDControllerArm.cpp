@@ -9,14 +9,16 @@
 
 PIDControllerArm::PIDControllerArm(Talon* armMotor,
       AnalogInput* potentiometer,
+      ConfigEditor* configEditor,
       float upperLimit,
       float lowerLimit):
       m_armMotor(armMotor),
       m_potentiometer(potentiometer),
+      m_configEditor(configEditor),
       m_upperLimit(upperLimit),
       m_lowerLimit(lowerLimit){
    m_potentiometer->SetPIDSourceType(PIDSourceType::kDisplacement);
-   m_controller = new PIDController(0.21, 0.00, 0.00, m_potentiometer, this);
+   m_controller = new PIDController(m_configEditor->getFloat("armP", 0.21), 0.00, 0.00, m_potentiometer, this);
    m_controller->SetTolerance(0.5);
    m_controller->SetPIDSourceType(PIDSourceType::kDisplacement);
    m_controller->SetOutputRange(-0.5, 0.5);

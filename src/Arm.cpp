@@ -28,8 +28,8 @@ Arm::Arm(
       m_rightLowerLimitSwitch (rightLowerLimitSwitch),
       m_configEditor(configEditor),
       m_driveStation(driveStation),
-      m_leftControllerArm(m_armMotorLeft, m_leftPotentiometer, m_configEditor->getFloat("potLeftValueHigh",3.6), m_configEditor->getFloat("potLeftValueLow", 1.55)),
-      m_rightControllerArm(m_armMotorRight, m_rightPotentiometer, m_configEditor->getFloat("potRightValueHigh", 3.68), m_configEditor->getFloat("potRightValueLow", 1.5))
+      m_leftControllerArm(m_armMotorLeft, m_leftPotentiometer, m_configEditor, m_configEditor->getFloat("potLeftValueHigh",3.6), m_configEditor->getFloat("potLeftValueLow", 1.55)),
+      m_rightControllerArm(m_armMotorRight, m_rightPotentiometer, m_configEditor, m_configEditor->getFloat("potRightValueHigh", 3.68), m_configEditor->getFloat("potRightValueLow", 1.5))
 {
    m_armMotorPower = 0;
    m_goalState = MANUAL;

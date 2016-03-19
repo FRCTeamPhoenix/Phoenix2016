@@ -39,6 +39,7 @@ struct PortAssign {
    // Controllers
    const static uint32_t joystick = 0;
    const static uint32_t gamepad = 1;
+   const static uint32_t armJoystick = 3;
 
    //Analog
    const static uint32_t gyroscope = 0;
@@ -109,6 +110,14 @@ enum buttonNames {
    buttonStart = 9,
    joystickLeftButton = 10,
    joystickRightButton = 11
+};
+
+enum armButtons{
+   buttonBottom = 0,
+   buttonCDF = 1,
+   buttonMiddle = 2,
+   buttonDrawBridge = 3,
+   buttonTop = 4
 
 };
 const static std::string dashButtonNames[6] = {
@@ -315,7 +324,7 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-   const static int numberOfVars = 25;
+   const static int numberOfVars = 31;
    const static std::string variables[numberOfVars] = {
       "motorPower",
       "degree",
@@ -341,7 +350,13 @@ namespace ConfigVariables {
       "minDistFlywheel",
       "maxDistFlywheelRate",
       "midDistFlywheelRate",
-      "minDistFlywheelRate"
+      "minDistFlywheelRate",
+      "armButtonBottom",
+      "armButtonCDF",
+      "armButtonMiddle",
+      "armButtonDrawBridge",
+      "armButtonTop",
+      "armP"
    };
    const static std::string types[numberOfVars] = {
       "float", //motorPower
@@ -368,7 +383,13 @@ namespace ConfigVariables {
       "float", //minDistFlywheel
       "float", //maxDistFlywheelRate
       "float", //midDistFlywheelRate
-      "float" //minDistFlywheelRate
+      "float", //minDistFlywheelRate
+      "float", //armButtonBottom
+      "float", //armButtonCDF
+      "float", //armButtonMiddle
+      "float", //armButtonDrawBridge
+      "float", //armButtonTop
+      "float", //armP
    };
 };
 

@@ -9,10 +9,12 @@
 #define PIDCONTROLLERARM_H_
 
 #include "WPILib.h"
+#include "ConfigEditor.h"
 
 class PIDControllerArm: PIDOutput {
    Talon* m_armMotor;
    AnalogInput* m_potentiometer;
+   ConfigEditor* m_configEditor;
    PIDController* m_controller;
    float m_upperLimit;
    float m_lowerLimit;
@@ -20,6 +22,7 @@ class PIDControllerArm: PIDOutput {
 public:
    PIDControllerArm(Talon* armMotor,
          AnalogInput* potentiometer,
+         ConfigEditor* configEditor,
          float upperLimit,
          float lowerLimit);
 
