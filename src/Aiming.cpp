@@ -180,22 +180,16 @@ void Aiming::sendEncoderData(){
    sendData[1] = m_encoder2->Get();
 
    for (int i =0; i<2;i++){
-      m_client->copyArray((byteData+i*4),m_client->intToBytes(sendData[i]));
+      m_client->intToBytes(sendData[i],(byteData+i*4));
    }
 
    if (sendcount%200 == 0){
-      cout <<"sending packet number "<<sendcount<<endl;
+      cout<<"sending packet number "<<sendcount<<endl;
       cout <<"Send data";
       for (int i =0;i<2;i++){
          cout <<sendData[i] << " ";
       }
       cout <<endl;
-      cout << "Byte Data ";
-      for (int i=0;i<8;i++){
-          cout << (unsigned int)byteData[i] << " ";
-      }
-      cout <<endl;
-
    }
 
    m_client->sendPacket(byteData);

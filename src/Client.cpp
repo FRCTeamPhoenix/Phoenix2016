@@ -100,7 +100,7 @@ void Client::receivePacket(){
                //sort based on the first int as a flag
                //set unread data to true telling aiming to get new data
                m_unreadTargetData=true;
-               copyArray(m_convertedData,m_targetData);
+               copyArray(m_convertedData,m_targetData,5);
 
 
            }
@@ -121,8 +121,9 @@ void Client::byteToIntOld(char *byteArray,int *intArray){
 
 //send a packet of up to size 10 kb
 void Client::sendPacket(char * data) {
-    //cout << "sending packet" << endl;
-    sendto(m_socket,&data,8, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
+    cout << "sending packet" << endl;
+
+    sendto(m_socket,data,8, 0 ,(sockaddr*)&m_si_other, sizeof(m_si_other));
 }
 //getters for data types
 
@@ -134,13 +135,13 @@ int Client::getTargetData(int element){
 
 }
 //copy from one array to another
-void Client::copyArray(int *array1, int *array2){
-      for (unsigned int i =0;i < 5;i++){
+void Client::copyArray(int *array1, int *array2, int size){
+      for (unsigned int i =0;i < size;i++){
          array2[i]=array1[i];
       }
 }
-void Client::copyArray(char* char1,char* char2){
-   for (int i=0;i<18;i++){
+void Client::copyArray(char* char1,char* char2, int size){
+   for (int i=0;i<size;i++){
       char2[i]=char1[i];
    }
 }
@@ -162,13 +163,11 @@ char* Client::intToByteOld(int * array){
 
 }
 
-char * Client::intToBytes(int num){
-     memset(m_intToByteConvertBuf,0,4);
-     m_intToByteConvertBuf[0] = (char) ((num & 0xff000000) >> 24);
-     m_intToByteConvertBuf[1] = (char) ((num & 0xff0000) >> 16);
-     m_intToByteConvertBuf[2] = (char) ((num & 0xff00) >> 8);
-     m_intToByteConvertBuf[3] = (char) (num & 0xff);
-     return m_intToByteConvertBuf;
+void Client::intToBytes(int num,char * buf){
+     buf[0] = (char) ((num & 0xff000000) >> 24);
+     buf[1] = (char) ((num & 0xff0000) >> 16);
+     buf[2] = (char) ((num & 0xff00) >> 8);
+     buf[3] = (char) (num & 0xff);
 
 }
 int Client::bytesToInt(char * bytes){

@@ -52,11 +52,11 @@ public:
 
     int getResponseData(int element);
 
-    void copyArray(int *array1, int *array2);
+    void copyArray(int *array1, int *array2,int size);
 
-    void copyArray(char *char1,char * char2);
+    void copyArray(char *char1,char * char2, int size);
 
-    char * intToBytes(int num);
+    void intToBytes(int num,char * buf);
 
     int bytesToInt(char * bytes);
 
