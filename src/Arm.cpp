@@ -113,7 +113,10 @@ void Arm::setMotors(){
 }
 void Arm::manualDrive(){
    SmartDashboard::PutString("DB/String 5", "InManualDrive");
-   float adjust = m_driveStation->getGamepadJoystick() / 400.0;
+   float adjust = m_driveStation->getGamepadJoystick() / 100.0;
+   if(adjust < 0.0005 && adjust > -0.0005){
+      adjust = 0;
+   }
    m_leftControllerArm.adjustTarget(adjust);
    m_rightControllerArm.adjustTarget(adjust);
 
@@ -140,13 +143,17 @@ void Arm::manualDrive(){
 void Arm::run(){
 
    std::ostringstream outputL;
-   outputL << "PotL: ";
+   outputL << "Pot:";
    outputL << (m_leftPotentiometer->GetVoltage());
+   outputL << " : ";
+   outputL << (m_rightPotentiometer->GetVoltage());
    SmartDashboard::PutString("DB/String 2", outputL.str());
-   std::ostringstream outputR;
-   outputR << "PotR: ";
-   outputR << (m_rightPotentiometer->GetVoltage());
-   SmartDashboard::PutString("DB/String 3", outputR.str());
+   std::ostringstream outputM;
+   outputM << "Mtr:";
+   outputM << (m_armMotorLeft->Get());
+   outputM << " : ";
+   outputM << (m_armMotorRight->Get());
+   SmartDashboard::PutString("DB/String 3", outputM.str());
 
    switch (getCurrentState()) {
    case POTENTIOMETERDRIVE:
