@@ -315,7 +315,7 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-   const static int numberOfVars = 25;
+   const static int numberOfVars = 26;
    const static std::string variables[numberOfVars] = {
       "motorPower",
       "degree",
@@ -341,7 +341,8 @@ namespace ConfigVariables {
       "minDistFlywheel",
       "maxDistFlywheelRate",
       "midDistFlywheelRate",
-      "minDistFlywheelRate"
+      "minDistFlywheelRate",
+      "throttleMin"
    };
    const static std::string types[numberOfVars] = {
       "float", //motorPower
@@ -368,7 +369,9 @@ namespace ConfigVariables {
       "float", //minDistFlywheel
       "float", //maxDistFlywheelRate
       "float", //midDistFlywheelRate
+      "float", //minDistFlywheelRate
       "float" //minDistFlywheelRate
+      "float" //throttleMin
    };
 };
 
