@@ -28,8 +28,8 @@ Arm::Arm(
       m_rightLowerLimitSwitch (rightLowerLimitSwitch),
       m_configEditor(configEditor),
       m_driveStation(driveStation),
-      m_leftControllerArm(m_armMotorLeft, m_leftPotentiometer, m_configEditor, m_configEditor->getFloat("potLeftValueHigh",3.6), m_configEditor->getFloat("potLeftValueLow", 1.55)),
-      m_rightControllerArm(m_armMotorRight, m_rightPotentiometer, m_configEditor, m_configEditor->getFloat("potRightValueHigh", 3.68), m_configEditor->getFloat("potRightValueLow", 1.5))
+      m_leftControllerArm(m_armMotorLeft, m_leftPotentiometer, m_configEditor, m_configEditor->getFloat("potLeftValueHigh", 5 /*3.6*/), m_configEditor->getFloat("potLeftValueLow", 0/*1.55*/)),
+      m_rightControllerArm(m_armMotorRight, m_rightPotentiometer, m_configEditor, m_configEditor->getFloat("potRightValueHigh", 5/*3.68*/), m_configEditor->getFloat("potRightValueLow", 0/*1.5*/))
 {
    m_armMotorPower = 0;
    m_goalState = MANUAL;
@@ -46,15 +46,6 @@ void Arm::setMotors(){
    SmartDashboard::PutString("DB/String 5", "InSetMotor");
    float powerLeft = 0.0f;
    float powerRight = 0.0f;
-
-   std::ostringstream outputL;
-   outputL << "PotL: ";
-   outputL << (m_leftPotentiometer->GetVoltage());
-   SmartDashboard::PutString("DB/String 2", outputL.str());
-   std::ostringstream outputR;
-   outputR << "PotR: ";
-   outputR << (m_rightPotentiometer->GetVoltage());
-   SmartDashboard::PutString("DB/String 3", outputR.str());
 
 //   if((m_configEditor->getFloat("maxSoftLimitRight", 3.68) - m_configEditor->getFloat("minSoftLimitRight", 1.55)) * 0.05 < fabs(leftPotentiometer - rightPotentiometer)){
 //      SmartDashboard::PutString("DB/String 5", "FarFromEachOther");
@@ -148,6 +139,15 @@ void Arm::manualDrive(){
 
 void Arm::run(){
 
+   std::ostringstream outputL;
+   outputL << "PotL: ";
+   outputL << (m_leftPotentiometer->GetVoltage());
+   SmartDashboard::PutString("DB/String 2", outputL.str());
+   std::ostringstream outputR;
+   outputR << "PotR: ";
+   outputR << (m_rightPotentiometer->GetVoltage());
+   SmartDashboard::PutString("DB/String 3", outputR.str());
+
    switch (getCurrentState()) {
    case POTENTIOMETERDRIVE:
       if (m_rightPotentiometerComplete && m_leftPotentiometerComplete){
@@ -164,7 +164,7 @@ void Arm::run(){
    }
    std::ostringstream setPoints;
    setPoints << m_leftControllerArm.getSetpoint();
-   SmartDashboard::PutString("DB/String 3", setPoints.str());
+   SmartDashboard::PutString("DB/String 9", setPoints.str());
 //   setMotors();
 }
 
