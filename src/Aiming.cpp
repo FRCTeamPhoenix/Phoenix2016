@@ -182,7 +182,9 @@ void Aiming::printCurrentCoordinates() {
          m_currentTargetCoordinates[AimingConstants::xLR] << ", " <<
          m_currentTargetCoordinates[AimingConstants::yLR] << ")" << endl;
 }
-
+int Aiming::getDeviaion(){
+   return deviation;
+}
 
 // Called to implement all aiming mechanisms
 void Aiming::run() {
@@ -190,7 +192,8 @@ void Aiming::run() {
    if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonA)) {
          setCurrentState(IDLE);
    }
-
+   m_targetCenter_x = (m_currentTargetCoordinates[AimingConstants::xUL] * m_currentTargetCoordinates[AimingConstants::xLR])/2;
+   deviation= AimingConstants::desiredCenter-m_targetCenter_x;
    switch(m_currentState) {
    case IDLE:
       m_driveTrainController->setGoalState(m_driveTrainController->TELEOP);
@@ -200,19 +203,19 @@ void Aiming::run() {
 
       //SmartDashboard::PutString("DB/String 0", "State: IDLE" );
 
-      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonStart)) {
-            fullProcess=true;
-            setCurrentState(CENTERING);
-      }
-      else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonB)) {
-         setCurrentState(APPROACHING);
-      }
-      else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonY)) {
-         setCurrentState(CENTERING);
-      }
-      else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonX)) {
-         setCurrentState(SHOOTING);
-      }
+//      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonStart)) {
+//            fullProcess=true;
+//            setCurrentState(CENTERING);
+//      }
+//      else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonB)) {
+//         setCurrentState(APPROACHING);
+//      }
+//      else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonY)) {
+//         setCurrentState(CENTERING);
+//      }
+//      else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonX)) {
+//         setCurrentState(SHOOTING);
+//      }
 
       break;
    case CENTERING:

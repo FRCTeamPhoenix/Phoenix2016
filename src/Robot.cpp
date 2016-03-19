@@ -282,9 +282,23 @@ public:
 
 
          //Space 2
-
+         std::ostringstream output3;
+         output3 << "Deviaion: " <<  m_aiming.getDeviaion();
+         m_driveStation.printToDashboard(output3.str(), 2);
 
          //Space 3
+         string turnDirection;
+         std::ostringstream output4;
+
+         if(m_aiming.getDeviaion()<0){
+            turnDirection ="Turn Left";
+         }
+         else {
+            turnDirection = "Turn Right";
+         }
+         output4 << turnDirection;
+         m_driveStation.printToDashboard(output4.str(), 3);
+
 
          //Space 4
          if (m_loaderController.loaded()) {
