@@ -47,14 +47,14 @@ void Arm::setMotors(){
    float leftPotentiometer = m_leftPotentiometer->GetVoltage();
    float rightPotentiometer = m_rightPotentiometer->GetVoltage();
 
-   std::ostringstream outputL;
-   outputL << "PotL: ";
-   outputL << (m_leftPotentiometer->GetVoltage());
-   SmartDashboard::PutString("DB/String 2", outputL.str());
-   std::ostringstream outputR;
-   outputR << "PotR: ";
-   outputR << (m_rightPotentiometer->GetVoltage());
-   SmartDashboard::PutString("DB/String 3", outputR.str());
+//   std::ostringstream outputL;
+//   outputL << "PotL: ";
+//   outputL << (m_leftPotentiometer->GetVoltage());
+//   SmartDashboard::PutString("DB/String 2", outputL.str());
+//   std::ostringstream outputR;
+//   outputR << "PotR: ";
+//   outputR << (m_rightPotentiometer->GetVoltage());
+//   SmartDashboard::PutString("DB/String 3", outputR.str());
 
 //   if((m_configEditor->getFloat("maxSoftLimitRight", 3.68) - m_configEditor->getFloat("minSoftLimitRight", 1.55)) * 0.05 < fabs(leftPotentiometer - rightPotentiometer)){
 //      SmartDashboard::PutString("DB/String 5", "FarFromEachOther");
