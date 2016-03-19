@@ -189,7 +189,6 @@ void Arm::moveArmToPosition(float goal){
    float leftRange = leftUpperLimit - leftLowerLimit;
    float rightRange = rightUpperLimit - rightLowerLimit;
 
-
    m_goalLeftPotentiometerValue = (goal * leftRange) + leftLowerLimit;
    m_goalRightPotentiometerValue = (goal * rightRange) + rightLowerLimit;
    m_leftPotentiometerComplete = false;

@@ -25,20 +25,38 @@ PIDControllerArm::PIDControllerArm(Talon* armMotor,
    m_controller->Enable();
 }
 
-void PIDControllerArm::setTarget(float target){
-   m_controller->SetSetpoint(target);
+void PIDControllerArm::setTarget(float targetPercent){
+   m_controller->SetSetpoint(percentToVoltage(targetPercent));
 }
 
 void PIDControllerArm::adjustTarget(float increment){
-   float newTarget = ((float)m_controller->GetSetpoint()) + increment;
-   printf("%9.8f\n", newTarget);
-   m_controller->SetSetpoint(newTarget);
+   float newPercent = (voltageToPercent(m_controller->GetSetpoint())) + increment;
+   printf("%9.8f\n", newPercent);
+   m_controller->SetSetpoint(percentToVoltage(newPercent));
+}
+
+float PIDControllerArm::percentToVoltage(float goal){
+   float limitGoal = goal;
+   if(goal > 1.0){
+      limitGoal = 1.0;
+   }
+   if(goal < 0.0){
+      limitGoal = 0.0;
+   }
+   float range = m_upperLimit - m_lowerLimit;
+   return (limitGoal * range) + m_lowerLimit;
+}
+
+float PIDControllerArm::voltageToPercent(float volts){
+   float range = m_upperLimit - m_lowerLimit;
+   float percent = (volts - m_lowerLimit) / range;
+   return percent;
 }
 
 bool PIDControllerArm::atTarget(float tolerance){
    double setPoint = m_controller->GetSetpoint();
-   double target = m_potentiometer->GetVoltage();
-   return (target > (setPoint - setPoint * tolerance)) && (target < (setPoint + setPoint * tolerance));
+   double targetVoltage = m_potentiometer->GetVoltage();
+   return (targetVoltage > (setPoint - setPoint * tolerance)) && (targetVoltage < (setPoint + setPoint * tolerance));
 }
 
 void PIDControllerArm::PIDWrite(float output){
@@ -57,5 +75,5 @@ PIDControllerArm::~PIDControllerArm() {
 }
 
 float PIDControllerArm::getSetpoint(){
-   return m_controller->GetSetpoint();
+   return voltageToPercent(m_controller->GetSetpoint());
 }

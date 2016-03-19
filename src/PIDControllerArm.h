@@ -26,10 +26,12 @@ public:
          float upperLimit,
          float lowerLimit);
 
-   void setTarget(float target);
+   void setTarget(float targetPercent);
    bool atTarget(float tolerance);
    void PIDWrite(float output);
    void adjustTarget(float increment);
+   float percentToVoltage(float goal);
+   float voltageToPercent(float volts);
    float getSetpoint();
 
    virtual ~PIDControllerArm();
