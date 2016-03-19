@@ -39,8 +39,8 @@ DriveTrainController::DriveTrainController(
    lidarInches = 0.0f;
 
 
-//   m_leftDriveTrainController = new PIDController(0.2, 0, 0, m_leftWheelEncoder, this);
-//   m_rightDriveTrainController = new PIDController(0.2, 0, 0, m_rightWheelEncoder, this);
+   //   m_leftDriveTrainController = new PIDController(0.2, 0, 0, m_leftWheelEncoder, this);
+   //   m_rightDriveTrainController = new PIDController(0.2, 0, 0, m_rightWheelEncoder, this);
 }
 
 DriveTrainController::~DriveTrainController() {
@@ -64,7 +64,7 @@ void DriveTrainController::run() {
    switch (getCurrentState()) {
    case CONTINUOUSDRIVE:
       break;
-   //Goal state with the drivers are driving the robot
+      //Goal state with the drivers are driving the robot
    case TELEOP:
       manualDrive();
       break;
@@ -208,40 +208,40 @@ void DriveTrainController::stopRobot() {
 DriveTrainController::STATE DriveTrainController::getCurrentState() {
    switch(m_goalState){
    //Goal state of TELEOP, return TELEOP
-   case TELEOP:
-      return TELEOP;
-      //Goal state of ENCODERDRIVE, tests if the encoders are where they are supposed to be
-   case ENCODERDRIVE:{
-   if ((((m_rightMotorPower < 0) && (m_rightWheelEncoder->GetDistance() <= m_targetDistanceRight))) || (
-         ((m_rightMotorPower >= 0) && (m_rightWheelEncoder->GetDistance() >= m_targetDistanceRight)))){
-      m_rightEncoderComplete = true;
-   }
-   if ((((m_leftMotorPower < 0) && (m_leftWheelEncoder->GetDistance() <= m_targetDistanceLeft))) ||
-         (((m_leftMotorPower >= 0) && (m_leftWheelEncoder->GetDistance() >= m_targetDistanceLeft)))){
-      m_leftEncoderComplete = true;
-   }
-   if (m_rightEncoderComplete || m_leftEncoderComplete){
-      m_goalState = IDLE;
-      return IDLE;
-   }
-   else {
-      m_goalState = ENCODERDRIVE;
-      return ENCODERDRIVE;
-   }
-   case GYROTURN:
-      return GYROTURN;
-   case LIDARDRIVE:
-      return LIDARDRIVE;
-   case CONTINUOUSDRIVE:
-      if(m_continuousDriveTimer.HasPeriodPassed(.1)){
+      case TELEOP:
+         return TELEOP;
+         //Goal state of ENCODERDRIVE, tests if the encoders are where they are supposed to be
+      case ENCODERDRIVE:{
+         if ((((m_rightMotorPower < 0) && (m_rightWheelEncoder->GetDistance() <= m_targetDistanceRight))) || (
+               ((m_rightMotorPower >= 0) && (m_rightWheelEncoder->GetDistance() >= m_targetDistanceRight)))){
+            m_rightEncoderComplete = true;
+         }
+         if ((((m_leftMotorPower < 0) && (m_leftWheelEncoder->GetDistance() <= m_targetDistanceLeft))) ||
+               (((m_leftMotorPower >= 0) && (m_leftWheelEncoder->GetDistance() >= m_targetDistanceLeft)))){
+            m_leftEncoderComplete = true;
+         }
+         if (m_rightEncoderComplete || m_leftEncoderComplete){
+            m_goalState = IDLE;
+            return IDLE;
+         }
+         else {
+            m_goalState = ENCODERDRIVE;
+            return ENCODERDRIVE;
+         }
+      case GYROTURN:
+         return GYROTURN;
+      case LIDARDRIVE:
+         return LIDARDRIVE;
+      case CONTINUOUSDRIVE:
+         if(m_continuousDriveTimer.HasPeriodPassed(.1)){
+            return IDLE;
+         }
+         break;
+      default:
          return IDLE;
       }
-      break;
-   default:
-      return IDLE;
    }
    return IDLE;
-}
 }
 
 void DriveTrainController::driveLidar(float inches, float motorSpeed){
