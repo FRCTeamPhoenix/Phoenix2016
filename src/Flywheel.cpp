@@ -63,6 +63,7 @@ bool Flywheel::upToSpeed(float tolerance) {
 }
 
 void Flywheel::setRate(float rate) {
+   printf("%5.5f\n", rate);
    m_leftFlywheelController.setRate(-rate);
    m_rightFlywheelController.setRate(rate);
 }
@@ -107,6 +108,7 @@ float Flywheel::calculateSpeed() {
    float closeFactor = 1 - (minToCurrent / deltaDistance);
 
    float rate = (farFactor * farPointRate) + (closeFactor * closePointRate);
+
    return rate;
 }
 
