@@ -25,8 +25,8 @@ private:
    Encoder* m_rightFlywheelEncoder;
    LidarHandler* m_lidar;
 
-   WheelSpeedController m_leftFlywheelController;
-//   WheelSpeedController m_rightFlywheelController;
+//   WheelSpeedController m_leftFlywheelController;
+   WheelSpeedController m_rightFlywheelController;
 
    ConfigEditor * m_configEditor;
 
