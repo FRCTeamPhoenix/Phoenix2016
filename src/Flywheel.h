@@ -26,7 +26,7 @@ private:
    LidarHandler* m_lidar;
 
    WheelSpeedController m_leftFlywheelController;
-   WheelSpeedController m_rightFlywheelController;
+//   WheelSpeedController m_rightFlywheelController;
 
    ConfigEditor * m_configEditor;
 

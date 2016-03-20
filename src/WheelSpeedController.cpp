@@ -26,8 +26,12 @@ void WheelSpeedController::setRate(float rate) {
 bool WheelSpeedController::atTarget(float tolerance) {
    double setPoint = m_controller->GetSetpoint();
    double rate = m_encoder->GetRate();
-   printf("%5.5f : %5.5f\n", rate, setPoint);
-   return (rate > (setPoint - setPoint*tolerance)) && (rate < (setPoint + setPoint*tolerance));
+
+   std::ostringstream rates;
+   rates << "Rate: " << rate << " SetPoint: " << setPoint;
+   SmartDashboard::PutString("DB/String 3", rates.str());
+
+   return (rate > (setPoint - setPoint * tolerance)) && (rate < (setPoint + setPoint * tolerance));
 }
 
 
