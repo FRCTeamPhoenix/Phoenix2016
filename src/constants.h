@@ -39,6 +39,7 @@ struct PortAssign {
    // Controllers
    const static uint32_t joystick = 0;
    const static uint32_t gamepad = 1;
+   const static uint32_t armJoystick = 2;
 
    //Analog
    const static uint32_t gyroscope = 0;
@@ -136,6 +137,7 @@ const static std::string textBoxNames[13] = {
       "New Value"
 };
 const static uint32_t gamepadButtons = 12;
+const static uint32_t armJoystickButtons = 5;
 };
 
 /*
