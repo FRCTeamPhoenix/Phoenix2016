@@ -185,7 +185,7 @@ public:
 
       while(IsTest() && IsEnabled()){
          if(m_joystick.GetRawButton(1)){
-            m_driveTrain.set(2000, 1300);
+            m_driveTrain.set(200, 130);
          }
          else{
             m_driveTrain.set(0.0, 0.0);

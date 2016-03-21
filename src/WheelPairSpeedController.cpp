@@ -31,6 +31,8 @@ bool WheelPairSpeedController::atTarget(float tolerance){
 }
 
 void WheelPairSpeedController::PIDWrite(float output){
+   printf("Setpoint: %5.5f CurrentRate: %5.5f\n", m_controller->GetSetpoint(), m_encoder->GetRate());
+
    m_controlledWheelAlpha->Set(output);
    m_controlledWheelBeta->Set(output);
 }
