@@ -8,8 +8,8 @@
 #include <DriveTrain.h>
 
 DriveTrain::DriveTrain(Talon* FRM, Talon* FLM, Talon* RRM, Talon* RLM, Encoder* RE, Encoder* LE):
-   m_rightSide(FRM, RRM, RE, 0.0002, 0.0, 0.0),
-   m_leftSide(FLM, RLM, LE, 0.0002, 0.0, 0.0)
+   m_rightSide(FRM, RRM, RE, 0.002, 0.0, 0.0),
+   m_leftSide(FLM, RLM, LE, 0.002, 0.0, 0.0)
 
 {
 }
@@ -24,7 +24,7 @@ void DriveTrain::setLeft(float rate){
 
 void DriveTrain::set(float rightRate, float leftRate){
    std::ostringstream rates;
-   rates << "Right: " << rightRate << " Left: " << leftRate;
+   rates << "Right: " << int(rightRate) << " Left: " << int(leftRate);
    SmartDashboard::PutString("DB/String 9", rates.str());
    setRight(rightRate);
    setLeft(leftRate);

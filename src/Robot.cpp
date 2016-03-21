@@ -117,7 +117,7 @@ public:
    void RobotInit() override{
       SmartDashboard::init();
       m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
-      m_rightWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("rightDistancePerPulse"));
+      m_rightWheelEncoder.SetDistancePerPulse(-0.045);
       m_gyro.Calibrate();
       m_configEditor.showAllKeys();
 //TODO: uncomment this block of code
@@ -184,8 +184,13 @@ public:
       m_driveStation.clearDriveStation();
 
       while(IsTest() && IsEnabled()){
+
+         std::ostringstream rates;
+         rates << "Right: " << m_rightWheelEncoder.GetRate() << " Left: " << m_leftWheelEncoder.GetRate();
+         SmartDashboard::PutString("DB/String 8", rates.str());
+
          if(m_joystick.GetRawButton(1)){
-            m_driveTrain.set(200, 130);
+            m_driveTrain.set(50, 32);
          }
          else{
             m_driveTrain.set(0.0, 0.0);
