@@ -17,7 +17,7 @@ WheelPairSpeedController::WheelPairSpeedController(Talon* alphaWheel, Talon* bet
    m_controller = new PIDController(pTerm, iTerm, dTerm, m_encoder, this);
    m_controller->SetTolerance(0.5);
    m_controller->SetPIDSourceType(PIDSourceType::kRate);
-//   m_controller->Enable();
+   m_controller->Enable();
 }
 
 void WheelPairSpeedController::setRate(float rate){
