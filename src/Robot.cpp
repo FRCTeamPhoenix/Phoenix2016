@@ -16,13 +16,14 @@
 #include <sstream>
 #include "ConfigEditor.h"
 #include "LidarHandler.h"
+#include "CameraSwap.h"
 using namespace std;
 
 class Robot;
 
 void runClient(Robot* robot, Client* client);
 void lidarThread(Robot * robot, LidarHandler * lidarHandler);
-
+void cameraSwapThread(Robot * robot, CameraSwap * cameraSwap);
 
 class Robot: public SampleRobot
 {
@@ -53,7 +54,8 @@ class Robot: public SampleRobot
    LidarHandler m_lidarHandler;
    RobotDrive m_driveTrain;
    DriveTrainController m_driveTrainController;
-   USBCamera m_driveCamera;
+   USBCamera m_driveCamera0;
+   USBCamera m_driveCamera1;
    LoaderSense m_loaderSense;
    Flywheel m_flywheel;
    LoaderController m_loaderController;
@@ -61,8 +63,9 @@ class Robot: public SampleRobot
    Arm m_arm;
    Aiming m_aiming;
    RobotController m_robotController;
+   CameraSwap m_cameraSwap;
 
-   std::string m_currentCamera = "cam1";
+   std::string m_currentCamera = "cam0";
 
 public:
    Robot() :
@@ -92,16 +95,19 @@ public:
       m_lidarHandler(&m_lidarOnSwitch, &m_configEditor, 9),
       m_driveTrain(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor),
       m_driveTrainController(&m_driveTrain, &m_driveStation, &m_leftWheelEncoder, &m_rightWheelEncoder, &m_gyro, &m_configEditor, &m_lidarHandler),
-      m_driveCamera("cam0",false),//cam0 is nice camera cam1 is microsoft lifecam.
+      m_driveCamera0("cam0",false),//cam0 is nice camera cam1 is microsoft lifecam.
+      m_driveCamera1("cam1",false),
       m_loaderSense(&m_client, &m_driveTrainController, &m_driveStation),
       m_flywheel(&m_leftFlywheelMotor, &m_rightFlywheelMotor, &m_leftFlywheelEncoder, &m_rightFlywheelEncoder, &m_lidarHandler, &m_configEditor),
       m_loaderController(&m_intakeMotor, &m_stationaryMotor, &m_loadedSensor, &m_driveStation, &m_configEditor),
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor, &m_driveStation),
       m_aiming(&m_client, &m_driveTrainController, &m_driveStation, &m_lidarHandler, &m_shooterController),
-      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm, &m_aiming)
+      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm, &m_aiming),
+      m_cameraSwap(&m_joystick, &m_driveCamera0, &m_driveCamera1)
 {
 }
+
    void RobotInit() override{
       SmartDashboard::init();
       m_leftWheelEncoder.SetDistancePerPulse(m_configEditor.getDouble("leftDistancePerPulse"));
@@ -117,10 +123,12 @@ public:
 //         receiveThread.detach();
 //      }
 
-      m_driveCamera.SetExposureManual(20);
-      m_driveCamera.SetWhiteBalanceAuto();
+      m_driveCamera0.SetExposureManual(20);
+      m_driveCamera0.SetWhiteBalanceAuto();
       CameraServer::GetInstance()->SetQuality(50);
-      CameraServer::GetInstance()->StartAutomaticCapture(m_currentCamera.c_str());
+
+      std::thread cameraSwapRun(cameraSwapThread, this, &m_cameraSwap);
+      cameraSwapRun.detach();
 
       std::thread lidarRun(lidarThread, this, &m_lidarHandler);
       lidarRun.detach();
@@ -161,15 +169,6 @@ public:
          m_shooterController.run();
          //m_aiming.run();
          m_arm.run();
-
-         if(m_joystick.GetRawButton(2) && m_currentCamera == "cam1") {
-            m_currentCamera = "cam2";
-            CameraServer::GetInstance()->StartAutomaticCapture(m_currentCamera.c_str());
-         }
-         else if(m_currentCamera == "cam2") {
-            m_currentCamera = "cam1";
-            CameraServer::GetInstance()->StartAutomaticCapture(m_currentCamera.c_str());
-         }
       }
       m_robotController.clearQueue();
    }
@@ -353,6 +352,10 @@ void lidarThread(Robot * robot, LidarHandler * lidarHandler) {
 
 void runClient(Robot* robot, Client* client){
    client->receivePacket();
+}
+
+void cameraSwapThread(Robot * robot, CameraSwap * cameraSwap) {
+
 }
 
 START_ROBOT_CLASS(Robot);
