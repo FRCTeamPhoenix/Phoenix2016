@@ -39,7 +39,7 @@ struct PortAssign {
    // Controllers
    const static uint32_t joystick = 0;
    const static uint32_t gamepad = 1;
-   const static uint32_t armJoystick = 3;
+   const static uint32_t armJoystick = 2;
 
    //Analog
    const static uint32_t gyroscope = 0;
@@ -113,11 +113,11 @@ enum buttonNames {
 };
 
 enum armButtons{
-   buttonBottom = 0,
-   buttonCDF = 1,
-   buttonMiddle = 2,
-   buttonDrawBridge = 3,
-   buttonTop = 4
+   buttonBottom = 1,
+   buttonCDF = 2,
+   buttonMiddle = 3,
+   buttonDrawBridge = 4,
+   buttonTop = 5
 
 };
 const static std::string dashButtonNames[6] = {
@@ -324,7 +324,7 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-   const static int numberOfVars = 31;
+   const static int numberOfVars = 33;
    const static std::string variables[numberOfVars] = {
       "motorPower",
       "degree",

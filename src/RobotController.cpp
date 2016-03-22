@@ -40,19 +40,42 @@ void RobotController::run(){
    }
    else if (m_state == ROBOT_MANUAL) {
 
+      //Gamepad button Right Bumper
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonRB)){
          m_loaderController->start();
       }
+      //Gamepad button Left Bumper
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonLB)){
          m_loaderController->stop();
       }
-
+      //Gamepad button Right Trigger
       if(m_driveStation->getGamepadButton(DriveStationConstants::triggerRT)){
          m_flywheel->start();
       }
+      //Gamepad button Left Trigger
       if(m_driveStation->getGamepadButton(DriveStationConstants::triggerLT)){
          m_flywheel->stop();
       }
+      //ArmButtons Bottom Button
+      if(m_driveStation->getArmJoystickButton(DriveStationConstants::buttonBottom)){
+         m_arm->moveArmToPosition(0);
+      }
+      //ArmButtons CDF
+      if(m_driveStation->getArmJoystickButton(DriveStationConstants::buttonCDF)){
+         m_arm->moveArmToPosition(0.25);
+      }
+      //ArmButtons Middle
+      if(m_driveStation->getArmJoystickButton(DriveStationConstants::buttonMiddle)){
+         m_arm->moveArmToPosition(0.5);
+      }
+      //ArmButtons DrawBridge
+      if(m_driveStation->getArmJoystickButton(DriveStationConstants::buttonDrawBridge)){
+         m_arm->moveArmToPosition(0.75);      }
+      //ArmButtons Top
+      if(m_driveStation->getArmJoystickButton(DriveStationConstants::buttonTop)){
+         m_arm->moveArmToPosition(1);
+      }
+
       m_arm->run();
       m_state = ROBOT_MANUAL;
       if (m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){

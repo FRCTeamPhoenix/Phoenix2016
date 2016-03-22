@@ -34,8 +34,8 @@ private:
    float m_armMotorPower;
 public:
    enum STATE{
-      POTENTIOMETERDRIVE,
-      MANUAL
+      PIDDRIVE,
+      IDLE
    };
    Arm(
          Talon* armMotorLeft,
@@ -50,11 +50,9 @@ public:
          DriveStation* driveStation);
 
    void move(float);
-   void stop();
    void run();
    void moveArmToPosition(float);
    void manualDrive();
-   void setMotors();
    float getAngleLeft();
    float getAngleRight();
 

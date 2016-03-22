@@ -81,7 +81,7 @@ void DriveStation::snapShot() {
       m_stringInputs[j]=SmartDashboard::GetString(DriveStationConstants::textBoxNames[j],"");
    }
 
-   for(int a = 0; a < 5; a++){
+   for(int a = 1; a < 6; a++){
       m_armButtons[a] = m_armJoystick->GetRawButton(a);
    }
 
