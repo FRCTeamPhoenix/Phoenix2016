@@ -355,7 +355,9 @@ void runClient(Robot* robot, Client* client){
 }
 
 void cameraSwapThread(Robot * robot, CameraSwap * cameraSwap) {
-
+   while(true) {
+      cameraSwap->update();
+   }
 }
 
 START_ROBOT_CLASS(Robot);
