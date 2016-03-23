@@ -160,6 +160,7 @@ public:
          m_shooterController.run();
          //m_aiming.run();
          m_arm.run();
+         m_configEditor.update();
       }
       m_robotController.clearQueue();
    }
