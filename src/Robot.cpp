@@ -40,6 +40,7 @@ class Robot: public SampleRobot
    Encoder m_rightFlywheelEncoder;
    Joystick m_joystick;
    Joystick m_gamepad;
+   Joystick m_armJoystick;
    Talon m_leftFlywheelMotor;
    Talon m_rightFlywheelMotor;
    Talon m_armMotorLeft;
@@ -78,13 +79,14 @@ public:
       m_rightFlywheelEncoder(PortAssign::rightFlywheelEncoderChannelA, PortAssign::rightFlywheelEncoderChannelB),
       m_joystick(PortAssign::joystick),
       m_gamepad(PortAssign::gamepad),
+      m_armJoystick(PortAssign::armJoystick),
       m_leftFlywheelMotor(PortAssign::flywheelLeftMotor),
       m_rightFlywheelMotor(PortAssign::flywheelRightMotor),
       m_armMotorLeft(PortAssign::armMotorLeft),
       m_armMotorRight(PortAssign::armMotorRight),
       m_intakeMotor(PortAssign::intakeMotor),
       m_stationaryMotor(PortAssign::stationaryMotor),
-      m_driveStation(&m_joystick, &m_gamepad),
+      m_driveStation(&m_joystick, &m_gamepad, &m_armJoystick),
       m_lidarOnSwitch(0),
       m_configEditor(&m_driveStation),
       m_lidarHandler(&m_lidarOnSwitch, &m_configEditor, 9),
@@ -158,6 +160,7 @@ public:
          m_shooterController.run();
          //m_aiming.run();
          m_arm.run();
+         m_configEditor.update();
       }
       m_robotController.clearQueue();
    }

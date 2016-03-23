@@ -111,16 +111,3 @@ float Flywheel::calculateSpeed() {
 
    return rate;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
