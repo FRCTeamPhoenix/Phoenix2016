@@ -109,16 +109,3 @@ float Flywheel::calculateSpeed() {
    float rate = (farFactor * farPointRate) + (closeFactor * closePointRate);
    return rate;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

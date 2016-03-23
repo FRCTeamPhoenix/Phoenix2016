@@ -40,27 +40,47 @@ void RobotController::run(){
    }
    else if (m_state == ROBOT_MANUAL) {
 
+      //Gamepad button Right Bumper
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonRB)){
          m_loaderController->start();
       }
+      //Gamepad button Left Bumper
       if(m_driveStation->getGamepadButton(DriveStationConstants::buttonLB)){
          m_loaderController->stop();
       }
-
+      //Gamepad button Right Trigger
       if(m_driveStation->getGamepadButton(DriveStationConstants::triggerRT)){
          m_flywheel->start();
       }
+      //Gamepad button Left Trigger
       if(m_driveStation->getGamepadButton(DriveStationConstants::triggerLT)){
          m_flywheel->stop();
       }
+      //ArmButtons Bottom Button
+      if(m_driveStation->getArmJoystickButton(DriveStationConstants::buttonBottom)){
+         m_arm->moveArmToPosition(0);
+      }
+      //ArmButtons CDF
+      if(m_driveStation->getArmJoystickButton(DriveStationConstants::buttonCDF)){
+         m_arm->moveArmToPosition(0.25);
+      }
+      //ArmButtons Middle
+      if(m_driveStation->getArmJoystickButton(DriveStationConstants::buttonMiddle)){
+         m_arm->moveArmToPosition(0.5);
+      }
+      //ArmButtons DrawBridge
+      if(m_driveStation->getArmJoystickButton(DriveStationConstants::buttonDrawBridge)){
+         m_arm->moveArmToPosition(0.75);      }
+      //ArmButtons Top
+      if(m_driveStation->getArmJoystickButton(DriveStationConstants::buttonTop)){
+         m_arm->moveArmToPosition(1);
+      }
+
       m_arm->run();
       m_state = ROBOT_MANUAL;
       if (m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
          m_state = ROBOT_AUTO;
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
-         //m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
-         //m_queue.push( new ActionTurn(m_driveTrain, -m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
-         //m_queue.push( new ActionDrive(m_driveTrain, -m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
+         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance", 44.0), m_configEditor->getFloat("motorPower", 0.6)));
       }
       if (m_driveStation->getGamepadButton(DriveStationConstants::buttonB)){
          m_state = ROBOT_AUTO;
@@ -103,31 +123,39 @@ void RobotController::performAction(void){
 
 // Push sequence of autonomous actions to the queue
 void RobotController::initAutonomousModeQueue(){
-   if(SmartDashboard::GetBoolean("Rock Wall", false))
-      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
-   else if(SmartDashboard::GetBoolean("Cheval de Frise", false)) {
-      //TODO set arm up
-      m_queue.push(new ActionDrive(m_driveTrain, 20, m_configEditor->getFloat("motorPower")));//TODO distances
-      //TODO set arm down
-      m_queue.push(new ActionDrive(m_driveTrain, 40, m_configEditor->getFloat("motorPower")));//TODO distances
-   }
-   else if(SmartDashboard::GetBoolean("Portcullis", false)) {
-      //TODO set arm down
-      m_queue.push(new ActionDrive(m_driveTrain, 20, m_configEditor->getFloat("motorPower")));//TODO distances
-      //TODO set arm up
-      m_queue.push(new ActionDrive(m_driveTrain, 40, m_configEditor->getFloat("motorPower")));//TODO distances
-   }
-   else if(SmartDashboard::GetBoolean("Rough Terrain", false))
-      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
-   else if(SmartDashboard::GetBoolean("Moat", false))
-      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
-   else if(SmartDashboard::GetBoolean("Ramparts", false))
-      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
-   else if(SmartDashboard::GetBoolean("Sally Port", false)) {
-      m_queue.push(new ActionDrive(m_driveTrain, 20, m_configEditor->getFloat("motorPower")));
-   }
-   else if(SmartDashboard::GetBoolean("Drawbridge", false))
-      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+         SmartDashboard::PutString("DB/String 2", "CDF Auto");
+         m_queue.push(new ActionDrive(m_driveTrain, 12.0, m_configEditor->getFloat("motorPower", 0.6)));//distance 44
+         m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.1)));
+         m_queue.push(new ActionDrive(m_driveTrain, 12.0, m_configEditor->getFloat("motorPower", 0.6)));
+         m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.7)));
+         m_queue.push(new ActionDrive(m_driveTrain, 12.0, m_configEditor->getFloat("motorPower")));//TODO distances
+
+//   if(SmartDashboard::GetBoolean("Rock Wall", false))
+//      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+//   else if(SmartDashboard::GetBoolean("Cheval de Frise", false)) {
+//      SmartDashboard::PutString("DB/String 9", "CDF Auto");
+//      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 1)));
+//      m_queue.push(new ActionDrive(m_driveTrain, 44.0, m_configEditor->getFloat("motorPower", 0.6)));//TODO distances
+//      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.3)));
+//      m_queue.push(new ActionDrive(m_driveTrain, 60.0, m_configEditor->getFloat("motorPower")));//TODO distances
+//   }
+//   else if(SmartDashboard::GetBoolean("Portcullis", false)) {
+//      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.0)));
+//      m_queue.push(new ActionDrive(m_driveTrain, 44.0, m_configEditor->getFloat("motorPower")));//TODO distances
+//      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.75)));
+//      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));//TODO distances
+//   }
+//   else if(SmartDashboard::GetBoolean("Rough Terrain", false))
+//      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+//   else if(SmartDashboard::GetBoolean("Moat", false))
+//      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+//   else if(SmartDashboard::GetBoolean("Ramparts", false))
+//      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+//   else if(SmartDashboard::GetBoolean("Sally Port", false)) {
+//      m_queue.push(new ActionDrive(m_driveTrain, 20, m_configEditor->getFloat("motorPower")));
+//   }
+//   else if(SmartDashboard::GetBoolean("Drawbridge", false))
+//      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
    //m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
    m_state = ROBOT_AUTO;
 

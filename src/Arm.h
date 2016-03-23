@@ -10,6 +10,7 @@
 #include "constants.h"
 #include "DriveStation.h"
 #include "ConfigEditor.h"
+#include "PIDControllerArm.h"
 //#include "RobotController.h"
 #include <cmath>
 
@@ -26,13 +27,15 @@ private:
    DigitalInput* m_rightLowerLimitSwitch;
    ConfigEditor* m_configEditor;
    DriveStation* m_driveStation;
+   PIDControllerArm m_leftControllerArm;
+   PIDControllerArm m_rightControllerArm;
    float m_leftArmMotorPower;
    float m_rightArmMotorPower;
    float m_armMotorPower;
 public:
    enum STATE{
-      POTENTIOMETERDRIVE,
-      MANUAL
+      PIDDRIVE,
+      IDLE
    };
    Arm(
          Talon* armMotorLeft,
@@ -47,11 +50,9 @@ public:
          DriveStation* driveStation);
 
    void move(float);
-   void stop();
    void run();
    void moveArmToPosition(float);
    void manualDrive();
-   void setMotors();
    float getAngleLeft();
    float getAngleRight();
 
