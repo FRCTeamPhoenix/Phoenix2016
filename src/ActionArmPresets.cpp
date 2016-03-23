@@ -22,7 +22,7 @@ void ActionArmPresets::init(void){
 }
 
 bool ActionArmPresets::execute(void){
-   return true;
+   return m_arm->getCurrentState() == m_arm->STATE::IDLE;
 }
 
 ActionArmPresets::~ActionArmPresets() {

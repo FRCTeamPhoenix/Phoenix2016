@@ -44,7 +44,7 @@ Arm::~Arm() {
 
 void Arm::manualDrive(){
    SmartDashboard::PutString("DB/String 5", "InManualDrive");
-   float adjust = m_driveStation->getGamepadJoystick() / 100.0;
+   float adjust = m_driveStation->getGamepadJoystick() / m_configEditor->getFloat("armSensitivity", 500.00);
    if(adjust < 0.0005 && adjust > -0.0005){
       adjust = 0;
    }
@@ -62,23 +62,11 @@ void Arm::moveArmToPosition(float goal){
    SmartDashboard::PutString("DB/String 9", "moveArmToPosition");
    m_leftControllerArm.setTarget(goal);
    m_rightControllerArm.setTarget(goal);
-   m_leftPotentiometerComplete = false;
-   m_leftPotentiometerComplete = false;
-
-   m_goalState = PIDDRIVE;
 }
 
 Arm::STATE Arm::getCurrentState(){
-   switch(m_goalState){
-   case PIDDRIVE:
-      if(m_rightControllerArm.atTarget(0.05)){
-         m_rightPotentiometerComplete = true;
-      }
-      if(m_leftControllerArm.atTarget(0.05)){
-         m_leftPotentiometerComplete = true;
+      if(m_rightControllerArm.atTarget(0.05) && m_leftControllerArm.atTarget(0.05)){
+      return IDLE;
       }
       return PIDDRIVE;
-   default:
-      return IDLE;
-   }
 }

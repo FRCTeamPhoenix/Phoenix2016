@@ -356,7 +356,8 @@ namespace ConfigVariables {
       "armButtonMiddle",
       "armButtonDrawBridge",
       "armButtonTop",
-      "armP"
+      "armP",
+      "armSensitivity"
    };
    const static std::string types[numberOfVars] = {
       "float", //motorPower
@@ -390,6 +391,7 @@ namespace ConfigVariables {
       "float", //armButtonDrawBridge
       "float", //armButtonTop
       "float", //armP
+      "float", //armSensitivity
    };
 };
 
