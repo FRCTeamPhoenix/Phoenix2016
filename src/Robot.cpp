@@ -16,6 +16,7 @@
 #include <sstream>
 #include "ConfigEditor.h"
 #include "LidarHandler.h"
+#include "DriverDisplay.h"
 using namespace std;
 
 class Robot;
@@ -62,6 +63,7 @@ class Robot: public SampleRobot
    Arm m_arm;
    Aiming m_aiming;
    RobotController m_robotController;
+//   DriverDisplay m_display;
 
 public:
    Robot() :
@@ -99,7 +101,8 @@ public:
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor, &m_driveStation),
       m_aiming(&m_client, &m_driveTrainController, &m_driveStation, &m_lidarHandler, &m_shooterController),
-      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm, &m_aiming)
+      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm, &m_aiming)//,
+//      m_display()
 {
 }
    void RobotInit() override{
@@ -117,10 +120,10 @@ public:
 //         receiveThread.detach();
 //      }
 
-      m_driveCamera.SetExposureManual(20);
-      m_driveCamera.SetWhiteBalanceAuto();
-      CameraServer::GetInstance()->SetQuality(50);
-      CameraServer::GetInstance()->StartAutomaticCapture("cam1");
+
+        CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+//      m_display.startThread("cam0");
+
 
       std::thread lidarRun(lidarThread, this, &m_lidarHandler);
       lidarRun.detach();
@@ -150,8 +153,6 @@ public:
       lidarRun.detach();
       m_driveTrainController.setGoalState(DriveTrainController::TELEOP);
       m_robotController.setManual();
-
-
       while(IsOperatorControl() && IsEnabled()){
          displayDriverInfo();
          m_driveStation.snapShot();
@@ -161,6 +162,15 @@ public:
          //m_aiming.run();
          m_arm.run();
          m_configEditor.update();
+
+
+
+
+//         m_display.stopThread();
+
+
+
+
       }
       m_robotController.clearQueue();
    }
