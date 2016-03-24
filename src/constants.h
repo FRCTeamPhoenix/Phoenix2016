@@ -324,7 +324,7 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-   const static int numberOfVars = 33;
+   const static int numberOfVars = 34;
    const static std::string variables[numberOfVars] = {
       "motorPower",
       "degree",
@@ -357,7 +357,8 @@ namespace ConfigVariables {
       "armButtonDrawBridge",
       "armButtonTop",
       "armP",
-      "armSensitivity"
+      "armSensitivity",
+      "armI"
    };
    const static std::string types[numberOfVars] = {
       "float", //motorPower
@@ -392,6 +393,7 @@ namespace ConfigVariables {
       "float", //armButtonTop
       "float", //armP
       "float", //armSensitivity
+      "float", //armI
    };
 };
 
