@@ -11,6 +11,9 @@
 #include "WPILib.h"
 #include "ConfigEditor.h"
 
+#define ACCELERATION 0.2
+#define MAX_VELOCITY 0.4
+
 class PIDControllerArm: PIDOutput {
    Talon* m_armMotor;
    AnalogInput* m_potentiometer;

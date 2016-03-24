@@ -45,9 +45,12 @@ Arm::~Arm() {
 void Arm::manualDrive(){
    SmartDashboard::PutString("DB/String 5", "InManualDrive");
    float adjust = m_driveStation->getGamepadJoystick();
-   if(adjust < 0.0005 && adjust > -0.0005){
+   if(adjust < 0.1 && adjust > -0.1){
       adjust = 0;
    }
+   std::ostringstream adjustSTR;
+   adjustSTR << adjust;
+   SmartDashboard::PutString("DB/String 5", adjustSTR.str());
    m_leftControllerArm.adjustTarget(adjust);
    m_rightControllerArm.adjustTarget(adjust);
 
@@ -55,6 +58,8 @@ void Arm::manualDrive(){
 
 void Arm::run(){
    manualDrive();
+   m_leftControllerArm.run();
+   m_rightControllerArm.run();
 }
 
 //left and right goal are between 0 and 1.

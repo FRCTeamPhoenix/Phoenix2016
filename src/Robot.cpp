@@ -139,7 +139,7 @@ public:
          m_driveTrainController.run();
          m_robotController.run();
          m_shooterController.run();
-         //m_arm.run();
+         m_arm.run();
       }
       m_robotController.clearQueue();
    }
@@ -224,8 +224,8 @@ public:
 //
 //         }
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonA)){
-            SmartDashboard::PutString("DB/String 6", "Arm Preset 1");
-            m_arm.moveArmToPosition(1);
+            SmartDashboard::PutString("DB/String 6", "Arm Preset 0.7");
+            m_arm.moveArmToPosition(0.7);
          }
          //Aiming Robot Counter Clockwise 90 degrees
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonB)){
@@ -233,7 +233,7 @@ public:
             m_arm.moveArmToPosition(0.5);
          }
          if(m_driveStation.getGamepadButton(DriveStationConstants::buttonX)){
-            SmartDashboard::PutString("DB/String 6", "Arm Preset 0.0");
+            SmartDashboard::PutString("DB/String 6", "Arm Preset 0.1");
             m_arm.moveArmToPosition(0.0);
          }
          //Stops everything on robot

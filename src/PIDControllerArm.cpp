@@ -23,20 +23,26 @@ PIDControllerArm::PIDControllerArm(Talon* armMotor,
    m_controller->SetPIDSourceType(PIDSourceType::kDisplacement);
    m_controller->SetOutputRange(-0.5, 0.5);
    m_controller->Enable();
-   m_controller->SetSetpoint(m_potentiometer->GetVoltage());
+   m_controller->SetSetpoint(m_potentiometer->GetAverageVoltage());
    m_currentVelocity = 0.0;
-   m_profileSetPoint = voltageToPercent(m_potentiometer->GetVoltage());
+   m_profileSetPoint = voltageToPercent(m_potentiometer->GetAverageVoltage());
+   m_desiredSetPoint = m_profileSetPoint;
 }
 
 void PIDControllerArm::setTarget(float targetPercent){
-   m_controller->SetSetpoint(percentToVoltage(targetPercent));
-}
+   if(targetPercent > 1.0)
+      targetPercent = 1.0;
+   if(targetPercent < 0.0)
+      targetPercent = 0.0;
 
+   m_desiredSetPoint = targetPercent;
+}
 /*
  * increment range [-1.0 .. 0 .. 1.0]
  */
 void PIDControllerArm::adjustTarget(float increment){
-   float newPercent = (voltageToPercent(m_controller->GetSetpoint())) + (ACCELERATION * increment);
+   float newPercent = m_desiredSetPoint + (ACCELERATION * increment / (200));
+   setTarget(newPercent);
 
 
 }
@@ -60,16 +66,15 @@ float PIDControllerArm::voltageToPercent(float volts){
 }
 
 bool PIDControllerArm::atTarget(float tolerance){
-   double setPoint = m_controller->GetSetpoint();
-   double targetVoltage = m_potentiometer->GetVoltage();
-   return (targetVoltage > (setPoint - setPoint * tolerance)) && (targetVoltage < (setPoint + setPoint * tolerance));
+   float currentPercent = voltageToPercent(m_potentiometer->GetAverageVoltage());
+   return (currentPercent > (m_desiredSetPoint - m_desiredSetPoint * tolerance)) && (currentPercent < (m_desiredSetPoint + m_desiredSetPoint * tolerance));
 }
 
 void PIDControllerArm::PIDWrite(float output){
-   float currentVoltage = m_potentiometer->GetVoltage();
+   float currentVoltage = m_potentiometer->GetAverageVoltage();
 
    if(output > 0.0 && currentVoltage > m_upperLimit){
-     output = 0.0;
+      output = 0.0;
    }
    if(output < 0.0 && currentVoltage < m_lowerLimit){
       output = 0.0;
@@ -86,15 +91,15 @@ float PIDControllerArm::getSetpoint(){
 
 
 void PIDControllerArm::run(){
-   setTarget(accelerationProfile());
+   float newSetPoint = accelerationProfile();
+   m_controller->SetSetpoint(percentToVoltage(newSetPoint));
 }
 
 
 
 
 
-float ACCELERATION = 0.5;
-float MAX_VELOCITY = 0.5;
+
 bool PIDControllerArm::armIsDeccelerating(){
    return (fabs(m_desiredSetPoint - m_profileSetPoint) < ((m_currentVelocity * m_currentVelocity) / (2.0f * ACCELERATION)));
 
@@ -102,52 +107,73 @@ bool PIDControllerArm::armIsDeccelerating(){
 
 
 float PIDControllerArm::accelerationProfile(){
-    //if we are close enough
-    if(atTarget(0.3))
-    {
-        m_currentVelocity = 0.0f;
-        m_profileSetPoint = m_desiredSetPoint;
-        return m_profileSetPoint;
-    }
+   static int count = 0;
 
-    bool isDeccel = armIsDeccelerating(); // slowing down in either direction????
+   //if we are close enough
+   if(atTarget(0.05))
+   {
+      if(count % 10 == 0)
+              printf("Count:%d, DSP:%4.5f PSP:%4.5f CVel:%4.5f CV:%4.5f\n ",
+                    count, m_desiredSetPoint, m_profileSetPoint, m_currentVelocity, voltageToPercent(m_potentiometer->GetAverageVoltage()));
+           count ++;
+      m_currentVelocity = 0.0f;
+      m_profileSetPoint = m_desiredSetPoint;
+      return m_profileSetPoint;
+   }
 
-    bool goingUp = (m_profileSetPoint < m_desiredSetPoint); // are we going up????
-    float acceleration = 0.0f;
+   bool isDeccel = armIsDeccelerating(); // slowing down in either direction????
 
-    //accelerating in either direction.
-    if(goingUp && m_currentVelocity < MAX_VELOCITY)
-    {
-        acceleration = ACCELERATION;
-    }
-    if(!(goingUp) && m_currentVelocity > -MAX_VELOCITY)
-    {
-        acceleration = -ACCELERATION;
-    }
+   bool goingUp = (m_profileSetPoint < m_desiredSetPoint); // are we going up????
+   float acceleration = 0.0f;
 
-    if(goingUp && m_currentVelocity > MAX_VELOCITY){
-       m_currentVelocity = MAX_VELOCITY;
-    }
-    if(!goingUp && m_currentVelocity < -MAX_VELOCITY){
-       m_currentVelocity = -MAX_VELOCITY;
-    }
-
-
-    //declerating in either direction
-    if(isDeccel)
-    {
-        acceleration = ACCELERATION;
-        if(goingUp)
-        {
-            acceleration = -ACCELERATION;
-        }
-
-    }
+   //accelerating in either direction.
+   if(goingUp && m_currentVelocity < MAX_VELOCITY)
+   {
+      acceleration = ACCELERATION;
+   }
+   if(!(goingUp) && m_currentVelocity > -MAX_VELOCITY)
+   {
+      acceleration = -ACCELERATION;
+   }
 
 
-    m_currentVelocity += (acceleration / 200); //inches per second
-    m_profileSetPoint += (m_currentVelocity / 200); // called 200 times per second
-    return m_profileSetPoint;
+
+
+   //declerating in either direction
+   if(isDeccel)
+   {
+      acceleration = ACCELERATION;
+      if(goingUp)
+      {
+         acceleration = -ACCELERATION;
+      }
+
+   }
+
+   if(count % 10 == 0)
+         printf("Count:%d, Decel:%c, DSP:%4.5f PSP:%4.5f CVel:%4.5f Acc:%4.5f CV:%4.5f\n ",
+               count, isDeccel?'t':'f', m_desiredSetPoint, m_profileSetPoint, m_currentVelocity, acceleration, voltageToPercent(m_potentiometer->GetAverageVoltage()));
+      count ++;
+
+   m_currentVelocity += (acceleration / 200); //inches per second
+   if(m_currentVelocity > MAX_VELOCITY){
+      m_currentVelocity = MAX_VELOCITY;
+   }
+   if(m_currentVelocity < -MAX_VELOCITY){
+      m_currentVelocity = -MAX_VELOCITY;
+   }
+
+   m_profileSetPoint += (m_currentVelocity / 200); // called 200 times per second
+   if(m_profileSetPoint > 1.0){
+      m_profileSetPoint = 1.0;
+   }
+   if(m_profileSetPoint < 0.0){
+      m_profileSetPoint = 0.0;
+   }
+
+
+
+   return m_profileSetPoint;
 }
 
 
