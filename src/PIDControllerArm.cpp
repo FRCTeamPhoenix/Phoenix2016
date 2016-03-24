@@ -24,16 +24,21 @@ PIDControllerArm::PIDControllerArm(Talon* armMotor,
    m_controller->SetOutputRange(-0.5, 0.5);
    m_controller->Enable();
    m_controller->SetSetpoint(m_potentiometer->GetVoltage());
+   m_currentVelocity = 0.0;
+   m_profileSetPoint = voltageToPercent(m_potentiometer->GetVoltage());
 }
 
 void PIDControllerArm::setTarget(float targetPercent){
    m_controller->SetSetpoint(percentToVoltage(targetPercent));
 }
 
+/*
+ * increment range [-1.0 .. 0 .. 1.0]
+ */
 void PIDControllerArm::adjustTarget(float increment){
-   float newPercent = (voltageToPercent(m_controller->GetSetpoint())) + increment;
-   printf("%9.8f\n", newPercent);
-   m_controller->SetSetpoint(percentToVoltage(newPercent));
+   float newPercent = (voltageToPercent(m_controller->GetSetpoint())) + (ACCELERATION * increment);
+
+
 }
 
 float PIDControllerArm::percentToVoltage(float goal){
@@ -78,3 +83,90 @@ PIDControllerArm::~PIDControllerArm() {
 float PIDControllerArm::getSetpoint(){
    return voltageToPercent(m_controller->GetSetpoint());
 }
+
+
+void PIDControllerArm::run(){
+   setTarget(accelerationProfile());
+}
+
+
+
+
+
+float ACCELERATION = 0.5;
+float MAX_VELOCITY = 0.5;
+bool PIDControllerArm::armIsDeccelerating(){
+   return (fabs(m_desiredSetPoint - m_profileSetPoint) < ((m_currentVelocity * m_currentVelocity) / (2.0f * ACCELERATION)));
+
+}
+
+
+float PIDControllerArm::accelerationProfile(){
+    //if we are close enough
+    if(atTarget(0.3))
+    {
+        m_currentVelocity = 0.0f;
+        m_profileSetPoint = m_desiredSetPoint;
+        return m_profileSetPoint;
+    }
+
+    bool isDeccel = armIsDeccelerating(); // slowing down in either direction????
+
+    bool goingUp = (m_profileSetPoint < m_desiredSetPoint); // are we going up????
+    float acceleration = 0.0f;
+
+    //accelerating in either direction.
+    if(goingUp && m_currentVelocity < MAX_VELOCITY)
+    {
+        acceleration = ACCELERATION;
+    }
+    if(!(goingUp) && m_currentVelocity > -MAX_VELOCITY)
+    {
+        acceleration = -ACCELERATION;
+    }
+
+    if(goingUp && m_currentVelocity > MAX_VELOCITY){
+       m_currentVelocity = MAX_VELOCITY;
+    }
+    if(!goingUp && m_currentVelocity < -MAX_VELOCITY){
+       m_currentVelocity = -MAX_VELOCITY;
+    }
+
+
+    //declerating in either direction
+    if(isDeccel)
+    {
+        acceleration = ACCELERATION;
+        if(goingUp)
+        {
+            acceleration = -ACCELERATION;
+        }
+
+    }
+
+
+    m_currentVelocity += (acceleration / 200); //inches per second
+    m_profileSetPoint += (m_currentVelocity / 200); // called 200 times per second
+    return m_profileSetPoint;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

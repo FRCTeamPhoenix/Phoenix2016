@@ -34,6 +34,15 @@ public:
    float voltageToPercent(float volts);
    float getSetpoint();
 
+   void run();
+   bool armIsDeccelerating();
+   float accelerationProfile();
+
+
+   float m_desiredSetPoint;
+   float m_profileSetPoint;
+   float m_currentVelocity;
+
    virtual ~PIDControllerArm();
 };
 

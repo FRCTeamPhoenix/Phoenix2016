@@ -44,7 +44,7 @@ Arm::~Arm() {
 
 void Arm::manualDrive(){
    SmartDashboard::PutString("DB/String 5", "InManualDrive");
-   float adjust = m_driveStation->getGamepadJoystick() / m_configEditor->getFloat("armSensitivity", 500.00);
+   float adjust = m_driveStation->getGamepadJoystick();
    if(adjust < 0.0005 && adjust > -0.0005){
       adjust = 0;
    }
