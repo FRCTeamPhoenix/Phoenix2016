@@ -79,7 +79,7 @@ void Aiming::centering() {
 
    ostringstream aimingPrints;
    aimingPrints<< "C: " << m_targetCenter_x << ", " << "D: " << deviation;
-   //SmartDashboard::PutString("DB/String 9",aimingPrints.str());
+   SmartDashboard::PutString("DB/String 9",aimingPrints.str());
 
    if (driveIdle){
       if(deviation< -AimingConstants::rotationVariance && newCenter){

@@ -13,7 +13,7 @@ Flywheel::Flywheel(Talon* leftFlywheelMotor, Talon* rightFlywheelMotor, Encoder*
    m_leftFlywheelEncoder(leftFlywheelEncoder),
    m_rightFlywheelEncoder(rightFlywheelEncoder),
    m_lidar(lidar),
-//   m_leftFlywheelController(m_leftFlywheelMotor, m_leftFlywheelEncoder),
+   m_leftFlywheelController(m_leftFlywheelMotor, m_leftFlywheelEncoder),
    m_rightFlywheelController(m_rightFlywheelMotor, m_rightFlywheelEncoder),
    m_configEditor(configEditor)
 {
@@ -59,12 +59,12 @@ void Flywheel::stop(){
 }
 
 bool Flywheel::upToSpeed(float tolerance) {
-   return /*m_leftFlywheelController.atTarget(tolerance) &&*/ m_rightFlywheelController.atTarget(tolerance);
+   return m_leftFlywheelController.atTarget(tolerance) && m_rightFlywheelController.atTarget(tolerance);
 }
 
 void Flywheel::setRate(float rate) {
    printf("%5.5f\n", rate);
-//   m_leftFlywheelController.setRate(-rate);
+   m_leftFlywheelController.setRate(-rate);
    m_rightFlywheelController.setRate(rate);
 }
 

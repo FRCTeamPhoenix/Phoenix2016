@@ -18,7 +18,7 @@ PIDControllerArm::PIDControllerArm(Talon* armMotor,
       m_upperLimit(upperLimit),
       m_lowerLimit(lowerLimit){
    m_potentiometer->SetPIDSourceType(PIDSourceType::kDisplacement);
-   m_controller = new PIDController(m_configEditor->getFloat("armP", 9.00), (m_configEditor->getFloat("armI", 0.001)), 0.00, m_potentiometer, this);
+   m_controller = new PIDController(m_configEditor->getFloat("armP", 10.00), (m_configEditor->getFloat("armI", 0.005)), 0.00, m_potentiometer, this);
    m_controller->SetTolerance(0);
    m_controller->SetPIDSourceType(PIDSourceType::kDisplacement);
    m_controller->SetOutputRange(-0.5, 0.5);
