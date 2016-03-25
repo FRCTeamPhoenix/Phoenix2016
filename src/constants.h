@@ -144,6 +144,21 @@ const static std::string textBoxNames[13] = {
       "Key Value",
       "New Value"
 };
+
+enum obstacale{
+   Port = 0,
+   CDF,
+   Sally,
+   Draw,
+   Rough,
+   Rock,
+   Moat,
+   Ramp,
+
+
+};
+
+
 const static uint32_t gamepadButtons = 12;
 };
 

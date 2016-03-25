@@ -123,30 +123,49 @@ void RobotController::performAction(void){
 
 // Push sequence of autonomous actions to the queue
 void RobotController::initAutonomousModeQueue(){
-         SmartDashboard::PutString("DB/String 2", "CDF Auto");
-         m_queue.push(new ActionDrive(m_driveTrain, 12.0, m_configEditor->getFloat("motorPower", 0.6)));//distance 44
-         m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.1)));
-         m_queue.push(new ActionDrive(m_driveTrain, 12.0, m_configEditor->getFloat("motorPower", 0.6)));
-         m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.7)));
-         m_queue.push(new ActionDrive(m_driveTrain, 12.0, m_configEditor->getFloat("motorPower")));//TODO distances
 
-//   if(SmartDashboard::GetBoolean("Rock Wall", false))
-//      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
-//   else if(SmartDashboard::GetBoolean("Cheval de Frise", false)) {
-//      SmartDashboard::PutString("DB/String 9", "CDF Auto");
-//      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 1)));
-//      m_queue.push(new ActionDrive(m_driveTrain, 44.0, m_configEditor->getFloat("motorPower", 0.6)));//TODO distances
-//      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.3)));
-//      m_queue.push(new ActionDrive(m_driveTrain, 60.0, m_configEditor->getFloat("motorPower")));//TODO distances
-//   }
-//   else if(SmartDashboard::GetBoolean("Portcullis", false)) {
-//      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.0)));
-//      m_queue.push(new ActionDrive(m_driveTrain, 44.0, m_configEditor->getFloat("motorPower")));//TODO distances
-//      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.75)));
-//      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));//TODO distances
-//   }
+   double place = SmartDashboard::GetNumber("RobotRadioCTL", -1);
+
+   switch(int(place)){
+   case DriveStationConstants::obstacale::Port:
+      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.0)));
+      m_queue.push(new ActionDrive(m_driveTrain, 44.0, m_configEditor->getFloat("motorPower")));//TODO distances
+      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.75)));
+      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));//TODO distances
+      break;
+   case DriveStationConstants::obstacale::CDF:
+      m_queue.push(new ActionDrive(m_driveTrain, 12.0, m_configEditor->getFloat("motorPower", 0.6)));//distance 44
+      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.1)));
+      m_queue.push(new ActionDrive(m_driveTrain, 12.0, m_configEditor->getFloat("motorPower", 0.6)));
+      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.7)));
+      m_queue.push(new ActionDrive(m_driveTrain, 12.0, m_configEditor->getFloat("motorPower")));//TODO distances
+      break;
+   case DriveStationConstants::obstacale::Sally:
+      m_queue.push(new ActionDrive(m_driveTrain, 24, m_configEditor->getFloat("motorPower")));
+      break;
+   case DriveStationConstants::obstacale::Draw:
+      m_queue.push(new ActionDrive(m_driveTrain, 24, m_configEditor->getFloat("motorPower")));
+      break;
+   case DriveStationConstants::obstacale::Rough:
+      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+      break;
+   case DriveStationConstants::obstacale::Rock:
+         m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+      break;
+   case DriveStationConstants::obstacale::Moat:
+      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+      break;
+   case DriveStationConstants::obstacale::Ramp:
+      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+      break;
+//   default:
+
+   }
+
+
+
 //   else if(SmartDashboard::GetBoolean("Rough Terrain", false))
-//      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+
 //   else if(SmartDashboard::GetBoolean("Moat", false))
 //      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
 //   else if(SmartDashboard::GetBoolean("Ramparts", false))

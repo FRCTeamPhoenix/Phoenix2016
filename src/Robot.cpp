@@ -116,9 +116,10 @@ public:
 //         std::thread receiveThread(runClient, this, &m_client);
 //         receiveThread.detach();
 //      }
-
-        CameraServer::GetInstance()->SetQuality(50);
-        CameraServer::GetInstance()->StartAutomaticCapture("cam1");
+         m_driveCamera.SetExposureManual(20);
+         m_driveCamera.SetWhiteBalanceAuto();
+         CameraServer::GetInstance()->SetQuality(50);
+         CameraServer::GetInstance()->StartAutomaticCapture("cam1");
 //      m_display.startThread("cam0");
 
 
