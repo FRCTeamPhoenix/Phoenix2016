@@ -126,6 +126,10 @@ void RobotController::initAutonomousModeQueue(){
 
    double place = SmartDashboard::GetNumber("RobotRadioCTL", -1);
 
+//   std::ostringstream out;
+//   out << place < "  " << int(place);
+//   SmartDashboard::PutString("Db")
+
    switch(int(place)){
    case DriveStationConstants::obstacale::Port:
       m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.0)));
