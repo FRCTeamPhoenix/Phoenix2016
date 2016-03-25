@@ -30,22 +30,30 @@ public:
          CENTERING,
          APPROACHING,
          REVERTING,
-         SHOOTING
+         SHOOTING,
+         ENCODERCENTER
       };
 
-   Aiming(Client*, DriveTrainController*, DriveStation*,LidarHandler*,ShooterController*);
+   Aiming(Client*, DriveTrainController*, DriveStation*,LidarHandler*,
+         ShooterController*,Encoder*encoder1, Encoder*encoder2);
    void getNewImageData();
+   void getRequestedData();
    void beginAiming();
    void centering();
    void approachTarget();
    void revert();
-   void shoot();
+   void rotate();
+   void encoderCenter();
    STATE getCurrentState();
    void setTargetCoordinateValue(AimingConstants::targetPositionData, int);
    void setCurrentState(STATE);
    void setFullProcess(bool);
    void printCurrentCoordinates();
    void run();
+   int getCenter();
+   int getDeviation();
+   void sendEncoderData();
+   int encoderDistanceToDegrees(int, int);
    virtual ~Aiming();
 
 private:
@@ -56,23 +64,24 @@ private:
    LidarHandler * m_lidar;
    ShooterController *m_shooter;
    Timer m_timer;
-   int m_currentTargetCoordinates[8];
+   Encoder* m_encoder1;
+   Encoder* m_encoder2;
+   int m_currentTargetCoordinates[4];
    STATE m_currentState;
-   bool lastArrayWasNull;
    bool hasApproached;
    bool hasRotated;
    bool fullProcess;
-   double initialTargetCenterX;
+   bool centered;
+   double previousTargetCenter;
    double m_targetCenter_x;
    double deviation;
    bool driveIdle;
    bool newCenter;
-
-
-
-
-   int nullArraysInARow;
-
+   int sameCenterCount;
+   int m_centeredEncoders[2];
+   int sendData[2];
+   char byteData[8];
+   int sendcount;
 };
 
 #endif /* SRC_AIMING_H_ */

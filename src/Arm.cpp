@@ -57,6 +57,10 @@ void Arm::manualDrive(){
 }
 
 void Arm::run(){
+   //   std::ostringstream armPot;
+   //   armPot << m_leftPotentiometer->GetVoltage();
+   //   armPot << " " << m_rightPotentiometer->GetVoltage();
+   //   SmartDashboard::PutString("DB/String 3", armPot.str());
    manualDrive();
    m_leftControllerArm.run();
    m_rightControllerArm.run();
@@ -69,9 +73,11 @@ void Arm::moveArmToPosition(float goal){
    m_rightControllerArm.setTarget(goal);
 }
 
-Arm::STATE Arm::getCurrentState(){
-      if(m_rightControllerArm.atTarget(0.05) && m_leftControllerArm.atTarget(0.05)){
+Arm::STATE Arm::getCurrentState(float tolerance){
+   if(m_rightControllerArm.atTarget(tolerance) && m_leftControllerArm.atTarget(tolerance)){
+      SmartDashboard::PutString("DB/String 2", "Arm Complete");
       return IDLE;
-      }
-      return PIDDRIVE;
+   }
+   SmartDashboard::PutString("DB/String 2", "Arm Not Complete");
+   return PIDDRIVE;
 }

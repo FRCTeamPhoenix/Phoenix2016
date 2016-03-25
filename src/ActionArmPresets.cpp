@@ -9,10 +9,12 @@
 
 ActionArmPresets::ActionArmPresets(
       Arm* arm,
-      float goal):
+      float goal,
+      float tolerance):
       Action(),
       m_arm(arm),
-      m_goal(goal){
+      m_goal(goal),
+      m_tolerance(tolerance){
    // TODO Auto-generated constructor stub
 }
 
@@ -22,7 +24,7 @@ void ActionArmPresets::init(void){
 }
 
 bool ActionArmPresets::execute(void){
-   return m_arm->getCurrentState() == m_arm->STATE::IDLE;
+   return m_arm->getCurrentState(m_tolerance) == m_arm->STATE::IDLE;
 }
 
 ActionArmPresets::~ActionArmPresets() {

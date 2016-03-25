@@ -56,6 +56,10 @@ void RobotController::run(){
       if(m_driveStation->getGamepadButton(DriveStationConstants::triggerLT)){
          m_flywheel->stop();
       }
+      //Gamepad buton A
+      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
+         m_loaderController->lowGoal();
+      }
       //ArmButtons Bottom Button
       if(m_driveStation->getArmJoystickButton(DriveStationConstants::buttonBottom)){
          m_arm->moveArmToPosition(0);
@@ -78,26 +82,26 @@ void RobotController::run(){
 
       m_arm->run();
       m_state = ROBOT_MANUAL;
-      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
-         m_state = ROBOT_AUTO;
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance", 44.0), m_configEditor->getFloat("motorPower", 0.6)));
-      }
-      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonB)){
-         m_state = ROBOT_AUTO;
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
-         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
-         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
-         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
-         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
-         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
-      }
-      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonX)){
-         m_queue.push( new ActionDrive(m_driveTrain, 80, 0.8)); //Goes to defense
-         m_queue.push( new ActionDrive(m_driveTrain, 44, 0.6)); //Goes over defense
-         m_queue.push( new ActionDrive(m_driveTrain, 51.5, 0.8)); //Goes to alignment line
-      }
+//      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonA)){
+//         m_state = ROBOT_AUTO;
+//         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance", 44.0), m_configEditor->getFloat("motorPower", 0.6)));
+//      }
+//      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonB)){
+//         m_state = ROBOT_AUTO;
+//         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
+//         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
+//         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
+//         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
+//         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
+//         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
+//         m_queue.push( new ActionDrive(m_driveTrain, m_configEditor->getFloat("distance"), m_configEditor->getFloat("motorPower", 0.6)));
+//         m_queue.push( new ActionTurn(m_driveTrain, m_configEditor->getFloat("degree"), m_configEditor->getFloat("motorPower", 0.6)));
+//      }
+//      if (m_driveStation->getGamepadButton(DriveStationConstants::buttonX)){
+//         m_queue.push( new ActionDrive(m_driveTrain, 80, 0.8)); //Goes to defense
+//         m_queue.push( new ActionDrive(m_driveTrain, 44, 0.6)); //Goes over defense
+//         m_queue.push( new ActionDrive(m_driveTrain, 51.5, 0.8)); //Goes to alignment line
+//      }
       return;
    }
 }
@@ -123,22 +127,28 @@ void RobotController::performAction(void){
 
 // Push sequence of autonomous actions to the queue
 void RobotController::initAutonomousModeQueue(){
+   m_state = ROBOT_AUTO;
 
-   double place = SmartDashboard::GetNumber("RobotRadioCTL", -1);
 
-   switch(int(place)){
+   int place = (int)SmartDashboard::GetNumber("RobotRadioCTL", -1);
+
+   switch(place){
    case DriveStationConstants::obstacale::Port:
-      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.0)));
-      m_queue.push(new ActionDrive(m_driveTrain, 44.0, m_configEditor->getFloat("motorPower")));//TODO distances
-      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.75)));
+      SmartDashboard::PutString("DB/String 2", "Arm");
+      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.2), 0.1));
+      SmartDashboard::PutString("DB/String 2", "Drive");
+      m_queue.push(new ActionDrive(m_driveTrain, 44.0, m_configEditor->getFloat("motorPower")));
+      SmartDashboard::PutString("DB/String 2", "Arm");
+      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.6)));
+      SmartDashboard::PutString("DB/String 2", "Drive");
       m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));//TODO distances
       break;
    case DriveStationConstants::obstacale::CDF:
-      m_queue.push(new ActionDrive(m_driveTrain, 12.0, m_configEditor->getFloat("motorPower", 0.6)));//distance 44
-      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.1)));
-      m_queue.push(new ActionDrive(m_driveTrain, 12.0, m_configEditor->getFloat("motorPower", 0.6)));
-      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.7)));
-      m_queue.push(new ActionDrive(m_driveTrain, 12.0, m_configEditor->getFloat("motorPower")));//TODO distances
+      m_queue.push(new ActionDrive(m_driveTrain, m_configEditor->getFloat("CDFFirstDistance", 20), m_configEditor->getFloat("motorPower", 0.6)));//distance 44
+      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.05), 0.2));
+      m_queue.push(new ActionDrive(m_driveTrain, 20.0, m_configEditor->getFloat("motorPower", 0.6)));
+      m_queue.push(new ActionArmPresentNOWait(m_arm, m_configEditor->getFloat("armButtonCDF", 0.7)));
+      m_queue.push(new ActionDrive(m_driveTrain, 44.0, m_configEditor->getFloat("motorPower")));//TODO distances
       break;
    case DriveStationConstants::obstacale::Sally:
       m_queue.push(new ActionDrive(m_driveTrain, 24, m_configEditor->getFloat("motorPower")));
@@ -147,7 +157,7 @@ void RobotController::initAutonomousModeQueue(){
       m_queue.push(new ActionDrive(m_driveTrain, 24, m_configEditor->getFloat("motorPower")));
       break;
    case DriveStationConstants::obstacale::Rough:
-      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
+      m_queue.push(new ActionDrive(m_driveTrain, 120, m_configEditor->getFloat("motorPower")));
       break;
    case DriveStationConstants::obstacale::Rock:
          m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
@@ -158,8 +168,8 @@ void RobotController::initAutonomousModeQueue(){
    case DriveStationConstants::obstacale::Ramp:
       m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
       break;
-//   default:
-
+   default:
+      break;
    }
 
 
@@ -176,7 +186,7 @@ void RobotController::initAutonomousModeQueue(){
 //   else if(SmartDashboard::GetBoolean("Drawbridge", false))
 //      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
    //m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));
-   m_state = ROBOT_AUTO;
+
 
 }
 void RobotController::setManual(){

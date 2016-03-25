@@ -14,6 +14,8 @@ struct PortAssign {
    const static uint32_t armMotorLeft = 7;
    const static uint32_t armMotorRight = 8;
    const static uint32_t intakeMotor = 9;
+   const static uint32_t leftClimberMotor =20;
+   const static uint32_t rightClimberMotor = 16;
 
    // Channels for wheel encoders
    const static uint32_t leftWheelEncoderChannelA = 0;
@@ -51,6 +53,9 @@ struct PortAssign {
    const static uint32_t rightUpperLimitSwitch = 13;
    const static uint32_t leftLowerLimitSwitch = 10; //how do you do extensions
    const static uint32_t leftUpperLimitSwitch = 11; //how do you do extensions
+
+   const static uint32_t leftClimberLimitSwitch =14;
+   const static uint32_t rightClimberLimitSwitch =15;
 };
 
 struct RobotConstants {
@@ -299,7 +304,7 @@ struct AimingConstants{
    const static int minTargetWidth = 250;
    const static int maxTargetWidth = 350;
 
-   const static int desiredCenter = 275; //untuned value not correct
+   const static int desiredCenter = 295; //untuned value not correct
    constexpr static double aimedDistance=84;//untuned value not correct
 
    const static int distanceVariance = 12; //in inches
@@ -339,7 +344,7 @@ struct LoaderSenseConstants {
 
 };
 namespace ConfigVariables {
-   const static int numberOfVars = 34;
+   const static int numberOfVars = 35;
    const static std::string variables[numberOfVars] = {
       "motorPower",
       "degree",
@@ -373,7 +378,8 @@ namespace ConfigVariables {
       "armButtonTop",
       "armP",
       "armSensitivity",
-      "armI"
+      "armI",
+      "CDFFirstDistance"
    };
    const static std::string types[numberOfVars] = {
       "float", //motorPower
@@ -409,6 +415,7 @@ namespace ConfigVariables {
       "float", //armP
       "float", //armSensitivity
       "float", //armI
+      "float", //CDFFirstDistance
    };
 };
 
