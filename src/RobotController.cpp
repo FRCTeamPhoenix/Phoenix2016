@@ -138,7 +138,7 @@ void RobotController::initAutonomousModeQueue(){
       SmartDashboard::PutString("DB/String 2", "Drive");
       m_queue.push(new ActionDrive(m_driveTrain, 44.0, m_configEditor->getFloat("motorPower")));
       SmartDashboard::PutString("DB/String 2", "Arm");
-      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.6)));
+      m_queue.push(new ActionArmPresentNOWait(m_arm, m_configEditor->getFloat("armButtonCDF", 0.6)));
       SmartDashboard::PutString("DB/String 2", "Drive");
       m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));//TODO distances
       break;
