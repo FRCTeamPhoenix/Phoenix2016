@@ -56,7 +56,7 @@ public:
    float getAngleLeft();
    float getAngleRight();
 
-   STATE getCurrentState();
+   STATE getCurrentState(float tolerance = 0.05);
    void setGoalState(STATE currentState);
 
    virtual ~Arm();

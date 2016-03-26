@@ -16,6 +16,7 @@
 #include <sstream>
 #include "ConfigEditor.h"
 #include "LidarHandler.h"
+#include "Climber.h"
 using namespace std;
 
 class Robot;
@@ -34,6 +35,8 @@ class Robot: public SampleRobot
    DigitalInput m_rightUpperLimitSwitch;
    DigitalInput m_leftLowerLimitSwitch;
    DigitalInput m_rightLowerLimitSwitch;
+   DigitalInput m_rightClimberLimitSwitch;
+   DigitalInput m_leftClimberLimitSwitch;
    Encoder m_leftWheelEncoder;
    Encoder m_rightWheelEncoder;
    Encoder m_leftFlywheelEncoder;
@@ -47,8 +50,11 @@ class Robot: public SampleRobot
    Talon m_armMotorRight;
    Talon m_intakeMotor;
    Talon m_stationaryMotor;
+   Talon m_leftClimberMotor;
+   Talon m_rightClimberMotor;
    Client m_client;
    DriveStation m_driveStation;
+   Climber m_climber;
    Relay m_lidarOnSwitch;
    ConfigEditor m_configEditor;
    LidarHandler m_lidarHandler;
@@ -63,6 +69,7 @@ class Robot: public SampleRobot
    Aiming m_aiming;
    RobotController m_robotController;
 
+
 public:
    Robot() :
       m_gyro(PortAssign::gyroscope),
@@ -73,6 +80,8 @@ public:
       m_rightUpperLimitSwitch(PortAssign::rightUpperLimitSwitch),
       m_leftLowerLimitSwitch(PortAssign::leftLowerLimitSwitch),
       m_rightLowerLimitSwitch(PortAssign::rightLowerLimitSwitch),
+      m_rightClimberLimitSwitch(PortAssign::rightClimberLimitSwitch),
+      m_leftClimberLimitSwitch(PortAssign::leftClimberLimitSwitch),
       m_leftWheelEncoder(PortAssign::leftWheelEncoderChannelA, PortAssign::leftWheelEncoderChannelB),
       m_rightWheelEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
       m_leftFlywheelEncoder(PortAssign::leftFlywheelEncoderChannelA, PortAssign::leftFlywheelEncoderChannelB),
@@ -86,7 +95,10 @@ public:
       m_armMotorRight(PortAssign::armMotorRight),
       m_intakeMotor(PortAssign::intakeMotor),
       m_stationaryMotor(PortAssign::stationaryMotor),
+      m_leftClimberMotor(PortAssign::leftClimberMotor),
+      m_rightClimberMotor(PortAssign::rightClimberMotor),
       m_driveStation(&m_joystick, &m_gamepad, &m_armJoystick),
+      m_climber(&m_leftClimberMotor,&m_rightClimberMotor,&m_driveStation,&m_leftClimberLimitSwitch,&m_rightClimberLimitSwitch),
       m_lidarOnSwitch(0),
       m_configEditor(&m_driveStation),
       m_lidarHandler(&m_lidarOnSwitch, &m_configEditor, 9),
@@ -98,7 +110,7 @@ public:
       m_loaderController(&m_intakeMotor, &m_stationaryMotor, &m_loadedSensor, &m_driveStation, &m_configEditor),
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor, &m_driveStation),
-      m_aiming(&m_client, &m_driveTrainController, &m_driveStation, &m_lidarHandler, &m_shooterController),
+      m_aiming(&m_client, &m_driveTrainController, &m_driveStation, &m_lidarHandler, &m_shooterController,&m_rightWheelEncoder,&m_rightWheelEncoder),
       m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm, &m_aiming)//,
 {
 }
@@ -109,13 +121,13 @@ public:
       m_gyro.Calibrate();
       m_configEditor.showAllKeys();
 //TODO: uncomment this block of code
-//      cout<<"run init socket function" << endl;
-//      m_client.initilizeSocket();
-//      if (m_client.m_initGood){
-//         cout<<"init good start thread" << endl;
-//         std::thread receiveThread(runClient, this, &m_client);
-//         receiveThread.detach();
-//      }
+      cout<<"run init socket function" << endl;
+      m_client.initilizeSocket();
+      if (m_client.m_initGood){
+         cout<<"init good start thread" << endl;
+         std::thread receiveThread(runClient, this, &m_client);
+         receiveThread.detach();
+      }
          m_driveCamera.SetExposureManual(20);
          m_driveCamera.SetWhiteBalanceAuto();
          CameraServer::GetInstance()->SetQuality(50);
@@ -160,6 +172,7 @@ public:
          //m_aiming.run();
          m_arm.run();
          m_configEditor.update();
+         //m_climber.run();
 
 
 
@@ -181,21 +194,16 @@ public:
       m_driveStation.clearDriveStation();
 
       while(IsTest() && IsEnabled()){
-         /*if(SmartDashboard::GetBoolean("DB/Button 3",false)) {
-            std::ostringstream slid;
-            slid.str(std::string());
-            slid << m_lidarHandler.getFastAverage();
-            SmartDashboard::PutString("DB/String 0", "Fast: " + slid.str());
-            slid.str(std::string());
-            slid << m_lidarHandler.getSlowAverage();
-            SmartDashboard::PutString("DB/String 1", "Slow: " + slid.str());
-            continue;
-         }*/
 
-         std::ostringstream outputG;
-         outputG << "Gyro: ";
-         outputG << (m_gyro.GetAngle());
-         SmartDashboard::PutString("DB/String 9", outputG.str());
+            std::ostringstream LeftPot;
+            LeftPot.str(std::string());
+            LeftPot << m_leftPotentiometer.GetAverageVoltage();
+            SmartDashboard::PutString("DB/String 2", "Left: " + LeftPot.str());
+
+            std::ostringstream RightPot;
+            RightPot.str(std::string());
+            RightPot << m_rightPotentiometer.GetAverageVoltage();
+            SmartDashboard::PutString("DB/String 3", "Right: " + RightPot.str());
 
          m_loaderController.run();
          m_driveStation.snapShot();
@@ -293,9 +301,20 @@ public:
 
 
          //Space 2
-
+         std::ostringstream output3;
+         output3 << "D: " << m_aiming.getDeviation()<< "C: "<<m_aiming.getCenter();
+         m_driveStation.printToDashboard(output3.str(),2);
 
          //Space 3
+         std::ostringstream output4;
+         if (m_aiming.getDeviation() < 0){
+            output4 << "Turn CCW";
+         }
+         else{
+            output4<< "Turn CW";
+         }
+         m_driveStation.printToDashboard(output4.str(),3);
+
 
          //Space 4
          if (m_loaderController.loaded()) {

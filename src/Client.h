@@ -1,3 +1,4 @@
+
 #ifndef SRC_CLIENT_H_
 #define SRC_CLIENT_H_
 
@@ -18,42 +19,50 @@ using namespace std;
 
 class Client {
 public:
-    bool m_unreadBallData;
     bool m_unreadTargetData;
-    bool m_unreadDistanceData;
     char m_receivedData[BUFLEN];
     static bool receive;
     int m_socket;
     socklen_t m_si_other_len;
-    char buf2[20];
     bool m_initGood;
-    char m_sendData[BUFLEN];
     sockaddr_in m_si_me, m_si_other;
-    int m_convertedData[9];
-    int m_targetData[9];
-    int m_ballData[9];
-    int m_distanceData[9];
+    int m_convertedData[5];
+    int m_targetData[5];
+    char m_sendData[8];
+    char m_tempByteArray[4];
+    char m_intToByteConvertBuf[4];
     Client();
 
     char* getData();
 
     void initilizeSocket();
 
+    bool checkPacketState();
+
     void receivePacket();
 
-    void byteToInt(char *byteArray,int *intArray);
+    void byteToIntOld(char *byteArray,int *intArray);
+
+    char* intToByteOld(int * intArray);
 
     int getTargetData(int element);
 
-    void sendPacket();
+    void sendPacket(char * data);
 
     int getBallData(int element);
 
-    int getDistanceData();
+    int getResponseData(int element);
 
-    void copyArray(int *array1, int *array2);
+    void copyArray(int *array1, int *array2,int size);
+
+    void copyArray(char *char1,char * char2, int size);
+
+    void intToBytes(int num,char * buf);
+
+    int bytesToInt(char * bytes);
 
     virtual ~Client();
+
 
 };
 

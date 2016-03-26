@@ -32,30 +32,30 @@ void LoaderSense::beginAiming() {
 }
 
 // Refreshes array containing received client data (ball's radius and center coordinates)
-void LoaderSense::updateBallPositionData() {
-
-   // TODO: Make sure that this array setup is in the appropriate format to match the client getter method
-
-   // Checks if data is fresh
-   if (m_client->m_unreadBallData) {
-
-      for(int i = 1; i <= LoaderSenseConstants::numBallVals; i++) {
-
-       // Parameter passed to getData() corresponds to appropriate index of integer array received by client;
-       // ball position values (are presumed to) immediately follow target position values in received array
-       m_currentBallPosition[i - 1] = m_client->getBallData(i);
-
-         }
-
-      if(m_currentBallPosition[LoaderSenseConstants::ballRadius] == 0) {
-         lastArrayWasNull = true;
-      } else {
-         lastArrayWasNull = false;
-      }
-
-   }
-
-}
+//void LoaderSense::updateBallPositionData() {
+//
+//   // TODO: Make sure that this array setup is in the appropriate format to match the client getter method
+//
+//   // Checks if data is fresh
+//   if (m_client->m_unreadBallData) {
+//
+//      for(int i = 1; i <= LoaderSenseConstants::numBallVals; i++) {
+//
+//       // Parameter passed to getData() corresponds to appropriate index of integer array received by client;
+//       // ball position values (are presumed to) immediately follow target position values in received array
+//       m_currentBallPosition[i - 1] = m_client->getBallData(i);
+//
+//         }
+//
+//      if(m_currentBallPosition[LoaderSenseConstants::ballRadius] == 0) {
+//         lastArrayWasNull = true;
+//      } else {
+//         lastArrayWasNull = false;
+//      }
+//
+//   }
+//
+//}
 
 int LoaderSense::getCurrentRadius() {
    return m_currentBallPosition[LoaderSenseConstants::ballRadius];
@@ -215,35 +215,35 @@ void LoaderSense::backup() {
 // Called to implement all LoaderSense mechanisms
 void LoaderSense::run() {
 
-   if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonA)) {
-      setCurrentState(IDLE);
-   }
-
-   switch(m_currentState) {
-   case IDLE:
-      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonBack)) {
-            setCurrentState(FINDING_BALL);
-      }
-      break;
-   case FINDING_BALL:
-      updateBallPositionData();
-      findBall();
-      break;
-   case ROTATING:
-      updateBallPositionData();
-      rotate();
-      break;
-   case APPROACHING:
-      updateBallPositionData();
-      approach();
-      break;
-   case BACKUP:
-      updateBallPositionData();
-      backup();
-      break;
-   default:
-      break;
-   }
+//   if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonA)) {
+//      setCurrentState(IDLE);
+//   }
+//
+//   switch(m_currentState) {
+//   case IDLE:
+//      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonBack)) {
+//            setCurrentState(FINDING_BALL);
+//      }
+//      break;
+//   case FINDING_BALL:
+//      updateBallPositionData();
+//      findBall();
+//      break;
+//   case ROTATING:
+//      updateBallPositionData();
+//      rotate();
+//      break;
+//   case APPROACHING:
+//      updateBallPositionData();
+//      approach();
+//      break;
+//   case BACKUP:
+//      updateBallPositionData();
+//      backup();
+//      break;
+//   default:
+//      break;
+//   }
 
 }
 

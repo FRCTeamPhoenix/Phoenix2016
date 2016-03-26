@@ -36,6 +36,7 @@ public:
    void run();
    //Starts the loading process
    void start();
+   void lowGoal();
    void stop();
    bool loaded();
    virtual ~LoaderController();

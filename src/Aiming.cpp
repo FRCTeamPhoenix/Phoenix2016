@@ -14,101 +14,98 @@
 
 #include "Aiming.h"
 
-Aiming::Aiming(Client* client, DriveTrainController* driveTrainController, DriveStation* driveStation,LidarHandler* lidar,ShooterController* shooter) :
+Aiming::Aiming(Client* client, DriveTrainController* driveTrainController,
+      DriveStation* driveStation,LidarHandler* lidar,ShooterController* shooter,
+      Encoder* encoder1,Encoder* encoder2) :
    m_client(client),
    m_driveTrainController(driveTrainController),
    m_driveStation(driveStation),
    m_lidar(lidar),
-   m_shooter(shooter)
+   m_shooter(shooter),
+   m_encoder1(encoder1),
+   m_encoder2(encoder2)
 {
-
-   // We have not yet rotated
-
+   sendcount=0;
+   sameCenterCount=0;
    // Nothing is happening
    setCurrentState(IDLE);
+   centered=false;
 
    // We have not yet approached
    hasApproached=false;
-
    // By default, we will only be performing a specified part of the aiming process
    // In order to perform the ENTIRE process (including shooting), START should be pressed
    fullProcess=false;
 
    // "Clean slate" for the target coordinate array!
    memset(m_currentTargetCoordinates,0,8);
-
+   memset(m_centeredEncoders,0,4);
 }
 
 // Call this method to begin aiming process - same as manually setting state to first phase of aiming process
 void Aiming::beginAiming() {
-   setCurrentState(CENTERING);
+   setCurrentState(IDLE);
 }
 
 // Gives Aiming class access to image data sent over to client from Raspberry Pi
 void Aiming::getNewImageData() {
 
+   if (m_client->checkPacketState()){
    // Updates array of current coordinates with data received by client
-   for(int i = 0; i < AimingConstants::numTargetVals; i++) {
-      m_currentTargetCoordinates[i] = m_client->getTargetData(i+1);
+      newCenter=true;
+      //cout <<"received data ";
+      for(int i = 0; i < 4; i++) {
+         m_currentTargetCoordinates[i] = m_client->getTargetData(i+1);
+         //cout << m_currentTargetCoordinates[i] <<" ";
+      }
+     // cout <<endl;
    }
 }
-
 // Turns robot to line up with target, once target is within field of vision
 void Aiming::centering() {
 
-   double m_targetCenter_x=10;
-   double deviation;
-   double initialTargetCenterX;
-   driveIdle=false;
-   newCenter=false;
    if ((m_driveTrainController->getCurrentState()==DriveTrainController::IDLE
          || m_driveTrainController->getCurrentState()==DriveTrainController::TELEOP )){
       driveIdle=true;
    }
 
+   if (deviation > -AimingConstants::distanceVariance && deviation < AimingConstants::distanceVariance){
+      centered=true;
 
-
-   initialTargetCenterX=m_targetCenter_x;
-   m_targetCenter_x=((m_currentTargetCoordinates[AimingConstants::xUL] +m_currentTargetCoordinates[AimingConstants::xLR])/2.0);
-   // Amount of offset from our desired center coordinate (w/ respect to current frame of vision)
-   deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
-
-   if (m_targetCenter_x != initialTargetCenterX){
-      newCenter=true;
+      for (int i =0;i<4;i++){
+         m_centeredEncoders[i]=m_currentTargetCoordinates[i+2];
+      }
+   }
+   else {
+      centered=false;
    }
 
-   ostringstream aimingPrints;
-   aimingPrints<< "C: " << m_targetCenter_x << ", " << "D: " << deviation;
-   SmartDashboard::PutString("DB/String 9",aimingPrints.str());
 
-   if (driveIdle){
-      if(deviation< -AimingConstants::rotationVariance && newCenter){
 
-         m_driveTrainController->aimRobotCounterclockwise(1, 0.6f);
+   //only move if the drivetrain is idle and we have received the most recent packet
+   if (driveIdle && (m_targetCenter_x != 0) && !centered){
+//      dataRequested=false;
+//      requestedDataReceived=false;
+      rotate();
 
-      }
-      else if (deviation > AimingConstants::rotationVariance && newCenter){
-
-         m_driveTrainController->aimRobotClockwise(1, 0.6f);
-
-      }
-      else if (deviation <  AimingConstants::rotationVariance && deviation > -AimingConstants::rotationVariance){
-
-         if (!hasApproached && fullProcess){
-            setCurrentState(APPROACHING);
-         }
-         else if (hasApproached && fullProcess){
-            setCurrentState(SHOOTING);
-         }
-         else {
-            setCurrentState(IDLE);
-
-         }
-
-      }
+   }
+   if (centered){
+      setCurrentState(ENCODERCENTER);
    }
 }
+void Aiming::rotate(){
 
+
+   if(deviation< -AimingConstants::rotationVariance){
+      m_driveTrainController->aimRobotCounterclockwise(fabs(deviation/20), 0.6f);
+
+   }
+   //move robot cw if target is left of desired
+   else if (deviation > AimingConstants::rotationVariance){
+      m_driveTrainController->aimRobotClockwise(fabs(deviation/20), 0.6f);
+
+   }
+}
 
 void Aiming::approachTarget() {
 
@@ -134,25 +131,69 @@ void Aiming::approachTarget() {
 
    }
 }
-
-void Aiming::shoot(){
-
-   //start Timer
-   if (m_timer.Get()==0){
-      m_timer.Start();
-   }
-
-   // Get the shooter ready, and then shoot if enough time has passed
-   m_shooter->setArmed();
-   if (m_timer.HasPeriodPassed(1.5)){
-      m_shooter->setShooting();
-      setCurrentState(IDLE);
-      m_timer.Stop();
-      m_timer.Reset();
-   }
-
+void Aiming::encoderCenter(){
+//
+//   int centerEncoder1=m_currentTargetCoordinates[2] ;
+//   int centerEncoder2=m_currentTargetCoordinates[3];
+//   int degreeDifference;
+//   bool hasMoved=false;
+//
+//   if ((m_driveTrainController->getCurrentState()==DriveTrainController::IDLE
+//         || m_driveTrainController->getCurrentState()==DriveTrainController::TELEOP )){
+//      driveIdle=true;
+//   }
+//
+//   if (!hasMoved){
+//
+//      degreeDifference=encoderDistanceToDegrees(m_encoder1->GetDistance(),m_encoder2->GetDistance())
+//            -encoderDistanceToDegrees(centerEncoder1,centerEncoder2);
+//
+//      cout << degreeDifference;
+//      m_driveTrainController->aimRobotClockwise(degreeDifference,0.6f);
+//      hasMoved=true;
+//   }
+//   else if (hasMoved && driveIdle){
+//      setCurrentState(IDLE);
+//   }
 }
 
+
+//int Aiming::encoderDistanceToDegrees(int encoder1, int encoder2){
+//
+//   int degrees;
+//   int encoderTickDifference;
+//   double fractionOfCircumference;
+//
+//   encoderTickDifference = encoder1 - encoder2;
+//   encoderTickDifference /=2;
+//   fractionOfCircumference = (double) (encoderTickDifference / AimingConstants::circumferenceOfRotation);
+//   degrees = fractionOfCircumference * 360;
+//
+//   return degrees;
+//}
+
+void Aiming::sendEncoderData(){
+   sendcount++;
+   memset(sendData,0,2);
+   memset(byteData,0,8);
+   sendData[0] = m_encoder1->Get();
+   sendData[1] = m_encoder2->Get();
+
+   for (int i =0; i<2;i++){
+      m_client->intToBytes(sendData[i],(byteData+i*4));
+   }
+
+   if (sendcount%200 == 0){
+      cout<<"sending packet number "<<sendcount<<endl;
+      cout <<"Send data";
+      for (int i =0;i<2;i++){
+         cout <<sendData[i] << " ";
+      }
+      cout <<endl;
+   }
+
+   m_client->sendPacket(byteData);
+}
 void Aiming::setTargetCoordinateValue(AimingConstants::targetPositionData position, int newValue) {
    m_currentTargetCoordinates[position] = newValue;
 }
@@ -182,37 +223,35 @@ void Aiming::printCurrentCoordinates() {
          m_currentTargetCoordinates[AimingConstants::xLR] << ", " <<
          m_currentTargetCoordinates[AimingConstants::yLR] << ")" << endl;
 }
-
+int Aiming::getCenter(){
+   return m_targetCenter_x;
+}
+int Aiming::getDeviation(){
+   return deviation;
+}
 
 // Called to implement all aiming mechanisms
 void Aiming::run() {
 
-   if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonA)) {
-         setCurrentState(IDLE);
-   }
+//   if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonA)) {
+//         setCurrentState(IDLE);
+//   }
+
+   getNewImageData();
+   sendEncoderData();
+      //previousTargetCenter=m_targetCenter_x;
+
+   m_targetCenter_x=m_currentTargetCoordinates[0];
+
+   deviation = (m_targetCenter_x - AimingConstants::desiredCenter);
 
    switch(m_currentState) {
    case IDLE:
-      m_driveTrainController->setGoalState(m_driveTrainController->TELEOP);
+//      m_driveTrainController->setGoalState(m_driveTrainController->TELEOP);
       fullProcess=false;
       hasApproached=false;
-      getNewImageData();
-
+      previousTargetCenter=-1;
       //SmartDashboard::PutString("DB/String 0", "State: IDLE" );
-
-      if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonStart)) {
-            fullProcess=true;
-            setCurrentState(CENTERING);
-      }
-      else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonB)) {
-         setCurrentState(APPROACHING);
-      }
-      else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonY)) {
-         setCurrentState(CENTERING);
-      }
-      else if(m_driveStation->getGamepadButton(DriveStationConstants::buttonNames::buttonX)) {
-         setCurrentState(SHOOTING);
-      }
 
       break;
    case CENTERING:
@@ -225,14 +264,14 @@ void Aiming::run() {
       getNewImageData();
       approachTarget();
       break;
-   case SHOOTING:
-      //SmartDashboard::PutString("DB/String 0", "State: Shooting" );
+   case ENCODERCENTER:
       getNewImageData();
-      shoot();
-    break;
+      encoderCenter();
+      break;
    default:
       break;
    }
+   newCenter=false;
 
 }
 
