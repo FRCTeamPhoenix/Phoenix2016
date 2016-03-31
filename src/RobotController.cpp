@@ -134,21 +134,18 @@ void RobotController::initAutonomousModeQueue(){
 
    switch(place){
    case DriveStationConstants::obstacale::Port:
-      SmartDashboard::PutString("DB/String 2", "Arm");
-      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.2), 0.1));
-      SmartDashboard::PutString("DB/String 2", "Drive");
-      m_queue.push(new ActionDrive(m_driveTrain, 44.0, m_configEditor->getFloat("motorPower")));
-      SmartDashboard::PutString("DB/String 2", "Arm");
-      m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.6)));
-      SmartDashboard::PutString("DB/String 2", "Drive");
-      m_queue.push(new ActionDrive(m_driveTrain, 60, m_configEditor->getFloat("motorPower")));//TODO distances
+      SmartDashboard::PutString("DB/String 3", "PORT");
+      m_queue.push(new ActionArmPresets(m_arm, 0.05, 0.1));
+      m_queue.push(new ActionDrive(m_driveTrain, m_configEditor->getFloat("PortFirstDistance", 28), m_configEditor->getFloat("motorPower")));
+      m_queue.push(new ActionArmPresentNOWait(m_arm, m_configEditor->getFloat("armButtonCDF", 0.6)));
+      m_queue.push(new ActionDrive(m_driveTrain, 72.0, m_configEditor->getFloat("motorPower")));//TODO distances
       break;
    case DriveStationConstants::obstacale::CDF:
       m_queue.push(new ActionDrive(m_driveTrain, m_configEditor->getFloat("CDFFirstDistance", 20), m_configEditor->getFloat("motorPower", 0.6)));//distance 44
       m_queue.push(new ActionArmPresets(m_arm, m_configEditor->getFloat("armButtonCDF", 0.05), 0.2));
       m_queue.push(new ActionDrive(m_driveTrain, 20.0, m_configEditor->getFloat("motorPower", 0.6)));
       m_queue.push(new ActionArmPresentNOWait(m_arm, m_configEditor->getFloat("armButtonCDF", 0.7)));
-      m_queue.push(new ActionDrive(m_driveTrain, 44.0, m_configEditor->getFloat("motorPower")));//TODO distances
+      m_queue.push(new ActionDrive(m_driveTrain, 72.0, m_configEditor->getFloat("motorPower")));//TODO distances
       break;
    case DriveStationConstants::obstacale::Sally:
       m_queue.push(new ActionDrive(m_driveTrain, 24, m_configEditor->getFloat("motorPower")));

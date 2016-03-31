@@ -2,7 +2,7 @@
 #include "Client.h"
 #define NPACK 1
 #define PORT 31415 //port currently used for testing, can be changed
-#define SRV_IP "169.254.128.142" //static ip of pi is 10.0.4p2.142
+#define SRV_IP "169.254.128.83" //static ip of pi is 10.0.4p2.142
 
 
 

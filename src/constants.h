@@ -355,7 +355,7 @@ namespace ConfigVariables {
       "homingPower",
       "outerIntakeMotorPower",
       "innerIntakeMotorPower",
-      "flywheelMotorPower",
+      "flywheelMotorPower", //10
       "potLeftValueLow",
       "potRightValueLow",
       "potLeftValueHigh",
@@ -365,7 +365,7 @@ namespace ConfigVariables {
       "slowAverageFactor",
       "lidarOffset",
       "shooterPower",
-      "maxDistFlywheel",
+      "maxDistFlywheel", //20
       "midDistFlywheel",
       "minDistFlywheel",
       "maxDistFlywheelRate",
@@ -375,11 +375,12 @@ namespace ConfigVariables {
       "armButtonCDF",
       "armButtonMiddle",
       "armButtonDrawBridge",
-      "armButtonTop",
+      "armButtonTop", //30
       "armP",
       "armSensitivity",
       "armI",
-      "CDFFirstDistance"
+      "CDFFirstDistance",
+      "PortFirstDistance"
    };
    const static std::string types[numberOfVars] = {
       "float", //motorPower
@@ -391,7 +392,7 @@ namespace ConfigVariables {
       "float", //homingPower
       "float", //outerIntakeMotorPower
       "float", //innerIntakeMotorPower
-      "float", //flywheelMotorPower
+      "float", //flywheelMotorPower (10)
       "float", //potLeftValueLow
       "float", //potRightValueLow
       "float", //potLeftValueHigh
@@ -401,7 +402,7 @@ namespace ConfigVariables {
       "double", //slowAverageFactor,
       "double", //lidarOffset
       "float", //shooterPower
-      "float", //maxDistFlywheel
+      "float", //maxDistFlywheel (10)
       "float", //midDistFlywheel
       "float", //minDistFlywheel
       "float", //maxDistFlywheelRate
@@ -411,11 +412,12 @@ namespace ConfigVariables {
       "float", //armButtonCDF
       "float", //armButtonMiddle
       "float", //armButtonDrawBridge
-      "float", //armButtonTop
+      "float", //armButtonTop (30)
       "float", //armP
       "float", //armSensitivity
       "float", //armI
       "float", //CDFFirstDistance
+      "float", //PortFirstDistance
    };
 };
 
