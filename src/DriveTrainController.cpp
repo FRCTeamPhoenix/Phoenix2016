@@ -34,6 +34,7 @@ DriveTrainController::DriveTrainController(
    m_targetDistanceLeft = 0;
    m_rightEncoderComplete = true;
    m_leftEncoderComplete = true;
+
    m_gyroTargetDegree = 0.0f;
    clockwise = false;
    lidarInches = 0.0f;
@@ -50,7 +51,7 @@ DriveTrainController::~DriveTrainController() {
 // ThrottleRatio .8 is too high :(
 void DriveTrainController::manualDrive() {
 
-   float range = 0.7;
+   float range = 1;
 
    float throttleRatio = (-m_driveStation->getJoystickThrottle()+ 1)/2;
    float throttle = m_driveStation->getYWithDeadzone();
