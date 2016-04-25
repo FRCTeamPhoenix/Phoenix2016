@@ -130,7 +130,7 @@ void RobotController::initAutonomousModeQueue(){
    m_state = ROBOT_AUTO;
 
 
-   int place = (int)SmartDashboard::GetNumber("RobotRadioCTL", -1);
+   int place = (int)SmartDashboard::GetNumber("Obstacle Position", -1);
 
    switch(place){
    case DriveStationConstants::obstacale::Port:
