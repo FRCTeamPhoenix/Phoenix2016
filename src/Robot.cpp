@@ -41,7 +41,7 @@ public:
         m_rightDriveMotor2(PortAssign::frontRightWheelMotor),
         m_leftDriveMotor1(PortAssign::rearRightWheelMotor),
         m_leftDriveMotor2(PortAssign::rearLeftWheelMotor),
-        m_gamepad(PortAssign::gamepad)
+        m_gamepad(0)
 {
 }
 
@@ -53,7 +53,46 @@ public:
     {
         while (IsOperatorControl() && IsEnabled())
         {
-            if(m_gamepad.GetRawButton(DriveStationConstants::buttonA)){
+            if (m_gamepad.GetRawButton(DriveStationConstants::joystickRightButton)){
+
+               if(m_gamepad.GetRawButton(DriveStationConstants::buttonA)){
+                   m_leftFlywheelMotor.Set(-1.0);
+               }
+               else if(m_gamepad.GetRawButton(DriveStationConstants::buttonX)){
+                   m_rightFlywheelMotor.Set(-1.0);
+
+               }
+               else if(m_gamepad.GetRawButton(DriveStationConstants::buttonY)){
+                  m_armMotorLeft.Set(-1.0);
+               }
+
+               else if(m_gamepad.GetRawButton(DriveStationConstants::buttonB)){
+                   m_armMotorRight.Set(-1.0);
+
+               }
+
+               else if(m_gamepad.GetRawButton(DriveStationConstants::buttonLB)){
+                   m_leftDriveMotor1.Set(1.0);
+               }
+
+               else if(m_gamepad.GetRawButton(DriveStationConstants::buttonRB)){
+                   m_rightDriveMotor1.Set(-1.0);
+
+               }
+
+               else if(m_gamepad.GetRawButton(DriveStationConstants::triggerLT)){
+                   m_leftDriveMotor2.Set(1.0);
+               }
+
+               else if(m_gamepad.GetRawButton(DriveStationConstants::triggerRT)){
+                   m_rightDriveMotor1.Set(-1.0);
+
+               }
+               else if(m_gamepad.GetRawButton(DriveStationConstants::buttonBack)){
+                   m_intakeMotor.Set(-1.0);
+               }
+            }
+            else if(m_gamepad.GetRawButton(DriveStationConstants::buttonA)){
                 m_leftFlywheelMotor.Set(1.0);
             }
             else if(m_gamepad.GetRawButton(DriveStationConstants::buttonX)){
@@ -63,9 +102,9 @@ public:
             else if(m_gamepad.GetRawButton(DriveStationConstants::buttonY)){
                 m_armMotorLeft.Set(1.0);
             }
-
             else if(m_gamepad.GetRawButton(DriveStationConstants::buttonB)){
                 m_armMotorRight.Set(1.0);
+
             }
 
             else if(m_gamepad.GetRawButton(DriveStationConstants::buttonLB)){
@@ -87,6 +126,18 @@ public:
             }
             else if(m_gamepad.GetRawButton(DriveStationConstants::buttonBack)){
                 m_intakeMotor.Set(1.0);
+            }
+
+            else {
+               m_intakeMotor.Set(0);
+               m_rightDriveMotor1.Set(0);
+               m_leftDriveMotor2.Set(0);
+               m_rightDriveMotor2.Set(0);
+               m_leftDriveMotor1.Set(0);
+               m_leftFlywheelMotor.Set(0);
+               m_rightFlywheelMotor.Set(0);
+               m_armMotorRight.Set(0);
+               m_armMotorLeft.Set(0);
             }
             Wait(0.005); // wait 5ms to avoid hogging CPU cycles
         }
