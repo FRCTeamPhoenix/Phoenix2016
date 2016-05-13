@@ -17,11 +17,13 @@ class Robot: public SampleRobot
     Talon m_stationaryMotor;
     Talon m_leftClimberMotor;
     Talon m_rightClimberMotor;
-    Talon m_rightDriveMotor1;
-    Talon m_rightDriveMotor2;
-    Talon m_leftDriveMotor1;
-    Talon m_leftDriveMotor2;
-    Joystick m_gamepad;
+    Talon m_rightDriveMotorRear;
+    Talon m_rightDriveMotorFront;
+    Talon m_leftDriveMotorRear;
+    Talon m_leftDriveMotorFront;
+    Joystick m_gamepad;m_armMotorLeft;
+    Talon port0;
+
 
 public:
     Robot():
@@ -29,21 +31,34 @@ public:
         m_righDriveEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
         m_rightFly(PortAssign::leftFlywheelEncoderChannelA, PortAssign::leftFlywheelEncoderChannelB),
         m_leftFly(PortAssign::rightFlywheelEncoderChannelA, PortAssign::rightFlywheelEncoderChannelB),
-        m_leftFlywheelMotor(PortAssign::flywheelLeftMotor),
-        m_rightFlywheelMotor(PortAssign::flywheelRightMotor),
-        m_armMotorLeft(PortAssign::armMotorLeft),
-        m_armMotorRight(PortAssign::armMotorRight),
-        m_intakeMotor(PortAssign::intakeMotor),
-        m_stationaryMotor(PortAssign::stationaryMotor),
-        m_leftClimberMotor(PortAssign::leftClimberMotor),
-        m_rightClimberMotor(PortAssign::rightClimberMotor),
-        m_rightDriveMotor1(PortAssign::frontLeftWheelMotor),
-        m_rightDriveMotor2(PortAssign::frontRightWheelMotor),
-        m_leftDriveMotor1(PortAssign::rearRightWheelMotor),
-        m_leftDriveMotor2(PortAssign::rearLeftWheelMotor),
+        m_leftFlywheelMotor(PortAssign::flywheelLeftMotor), //6
+        m_rightFlywheelMotor(PortAssign::flywheelRightMotor), //5
+        m_armMotorLeft(PortAssign::armMotorLeft), //7
+        m_armMotorRight(PortAssign::armMotorRight), //8
+        m_intakeMotor(PortAssign::intakeMotor), //4
+        m_stationaryMotor(PortAssign::stationaryMotor), //400
+        m_leftClimberMotor(PortAssign::leftClimberMotor), //20
+        m_rightClimberMotor(PortAssign::rightClimberMotor),//16
+        m_rightDriveMotorRear(PortAssign::rearRightWheelMotor), //3
+        m_rightDriveMotorFront(PortAssign::frontRightWheelMotor), //2
+        m_leftDriveMotorRear(PortAssign::rearLeftWheelMotor), //0
+        m_leftDriveMotorFront(PortAssign::frontLeftWheelMotor), //1
+        port0(0),
         m_gamepad(0)
 {
 }
+    /*
+     * X =  5
+     * Y =  7
+     * A =  6
+     * B =  8
+     * LT = 1
+     * LB = 0
+     * RT = 2
+     * RB = 3
+     * back = 4
+     * RJoystick = reverse
+     */
 
     void RobotInit() override{
         CameraServer::GetInstance()->SetQuality(50);
@@ -51,89 +66,59 @@ public:
     }
     void OperatorControl()
     {
+        int speed = 1;
         while (IsOperatorControl() && IsEnabled())
         {
+            port0.Set(0.5);
             if (m_gamepad.GetRawButton(DriveStationConstants::joystickRightButton)){
-
-               if(m_gamepad.GetRawButton(DriveStationConstants::buttonA)){
-                   m_leftFlywheelMotor.Set(-1.0);
-               }
-               else if(m_gamepad.GetRawButton(DriveStationConstants::buttonX)){
-                   m_rightFlywheelMotor.Set(-1.0);
-
-               }
-               else if(m_gamepad.GetRawButton(DriveStationConstants::buttonY)){
-                  m_armMotorLeft.Set(-1.0);
-               }
-
-               else if(m_gamepad.GetRawButton(DriveStationConstants::buttonB)){
-                   m_armMotorRight.Set(-1.0);
-
-               }
-
-               else if(m_gamepad.GetRawButton(DriveStationConstants::buttonLB)){
-                   m_leftDriveMotor1.Set(1.0);
-               }
-
-               else if(m_gamepad.GetRawButton(DriveStationConstants::buttonRB)){
-                   m_rightDriveMotor1.Set(-1.0);
-
-               }
-
-               else if(m_gamepad.GetRawButton(DriveStationConstants::triggerLT)){
-                   m_leftDriveMotor2.Set(1.0);
-               }
-
-               else if(m_gamepad.GetRawButton(DriveStationConstants::triggerRT)){
-                   m_rightDriveMotor1.Set(-1.0);
-
-               }
-               else if(m_gamepad.GetRawButton(DriveStationConstants::buttonBack)){
-                   m_intakeMotor.Set(-1.0);
-               }
+                speed = -1.0;
             }
-            else if(m_gamepad.GetRawButton(DriveStationConstants::buttonA)){
-                m_leftFlywheelMotor.Set(1.0);
+            else {
+                speed =1.0;
+            }
+
+            if(m_gamepad.GetRawButton(DriveStationConstants::buttonA)){
+                m_leftFlywheelMotor.Set(speed);
             }
             else if(m_gamepad.GetRawButton(DriveStationConstants::buttonX)){
-                m_rightFlywheelMotor.Set(1.0);
+                m_rightFlywheelMotor.Set(speed);
 
             }
             else if(m_gamepad.GetRawButton(DriveStationConstants::buttonY)){
-                m_armMotorLeft.Set(1.0);
+                m_armMotorLeft.Set(speed);
             }
             else if(m_gamepad.GetRawButton(DriveStationConstants::buttonB)){
-                m_armMotorRight.Set(1.0);
+                m_armMotorRight.Set(speed);
 
             }
 
             else if(m_gamepad.GetRawButton(DriveStationConstants::buttonLB)){
-                m_leftDriveMotor1.Set(-1.0);
+                m_leftDriveMotorRear.Set(-speed);
             }
 
             else if(m_gamepad.GetRawButton(DriveStationConstants::buttonRB)){
-                m_rightDriveMotor1.Set(1.0);
+                m_rightDriveMotorRear.Set(speed);
 
             }
 
             else if(m_gamepad.GetRawButton(DriveStationConstants::triggerLT)){
-                m_leftDriveMotor2.Set(-1.0);
+                m_leftDriveMotorFront.Set(-speed);
             }
 
             else if(m_gamepad.GetRawButton(DriveStationConstants::triggerRT)){
-                m_rightDriveMotor1.Set(1.0);
+                m_rightDriveMotorFront.Set(speed);
 
             }
             else if(m_gamepad.GetRawButton(DriveStationConstants::buttonBack)){
-                m_intakeMotor.Set(1.0);
+                m_intakeMotor.Set(speed);
             }
 
             else {
                m_intakeMotor.Set(0);
-               m_rightDriveMotor1.Set(0);
-               m_leftDriveMotor2.Set(0);
-               m_rightDriveMotor2.Set(0);
-               m_leftDriveMotor1.Set(0);
+               m_rightDriveMotorRear.Set(0);
+               m_leftDriveMotorFront.Set(0);
+               m_rightDriveMotorFront.Set(0);
+               m_leftDriveMotorRear.Set(0);
                m_leftFlywheelMotor.Set(0);
                m_rightFlywheelMotor.Set(0);
                m_armMotorRight.Set(0);
