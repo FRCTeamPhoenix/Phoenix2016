@@ -60,18 +60,18 @@ struct PortAssign {
 
 namespace DriveStationConstants {
     enum buttonNames {
-       buttonX = 0,
-       buttonA = 1,
-       buttonB = 2,
-       buttonY = 3,
-       buttonLB = 4,
-       buttonRB = 5,
-       triggerLT = 6,
-       triggerRT = 7,
-       buttonBack = 8,
-       buttonStart = 9,
-       joystickLeftButton = 10,
-       joystickRightButton = 11
+       buttonX = 1,
+       buttonA = 2,
+       buttonB = 3,
+       buttonY = 4,
+       buttonLB = 5,
+       buttonRB = 6,
+       triggerLT = 7,
+       triggerRT = 8,
+       buttonBack = 9,
+       buttonStart = 10,
+       joystickLeftButton = 11,
+       joystickRightButton = 12
     };
 };
 

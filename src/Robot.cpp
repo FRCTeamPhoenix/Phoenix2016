@@ -6,7 +6,7 @@
 class Robot: public SampleRobot
 {
     Encoder m_leftDriveEncoder;
-    Encoder m_righDriveEncoder;
+    Encoder m_rightDriveEncoder;
     Encoder m_rightFly;
     Encoder m_leftFly;
     Talon m_leftFlywheelMotor;
@@ -21,14 +21,14 @@ class Robot: public SampleRobot
     Talon m_rightDriveMotorFront;
     Talon m_leftDriveMotorRear;
     Talon m_leftDriveMotorFront;
-    Joystick m_gamepad;m_armMotorLeft;
-    Talon port0;
+    Joystick m_gamepad;
+
 
 
 public:
     Robot():
         m_leftDriveEncoder(PortAssign::leftWheelEncoderChannelA, PortAssign::leftWheelEncoderChannelB),
-        m_righDriveEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
+        m_rightDriveEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
         m_rightFly(PortAssign::leftFlywheelEncoderChannelA, PortAssign::leftFlywheelEncoderChannelB),
         m_leftFly(PortAssign::rightFlywheelEncoderChannelA, PortAssign::rightFlywheelEncoderChannelB),
         m_leftFlywheelMotor(PortAssign::flywheelLeftMotor), //6
@@ -43,7 +43,6 @@ public:
         m_rightDriveMotorFront(PortAssign::frontRightWheelMotor), //2
         m_leftDriveMotorRear(PortAssign::rearLeftWheelMotor), //0
         m_leftDriveMotorFront(PortAssign::frontLeftWheelMotor), //1
-        port0(0),
         m_gamepad(0)
 {
 }
@@ -69,7 +68,10 @@ public:
         int speed = 1;
         while (IsOperatorControl() && IsEnabled())
         {
-            port0.Set(0.5);
+
+            std::ostringstream encoders;
+            encoders << "L: " << m_leftDriveEncoder.Get() << "R: " << m_rightDriveEncoder.Get();
+            SmartDashboard::PutString("DB/String 0",encoders.str());
             if (m_gamepad.GetRawButton(DriveStationConstants::joystickRightButton)){
                 speed = -1.0;
             }
