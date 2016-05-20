@@ -130,7 +130,9 @@ void RobotController::initAutonomousModeQueue(){
    m_state = ROBOT_AUTO;
    SmartDashboard::PutString("DB/String 7", "Auto mode started");
 
-   int place = (int)SmartDashboard::GetNumber("Obstacle Position", -1);
+   int place = (int)SmartDashboard::GetNumber("RobotRadioCTL", -1);
+
+   cout << "Place: " << place;
 
    switch(place){
    case DriveStationConstants::obstacale::Port:

@@ -122,7 +122,7 @@ public:
       m_configEditor.showAllKeys();
 //TODO: uncomment this block of code
       cout<<"run init socket function" << endl;
-      m_client.initilizeSocket();
+//      m_client.initilizeSocket();
       if (m_client.m_initGood){
          cout<<"init good start thread" << endl;
          std::thread receiveThread(runClient, this, &m_client);
@@ -300,20 +300,20 @@ public:
          m_driveStation.printToDashboard(output2.str(), 1);
 
 
-         //Space 2
-         std::ostringstream output3;
-         output3 << "D: " << m_aiming.getDeviation()<< "C: "<<m_aiming.getCenter();
-         m_driveStation.printToDashboard(output3.str(),2);
+//         //Space 2
+//         std::ostringstream output3;
+//         output3 << "D: " << m_aiming.getDeviation()<< "C: "<<m_aiming.getCenter();
+//         m_driveStation.printToDashboard(output3.str(),2);
 
-         //Space 3
-         std::ostringstream output4;
-         if (m_aiming.getDeviation() < 0){
-            output4 << "Turn CCW";
-         }
-         else{
-            output4<< "Turn CW";
-         }
-         m_driveStation.printToDashboard(output4.str(),3);
+//         //Space 3
+//         std::ostringstream output4;
+//         if (m_aiming.getDeviation() < 0){
+//            output4 << "Turn CCW";
+//         }
+//         else{
+//            output4<< "Turn CW";
+//         }
+//         m_driveStation.printToDashboard(output4.str(),3);
 
 
          //Space 4

@@ -112,9 +112,9 @@ float PIDControllerArm::accelerationProfile(){
    //if we are close enough
    if(atTarget(0.05))
    {
-      if(count % 10 == 0)
-              printf("Count:%d, DSP:%4.5f PSP:%4.5f CVel:%4.5f CV:%4.5f\n ",
-                    count, m_desiredSetPoint, m_profileSetPoint, m_currentVelocity, voltageToPercent(m_potentiometer->GetAverageVoltage()));
+//      if(count % 10 == 0)
+//              printf("Count:%d, DSP:%4.5f PSP:%4.5f CVel:%4.5f CV:%4.5f\n ",
+//                    count, m_desiredSetPoint, m_profileSetPoint, m_currentVelocity, voltageToPercent(m_potentiometer->GetAverageVoltage()));
            count ++;
       m_currentVelocity = 0.0f;
       m_profileSetPoint = m_desiredSetPoint;
@@ -150,9 +150,9 @@ float PIDControllerArm::accelerationProfile(){
 
    }
 
-   if(count % 10 == 0)
-         printf("Count:%d, Decel:%c, DSP:%4.5f PSP:%4.5f CVel:%4.5f Acc:%4.5f CV:%4.5f\n ",
-               count, isDeccel?'t':'f', m_desiredSetPoint, m_profileSetPoint, m_currentVelocity, acceleration, voltageToPercent(m_potentiometer->GetAverageVoltage()));
+//   if(count % 10 == 0)
+//         printf("Count:%d, Decel:%c, DSP:%4.5f PSP:%4.5f CVel:%4.5f Acc:%4.5f CV:%4.5f\n ",
+//               count, isDeccel?'t':'f', m_desiredSetPoint, m_profileSetPoint, m_currentVelocity, acceleration, voltageToPercent(m_potentiometer->GetAverageVoltage()));
       count ++;
 
    m_currentVelocity += (acceleration / 200); //inches per second
