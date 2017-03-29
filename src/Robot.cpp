@@ -41,7 +41,8 @@ class Robot: public SampleRobot
    Encoder m_rightWheelEncoder;
    Encoder m_leftFlywheelEncoder;
    Encoder m_rightFlywheelEncoder;
-   Joystick m_joystick;
+   Joystick m_joystickLeft;
+   Joystick m_joystickRight;
    Joystick m_gamepad;
    Joystick m_armJoystick;
    Talon m_leftFlywheelMotor;
@@ -68,6 +69,8 @@ class Robot: public SampleRobot
    Arm m_arm;
    Aiming m_aiming;
    RobotController m_robotController;
+   RobotDrive m_tankDrive;
+
 
 
 public:
@@ -86,7 +89,8 @@ public:
       m_rightWheelEncoder(PortAssign::rightWheelEncoderChannelA, PortAssign::rightWheelEncoderChannelB),
       m_leftFlywheelEncoder(PortAssign::leftFlywheelEncoderChannelA, PortAssign::leftFlywheelEncoderChannelB),
       m_rightFlywheelEncoder(PortAssign::rightFlywheelEncoderChannelA, PortAssign::rightFlywheelEncoderChannelB),
-      m_joystick(PortAssign::joystick),
+      m_joystickLeft(PortAssign::joystickLeft),
+      m_joystickRight(PortAssign::joystictRight),
       m_gamepad(PortAssign::gamepad),
       m_armJoystick(PortAssign::armJoystick),
       m_leftFlywheelMotor(PortAssign::flywheelLeftMotor),
@@ -97,7 +101,7 @@ public:
       m_stationaryMotor(PortAssign::stationaryMotor),
       m_leftClimberMotor(PortAssign::leftClimberMotor),
       m_rightClimberMotor(PortAssign::rightClimberMotor),
-      m_driveStation(&m_joystick, &m_gamepad, &m_armJoystick),
+      m_driveStation(&m_joystickLeft, &m_gamepad, &m_armJoystick),
       m_climber(&m_leftClimberMotor,&m_rightClimberMotor,&m_driveStation,&m_leftClimberLimitSwitch,&m_rightClimberLimitSwitch),
       m_lidarOnSwitch(0),
       m_configEditor(&m_driveStation),
@@ -111,7 +115,8 @@ public:
       m_shooterController(&m_loaderController, &m_flywheel, &m_configEditor),
       m_arm(&m_armMotorLeft, &m_armMotorRight, &m_leftPotentiometer,&m_rightPotentiometer,&m_leftUpperLimitSwitch,&m_rightUpperLimitSwitch,&m_leftLowerLimitSwitch,&m_rightLowerLimitSwitch, &m_configEditor, &m_driveStation),
       m_aiming(&m_client, &m_driveTrainController, &m_driveStation, &m_lidarHandler, &m_shooterController,&m_rightWheelEncoder,&m_rightWheelEncoder),
-      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm, &m_aiming)//,
+      m_robotController(&m_driveStation, &m_driveTrainController,&m_shooterController, &m_loaderController, &m_flywheel, &m_configEditor, &m_arm, &m_aiming),
+      m_tankDrive(PortAssign::frontLeftWheelMotor, PortAssign::rearLeftWheelMotor, PortAssign::frontRightWheelMotor, PortAssign::rearRightWheelMotor)
 {
 }
    void RobotInit() override{
@@ -164,14 +169,15 @@ public:
       m_driveTrainController.setGoalState(DriveTrainController::TELEOP);
       m_robotController.setManual();
       while(IsOperatorControl() && IsEnabled()){
-         displayDriverInfo();
-         m_driveStation.snapShot();
-         m_robotController.run();
-         m_driveTrainController.run();
-         m_shooterController.run();
+          m_tankDrive.TankDrive(m_joystickLeft, m_joystickRight);
+//         displayDriverInfo();
+//         m_driveStation.snapShot();
+//         m_robotController.run();
+//         m_driveTrainController.run();
+//         m_shooterController.run();
          //m_aiming.run();
-         m_arm.run();
-         m_configEditor.update();
+//         m_arm.run();
+//         m_configEditor.update();
          //m_climber.run();
 
 

@@ -34,3 +34,4 @@ CMakeLists.txt
 
 # For emacs auto-save files
 *~
+/Simulate/

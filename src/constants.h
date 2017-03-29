@@ -39,9 +39,10 @@ struct PortAssign {
    const static uint32_t armEncoderChannelB = 8;
 
    // Controllers
-   const static uint32_t joystick = 0;
-   const static uint32_t gamepad = 1;
-   const static uint32_t armJoystick = 2;
+   const static uint32_t joystickLeft = 0;
+   const static uint32_t joystictRight = 1;
+   const static uint32_t gamepad = 2;
+   const static uint32_t armJoystick = 3;
 
    //Analog
    const static uint32_t gyroscope = 0;
